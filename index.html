@@ -1,151 +1,688 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sw">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bongo Hub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BongoVibe App</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a; /* Dark background */
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-    }
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+        .splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .splash-logo {
+            font-size: 4em;
+            font-weight: bold;
+            color: #e91e63; /* Pink */
+            text-shadow: 0 0 15px rgba(233, 30, 99, 0.7);
+            margin-bottom: 20px;
+            animation: bounceIn 1s ease-out;
+        }
+        .splash-loading-text {
+            font-size: 1.2em;
+            color: #bbb;
+            margin-bottom: 10px;
+        }
+        .splash-loading-bar {
+            width: 80%;
+            max-width: 300px;
+            height: 8px;
+            background-color: #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .splash-loading-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #e91e63, #2196F3); /* Pink to Blue */
+            border-radius: 5px;
+            animation: loadProgress 55s linear forwards; /* Set to 55 seconds */
+        }
 
-    header {
-      background: #020617;
-      padding: 15px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #22c55e;
-    }
+        /* Keyframe Animations */
+        @keyframes bounceIn {
+            0% { transform: scale(0.1); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
 
-    nav {
-      display: flex;
-      justify-content: space-around;
-      background: #020617;
-      border-top: 1px solid #1e293b;
-      border-bottom: 1px solid #1e293b;
-    }
+        /* Main App Content */
+        .app-container {
+            display: none; /* Hidden by default, shown after splash */
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
 
-    nav button {
-      flex: 1;
-      padding: 12px;
-      background: none;
-      border: none;
-      color: #e5e7eb;
-      cursor: pointer;
-      font-size: 14px;
-    }
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #1a1a1a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .top-logo {
+            font-size: 2.2em;
+            font-weight: 900;
+            color: #e91e63; /* Pink */
+            text-shadow: 0 0 5px rgba(233, 30, 99, 0.5);
+        }
+        .top-logo span {
+            color: #2196F3; /* Blue */
+            font-size: 0.6em;
+            vertical-align: super;
+            margin-left: -5px;
+        }
+        .search-icon {
+            font-size: 1.5em;
+            color: #ccc;
+        }
 
-    nav button.active {
-      background: #1e293b;
-      color: #22c55e;
-    }
+        /* Main Hero Section */
+        .hero-section {
+            position: relative;
+            height: 250px;
+            background-image: url('https://via.placeholder.com/600x250/3f51b5/ffffff?text=BongoVibe+Ad+1'); /* Placeholder Image */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        .hero-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 0;
+        }
+        .hero-subtitle {
+            font-size: 0.9em;
+            color: #bbb;
+            margin-bottom: 15px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .hero-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: white;
+        }
+        .play-btn {
+            background: linear-gradient(to right, #e91e63, #2196F3);
+        }
+        .my-list-btn {
+            background-color: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
 
-    section {
-      display: none;
-      padding: 15px;
-    }
+        /* Carousel Indicators (for hero section) */
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #555;
+            margin: 0 4px;
+        }
+        .indicator.active {
+            background-color: #e91e63;
+        }
 
-    section.active {
-      display: block;
-    }
+        /* Ad Banner */
+        .ad-banner {
+            margin: 0 20px 20px 20px;
+            height: 150px;
+            background-image: url('https://via.placeholder.com/600x150/f44336/ffffff?text=Your+Cola+Ad'); /* Placeholder for your cola ad */
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    .card {
-      background: #020617;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-    }
+        /* Category Section */
+        .category-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0 20px 15px 20px;
+        }
+        .movie-grid {
+            display: flex;
+            overflow-x: scroll;
+            padding: 0 20px 20px 20px;
+            gap: 15px;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        .movie-grid::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for webkit browsers */
+        }
+        .movie-item {
+            flex: 0 0 120px; /* Fixed width */
+            text-align: center;
+        }
+        .movie-poster {
+            width: 120px;
+            height: 180px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background-size: cover;
+            background-position: center;
+        }
+        .movie-poster.kombolela { background-image: url('https://via.placeholder.com/120x180/8bc34a/ffffff?text=Kombolela'); }
+        .movie-poster.eonii { background-image: url('https://via.placeholder.com/120x180/673ab7/ffffff?text=EONII'); }
+        .movie-poster.donda { background-image: url('https://via.placeholder.com/120x180/f44336/ffffff?text=Donda+la+Moyo'); }
+        .movie-poster.placeholder { background-image: url('https://via.placeholder.com/120x180/424242/ffffff?text=Movie'); }
 
-    .card a {
-      color: #22c55e;
-      text-decoration: none;
-      font-weight: bold;
-    }
+        .movie-title-small {
+            font-size: 0.8em;
+            color: #ccc;
+        }
 
-    footer {
-      text-align: center;
-      padding: 10px;
-      font-size: 12px;
-      color: #94a3b8;
-    }
-  </style>
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #111;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #333;
+            z-index: 1000;
+        }
+        .nav-item {
+            text-align: center;
+            color: #888;
+            font-size: 10px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+        .nav-item.active {
+            color: #e91e63; /* Active pink */
+        }
+        .nav-icon {
+            font-size: 22px;
+            display: block;
+        }
+
+        /* Details Page (Kombolela - Image 3) */
+        .details-page {
+            display: none; /* Hidden by default */
+        }
+
+        .details-header {
+            position: relative;
+            height: 250px;
+            background-image: url('https://via.placeholder.com/600x250/8bc34a/ffffff?text=Kombolela+Season+2');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+        }
+        .back-button {
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            text-decoration: none;
+            z-index: 10;
+        }
+        .details-header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        .details-header-content {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 1;
+        }
+        .details-logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .details-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .details-info {
+            padding: 20px;
+        }
+        .details-info h2 {
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .details-tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .tag {
+            background-color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            color: #bbb;
+        }
+        .details-description {
+            font-size: 0.9em;
+            color: #bbb;
+            margin-bottom: 20px;
+        }
+        .read-more-btn {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .action-icons {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .action-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: #888;
+            font-size: 0.8em;
+        }
+        .action-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #888;
+        }
+
+        .episode-nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .episode-nav-btn {
+            background-color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #bbb;
+            text-decoration: none;
+        }
+        .episode-nav-btn.active {
+            background-color: #e91e63;
+            color: white;
+        }
+
+        .season-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .season-btn {
+            background-color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #bbb;
+            text-decoration: none;
+        }
+        .season-btn.active {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .episode-list .episode-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .episode-thumbnail {
+            width: 100px;
+            height: 60px;
+            background-color: #444;
+            border-radius: 8px;
+            background-image: url('https://via.placeholder.com/100x60/8bc34a/ffffff?text=Epi');
+            background-size: cover;
+            background-position: center;
+        }
+        .episode-details {
+            flex-grow: 1;
+        }
+        .episode-details h3 {
+            margin: 0;
+            font-size: 1em;
+            color: #fff;
+        }
+        .episode-details p {
+            margin: 5px 0 0 0;
+            font-size: 0.8em;
+            color: #bbb;
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-  BONGO HUB
-</header>
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-logo">BongoVibe</div>
+        <div class="splash-loading-text">Inapakia...</div>
+        <div class="splash-loading-bar">
+            <div class="splash-loading-progress"></div>
+        </div>
+    </div>
 
-<nav>
-  <button class="active" onclick="openTab('mpira', this)">Mpira</button>
-  <button onclick="openTab('simulizi', this)">Simulizi</button>
-  <button onclick="openTab('elimu', this)">Elimu</button>
-  <button onclick="openTab('sms', this)">SMS</button>
-</nav>
+    <div class="app-container" id="homeScreen">
+        <div class="top-bar">
+            <div class="top-logo">BONGO<span>MAX</span></div>
+            <div class="search-icon">🔍</div>
+        </div>
 
-<!-- MPIRA -->
-<section id="mpira" class="active">
-  <div class="card">
-    <h3>Channel za Mpira Duniani</h3>
-    <p><a href="https://example.com" target="_blank">Azam Sports</a></p>
-    <p><a href="https://example.com" target="_blank">SuperSport</a></p>
-    <p><a href="https://example.com" target="_blank">BeIN Sports</a></p>
-  </div>
+        <div class="hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <p class="hero-subtitle">Entertainment</p>
+                <h1 class="hero-title">BongoVibe TWO</h1>
+                <div class="hero-buttons">
+                    <a href="#" class="hero-btn play-btn">
+                        ▶ TAZAMA SASA
+                    </a>
+                    <a href="#" class="hero-btn my-list-btn">
+                        🤍 Orodha yangu
+                    </a>
+                </div>
+            </div>
+        </div>
 
-  <div class="card">
-    <h3>Ratiba ya Leo</h3>
-    <p>Yanga vs Simba – 22:00</p>
-    <p>Arsenal vs Chelsea – 19:30</p>
-  </div>
-</section>
+        <div class="carousel-indicators">
+            <div class="indicator active"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+        </div>
 
-<!-- SIMULIZI -->
-<section id="simulizi">
-  <div class="card">
-    <h3>Simulizi ya Moja kwa Moja</h3>
-    <p>Dakika 45: Bao safi ⚽🔥</p>
-    <p>Dakika 60: Mchezo umechacha!</p>
-  </div>
-</section>
+        <div class="ad-banner"></div>
 
-<!-- ELIMU -->
-<section id="elimu">
-  <div class="card">
-    <h3>Elimu & Mafunzo</h3>
-    <p>✔️ Jinsi ya kujifunza online</p>
-    <p>✔️ Teknolojia na AI</p>
-    <p>✔️ Biashara mtandaoni</p>
-  </div>
-</section>
+        <h3 class="category-title">Zinazovuma</h3>
+        <div class="movie-grid">
+            <a href="#" class="movie-item" onclick="showDetailsPage(); return false;">
+                <div class="movie-poster kombolela"></div>
+                </a>
+            <div class="movie-item">
+                <div class="movie-poster eonii"></div>
+                </div>
+            <div class="movie-item">
+                <div class="movie-poster donda"></div>
+                </div>
+            <div class="movie-item">
+                <div class="movie-poster placeholder"></div>
+                </div>
+            <div class="movie-item">
+                <div class="movie-poster placeholder"></div>
+                </div>
+        </div>
 
-<!-- SMS -->
-<section id="sms">
-  <div class="card">
-    <h3>SMS za Mapenzi</h3>
-    <p>"Nakupenda zaidi ya maneno ❤️"</p>
-    <p>"Wewe ni zawadi ya maisha yangu 💌"</p>
-  </div>
-</section>
+        <h3 class="category-title">BONGO MAX Classics</h3>
+        <div class="movie-grid">
+            <div class="movie-item">
+                <div class="movie-poster placeholder"></div>
+                </div>
+            <div class="movie-item">
+                <div class="movie-poster placeholder"></div>
+                </div>
+            <div class="movie-item">
+                <div class="movie-poster placeholder"></div>
+                </div>
+            <div class="movie-item">
+                <div class="movie-poster placeholder"></div>
+                </div>
+        </div>
 
-<footer>
-  © 2026 Bongo Hub • Mpira • Simulizi • Elimu
-</footer>
+        <h3 class="category-title">Vichekesho Vipya</h3>
+        <div class="movie-grid">
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+        </div>
 
-<script>
-  function openTab(id, btn) {
-    document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+        <h3 class="category-title">Tamthilia za Kusisimua</h3>
+        <div class="movie-grid">
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+            <div class="movie-item"><div class="movie-poster placeholder"></div></div>
+        </div>
 
-    document.getElementById(id).classList.add("active");
-    btn.classList.add("active");
-  }
-</script>
+    </div> <div class="app-container details-page" id="detailsPage">
+        <div class="details-header">
+            <a href="#" class="back-button" onclick="showHomeScreen(); return false;">←</a>
+            <div class="details-header-overlay"></div>
+            <div class="details-header-content">
+                <div class="details-logo">KOMBOLELA</div>
+                <div class="details-buttons">
+                    <a href="#" class="hero-btn play-btn">
+                        ▶ Tazama sasa
+                    </a>
+                    <a href="#" class="hero-btn my-list-btn">
+                        IJIIMAA... IIMAPILII
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-info">
+            <h2>Kombolela Season 2</h2>
+            <div class="details-tags">
+                <span class="tag">Comedy</span>
+                <span class="tag">Drama</span>
+                <span class="tag">2024</span>
+            </div>
+            <p class="details-description">
+                Baada ya kifo cha mkewe, mzee Kikala anaamua kuoa mke mwingine (Bibi Msumi). Bibi Msumi anaenda kuishi na mumewe...
+                <a href="#" class="read-more-btn">Zaidi...</a>
+            </p>
+
+            <div class="action-icons">
+                <div class="action-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <span>Like</span>
+                </div>
+                <div class="action-icon">
+                    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z" fill="none"/><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    <span>Share</span>
+                </div>
+                <div class="action-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="none"/></svg>
+                    <span>Download</span>
+                </div>
+            </div>
+
+            <div class="episode-nav-buttons">
+                <a href="#" class="episode-nav-btn active">Orodha ya sehemu</a>
+                <a href="#" class="episode-nav-btn">Zaidi kama hii</a>
+            </div>
+
+            <div class="season-buttons">
+                <a href="#" class="season-btn">Season 1</a>
+                <a href="#" class="season-btn active">Season 2</a>
+                <a href="#" class="season-btn">Season 3</a>
+                <a href="#" class="season-btn">Season 4</a>
+            </div>
+
+            <div class="episode-list">
+                <div class="episode-item">
+                    <div class="episode-thumbnail"></div>
+                    <div class="episode-details">
+                        <h3>Episode 1</h3>
+                        <p>SAA 1:30 | Kombolela Season 2 Part 1</p>
+                    </div>
+                </div>
+                <div class="episode-item">
+                    <div class="episode-thumbnail"></div>
+                    <div class="episode-details">
+                        <h3>Episode 2</h3>
+                        <p>SAA 1:25 | Kombolela Season 2 Part 2</p>
+                    </div>
+                </div>
+                <div class="episode-item">
+                    <div class="episode-thumbnail"></div>
+                    <div class="episode-details">
+                        <h3>Episode 3</h3>
+                        <p>SAA 1:40 | Kombolela Season 2 Part 3</p>
+                    </div>
+                </div>
+                <div class="episode-item">
+                    <div class="episode-thumbnail"></div>
+                    <div class="episode-details">
+                        <h3>Episode 4</h3>
+                        <p>SAA 1:35 | Kombolela Season 2 Part 4</p>
+                    </div>
+                </div>
+                <div class="episode-item">
+                    <div class="episode-thumbnail"></div>
+                    <div class="episode-details">
+                        <h3>Episode 5</h3>
+                        <p>SAA 1:20 | Kombolela Season 2 Part 5</p>
+                    </div>
+                </div>
+                <div class="episode-item">
+                    <div class="episode-thumbnail"></div>
+                    <div class="episode-details">
+                        <h3>Episode 6</h3>
+                        <p>SAA 1:30 | Kombolela Season 2 Part 6</p>
+                    </div>
+                </div>
+                <div style="height: 50px;"></div> </div>
+        </div>
+    </div> <div class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="showHomeScreen(); return false;">
+            <span class="nav-icon">🏠</span>
+            Nyumbani
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🎞️</span>
+            Filamu
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🎬</span>
+            Tamthilia
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📡</span>
+            Chaneli
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">➕</span>
+            Kupanua
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const splashScreen = document.getElementById('splashScreen');
+            const homeScreen = document.getElementById('homeScreen');
+            const detailsPage = document.getElementById('detailsPage');
+            const splashLoadingProgress = document.querySelector('.splash-loading-progress');
+
+            // Simulate loading for 5 seconds (you can change 5000ms to 55000ms for 55 seconds)
+            const loadingDuration = 5000; // 5 seconds
+            splashLoadingProgress.style.animationDuration = `${loadingDuration / 1000}s`;
+
+
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    homeScreen.style.display = 'block';
+                }, 1000); // Wait for fade-out transition
+            }, loadingDuration);
+        });
+
+        function showDetailsPage() {
+            document.getElementById('homeScreen').style.display = 'none';
+            document.getElementById('detailsPage').style.display = 'block';
+            // Also update the bottom navigation active state if needed
+        }
+
+        function showHomeScreen() {
+            document.getElementById('detailsPage').style.display = 'none';
+            document.getElementById('homeScreen').style.display = 'block';
+            // Also update the bottom navigation active state if needed
+        }
+    </script>
 
 </body>
     </html>
