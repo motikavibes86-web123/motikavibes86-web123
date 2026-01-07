@@ -1,4 +1,4 @@
-                     <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
@@ -7,754 +7,533 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CSS STYLES (Muonekano) --- */
+        /* --- CSS STYLES --- */
         :root {
-            --primary: #1e293b; /* Dark Blue */
-            --secondary: #0f172a; /* Darker Blue */
-            --accent: #fbbf24; /* Gold/Orange */
+            --primary: #0f172a; /* Dark Background */
+            --secondary: #1e293b; /* Card Background */
+            --accent: #fbbf24; /* Gold/Yellow */
+            --accent-blue: #3b82f6; /* Blue */
             --text: #ffffff;
             --gray: #94a3b8;
             --success: #22c55e;
             --danger: #ef4444;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--primary); color: var(--text); overflow-x: hidden; height: 100vh; display: flex; flex-direction: column; }
 
-        body {
-            background-color: var(--secondary);
-            color: var(--text);
-            overflow-x: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* --- LOADING SCREEN --- */
+        /* --- 1. LOADING SCREEN (NEW LOGO) --- */
         #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, var(--secondary), var(--primary));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 1s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999; transition: opacity 1s ease;
         }
-
-        .lion-logo {
-            font-size: 80px;
-            color: var(--accent);
+        .main-logo {
+            width: 180px; /* Adjust size as needed */
             margin-bottom: 20px;
             animation: pulse 2s infinite;
         }
-
-        .loader-bar {
-            width: 70%;
-            height: 5px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .loader-progress {
-            width: 0%;
-            height: 100%;
-            background: var(--accent);
-            transition: width 0.5s;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+        .loader-bar { width: 70%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; margin-top: 20px; }
+        .loader-progress { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--accent)); transition: width 0.5s; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* --- HEADER --- */
-        header {
-            padding: 15px 20px;
-            background: var(--primary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        header { padding: 15px 20px; background: var(--secondary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .app-title { font-size: 1.3rem; font-weight: bold; background: linear-gradient(90deg, #fff, var(--accent), var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-icons i { font-size: 1.2rem; margin-left: 15px; color: var(--gray); cursor: pointer; }
 
-        .app-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--text);
+        /* --- MAIN CONTENT --- */
+        main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; display: none; }
+        .section-title { font-size: 1.1rem; margin-bottom: 15px; color: var(--gray); border-left: 4px solid var(--accent); padding-left: 10px; }
+
+        /* --- SPIN GAME (REVISED) --- */
+        .balance-card {
+            background: linear-gradient(135deg, var(--secondary), #1e3a8a);
+            padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
+        .balance-title { color: var(--gray); font-size: 0.9rem; margin-bottom: 5px; }
+        .balance-amount { font-size: 2rem; font-weight: bold; color: var(--accent); }
         
-        .app-title span { color: var(--accent); }
-
-        .header-icons i {
-            font-size: 1.2rem;
-            margin-left: 15px;
-            color: var(--gray);
-            cursor: pointer;
+        .withdraw-btn {
+            background: var(--success); color: white; border: none; padding: 10px 20px;
+            border-radius: 25px; font-weight: bold; margin-top: 15px; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; margin-left: auto; margin-right: auto;
         }
+        .withdraw-btn.locked { background: var(--gray); cursor: not-allowed; opacity: 0.7; }
+        .lock-icon { font-size: 1rem; }
 
-        /* --- MAIN CONTENT AREAS --- */
-        main {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 80px; /* Space for bottom nav */
-            display: none; /* Hidden until loaded */
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--gray);
-            border-left: 4px solid var(--accent);
-            padding-left: 10px;
-        }
-
-        /* --- SMS CARDS --- */
-        .category-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-
-        .tab-btn {
-            padding: 8px 16px;
-            background: var(--primary);
-            border: 1px solid var(--gray);
-            border-radius: 20px;
-            color: var(--text);
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            background: var(--accent);
-            color: var(--secondary);
-            border-color: var(--accent);
-            font-weight: bold;
-        }
-
-        .sms-card {
-            background: var(--primary);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .sms-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            color: #e2e8f0;
-        }
-
-        .sms-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 10px;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--gray);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
-        }
-
-        .whatsapp-btn { color: #25D366; }
-        .copy-btn { color: var(--accent); }
-
-        /* --- SIMULIZI / AUDIO --- */
-        .audio-player {
-            background: var(--primary);
-            border-radius: 15px;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .audio-cover {
-            width: 100%;
-            height: 200px;
-            background-image: url('https://images.unsplash.com/photo-1478737270239-2f02b77ac6d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .audio-controls {
-            padding: 20px;
-        }
-
-        .audio-title { font-size: 1.2rem; margin-bottom: 5px; }
-        .audio-subtitle { color: var(--gray); font-size: 0.9rem; margin-bottom: 15px; }
-
-        audio { width: 100%; margin-top: 10px; }
-
-        /* --- SPIN GAME --- */
-        .spin-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 0;
-        }
-
-        .wheel-outer {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            border: 10px solid var(--accent);
-            position: relative;
-            overflow: hidden;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 0 auto 30px; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: var(--text); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        .wheel {
+            width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--secondary);
             background: conic-gradient(
-                #ef4444 0deg 60deg, 
-                #3b82f6 60deg 120deg, 
-                #22c55e 120deg 180deg, 
-                #eab308 180deg 240deg, 
-                #a855f7 240deg 300deg, 
-                #f97316 300deg 360deg
+                #ef4444 0deg 60deg,   /* Tsh 500 */
+                #3b82f6 60deg 120deg, /* Tsh 1000 */
+                #22c55e 120deg 180deg,/* Tsh 500 */
+                #eab308 180deg 240deg,/* Jaribu Tena */
+                #a855f7 240deg 300deg,/* Tsh 5000 */
+                #f97316 300deg 360deg /* Tsh 500 */
             );
+            transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); position: relative;
         }
+        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: var(--secondary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; color: var(--accent); border: 4px solid var(--primary); z-index: 5; }
+        .spin-btn { background: linear-gradient(90deg, var(--accent), #f59e0b); color: var(--primary); border: none; padding: 15px 50px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; display: block; margin: 0 auto; box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
 
-        .pointer {
-            width: 0; 
-            height: 0; 
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid var(--text);
-            position: absolute;
-            top: -10px;
-            z-index: 10;
+        /* --- NETWORKS GRID (Kwa Malipo na Kutoa Pesa) --- */
+        .networks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .network-option {
+            background: var(--secondary); border: 2px solid transparent; border-radius: 12px;
+            padding: 10px; cursor: pointer; transition: all 0.2s; display: flex;
+            align-items: center; justify-content: center; height: 70px;
         }
+        .network-option.selected { border-color: var(--accent); background: rgba(251, 191, 36, 0.1); }
+        .network-logo { max-width: 80%; max-height: 50px; object-fit: contain; }
 
-        .spin-btn {
-            margin-top: 30px;
-            background: var(--accent);
-            color: var(--secondary);
-            border: none;
-            padding: 12px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--accent);
-        }
-
-        /* --- TV CHANNELS (PREMIUM) --- */
-        .channel-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .channel-card {
-            background: var(--primary);
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .channel-card:active { transform: scale(0.95); }
-
-        .channel-thumb {
-            width: 100%;
-            height: 80px;
-            background: #000;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .channel-name { font-weight: 600; font-size: 0.9rem; }
-        
-        .lock-icon {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: var(--danger);
-            color: white;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-        }
-
-        /* --- BOTTOM NAVIGATION --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: var(--primary);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--gray);
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
-        .nav-item.active { color: var(--accent); }
-
-        /* --- MODAL (PAYMENT POPUP) --- */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: var(--primary);
-            width: 100%;
-            max-width: 350px;
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            position: relative;
-            border: 1px solid var(--accent);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 1.5rem;
-            color: var(--gray);
-            cursor: pointer;
-        }
-
+        /* --- GENERIC MODAL & STEPS --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--secondary); width: 100%; max-width: 380px; border-radius: 20px; padding: 30px 25px; text-align: center; position: relative; border: 1px solid rgba(255,255,255,0.1); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: var(--gray); cursor: pointer; }
         .step-container { display: none; }
-        .step-container.active { display: block; }
-
-        .modal h3 { color: var(--accent); margin-bottom: 15px; }
-        .modal p { color: var(--gray); margin-bottom: 20px; font-size: 0.9rem; }
-
-        .form-input, .form-select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background: var(--secondary);
-            border: 1px solid var(--gray);
-            color: white;
-            border-radius: 8px;
-        }
-
-        .pay-btn {
-            background: var(--success);
-            color: white;
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Spinner for Payment */
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid var(--accent);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
+        .step-container.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.3rem; }
+        .modal p { color: var(--gray); margin-bottom: 25px; line-height: 1.5; }
+        .form-input, .form-select { width: 100%; padding: 15px; margin-bottom: 20px; background: var(--primary); border: 1px solid var(--gray); color: white; border-radius: 10px; font-size: 1rem; outline: none; }
+        .form-input:focus { border-color: var(--accent); }
+        .action-btn-full { background: var(--accent-blue); color: white; width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .action-btn-full:hover { background: #2563eb; }
         
+        .spinner-large { border: 5px solid rgba(255, 255, 255, 0.1); border-left: 5px solid var(--accent); border-radius: 50%; width: 70px; height: 70px; animation: spin 1s linear infinite; margin: 30px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Floating Support Button */
-        .support-float {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: #25D366;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 90;
-            text-decoration: none;
-        }
-
+        /* --- BOTTOM NAV & OTHER STYLES --- */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--secondary); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; transition: color 0.2s; }
+        .nav-item i { font-size: 1.3rem; margin-bottom: 5px; }
+        .nav-item.active { color: var(--accent); }
+        .support-float { position: fixed; bottom: 90px; right: 20px; background: #25D366; color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 90; text-decoration: none; }
+        
+        /* Styles za SMS, Simulizi, TV (Zilizobaki) */
+        .channel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .channel-card { background: var(--secondary); border-radius: 12px; padding: 10px; text-align: center; position: relative; cursor: pointer; transition: transform 0.2s; }
+        .channel-card:active { transform: scale(0.98); }
+        .channel-thumb { width: 100%; height: 90px; background: #000; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; margin-bottom: 10px; position: relative; font-size: 1.2rem;}
+        .lock-icon-tv { position: absolute; top: 8px; right: 8px; background: var(--danger); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+        .category-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .tab-btn { padding: 8px 18px; background: var(--secondary); border: 1px solid var(--gray); border-radius: 25px; color: var(--text); white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
+        .tab-btn.active { background: var(--accent); color: var(--primary); border-color: var(--accent); font-weight: bold; }
+        .sms-card { background: var(--secondary); padding: 18px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.05); }
+        .sms-text { font-size: 1rem; line-height: 1.6; margin-bottom: 15px; color: #e2e8f0; }
+        .sms-actions { display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
+        .action-btn { background: none; border: none; color: var(--gray); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.95rem; padding: 5px 10px; border-radius: 8px; transition: background 0.2s; }
+        .action-btn:hover { background: rgba(255,255,255,0.05); }
+        .whatsapp-btn { color: #25D366; } .copy-btn { color: var(--accent); }
+        .audio-player { background: var(--secondary); border-radius: 15px; overflow: hidden; }
+        .audio-cover { width: 100%; height: 220px; background-size: cover; background-position: center; }
+        .audio-controls { padding: 25px; }
+        audio { width: 100%; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <div id="loader">
-        <i class="fas fa-lion lion-logo"></i>
-        <h2 style="color:white; letter-spacing: 2px;">BONGO VIBES</h2>
+        <img src="image_6.png" alt="Bongo Vibes Logo" class="main-logo">
         <div class="loader-bar">
             <div class="loader-progress" id="progress"></div>
         </div>
-        <p style="color: #94a3b8; margin-top: 10px; font-size: 0.8rem;">Inapakua data...</p>
+        <p style="color: var(--gray); margin-top: 15px; font-size: 0.9rem; letter-spacing: 1px;">Inapakua data...</p>
     </div>
 
     <header>
-        <div class="app-title"><i class="fas fa-music"></i> Bongo <span>Vibes</span></div>
+        <div class="app-title">Bongo Vibes</div>
         <div class="header-icons">
-            <i class="fas fa-language" onclick="toggleLanguage()"></i>
-            <i class="fas fa-cog"></i>
+            <i class="fas fa-language" onclick="alert('Lugha: Kiswahili')"></i>
+            <i class="fas fa-cog" onclick="alert('Mipangilio')"></i>
         </div>
     </header>
 
-    <main id="view-sms">
-        <div class="section-title">SMS Kali za Kusambaza</div>
-        
-        <div class="category-tabs">
-            <button class="tab-btn active" onclick="filterSMS('mapenzi')">Mapenzi</button>
-            <button class="tab-btn" onclick="filterSMS('tech')">Tech & Info</button>
-            <button class="tab-btn" onclick="filterSMS('mahaba')">Mahaba Moto</button>
-            <button class="tab-btn" onclick="filterSMS('vichekesho')">Vichekesho</button>
-        </div>
-
-        <div id="sms-container">
-            </div>
-    </main>
-
-    <main id="view-simulizi">
-        <div class="section-title">Simulizi Mpya</div>
-        
-        <div class="audio-player">
-            <div class="audio-cover" style="background-image: url('https://img.freepik.com/free-photo/mysterious-shadow-figure_23-2149354737.jpg');"></div>
-            <div class="audio-controls">
-                <div class="audio-title">Chozi la Mamba - Sehemu ya 1</div>
-                <div class="audio-subtitle">Mtunzi: Hassan Bongo</div>
-                <audio controls>
-                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-                    Browser yako haisupport audio.
-                </audio>
-            </div>
-        </div>
-
-        <br>
-        <div class="sms-card">
-            <h4 style="color:var(--accent); margin-bottom:5px;">Maelezo ya Simulizi</h4>
-            <p class="sms-text">Hii ni simulizi ya kusisimua inayohusu kijana aliyejitolea maisha yake kwa ajili ya familia... Sikiliza sasa.</p>
-        </div>
-    </main>
-
     <main id="view-spin">
-        <div class="section-title">Cheza Ushinde</div>
-        <div class="spin-container">
-            <div class="pointer"></div>
-            <div class="wheel-outer" id="wheel">
-                </div>
-            <button class="spin-btn" onclick="spinWheel()">ZUNGUSHA</button>
-            <p id="spin-result" style="margin-top: 20px; color: var(--accent); font-weight: bold;"></p>
+        <div class="section-title">Cheza Ushinde Pesa</div>
+        
+        <div class="balance-card">
+            <div class="balance-title">Baki ya Vocha Yako</div>
+            <div class="balance-amount" id="voucher-balance">Tsh 0</div>
+            <button class="withdraw-btn locked" id="withdraw-btn" onclick="initiateWithdraw()">
+                <i class="fas fa-lock lock-icon" id="withdraw-icon"></i>
+                <span id="withdraw-text">Fikisha Tsh 2,000 Kutoa</span>
+            </button>
         </div>
+
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel"></div>
+            <div class="wheel-center"><i class="fas fa-gift fa-2x"></i></div>
+        </div>
+        <button class="spin-btn" onclick="spinWheel()" id="spin-button">ZUNGUSHA SASA</button>
+        <p id="spin-result" style="text-align: center; margin-top: 20px; color: var(--accent); font-weight: bold; height: 25px;"></p>
     </main>
 
     <main id="view-tv">
         <div class="section-title">Chaneli za Live (VIP)</div>
-        <p style="color: var(--gray); font-size: 0.8rem; margin-bottom: 15px;">Lipia kifurushi kutazama chaneli hizi zenye ubora wa HD.</p>
-        
+        <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 20px;">Lipia kifurushi kutazama chaneli hizi zenye ubora wa HD.</p>
         <div class="channel-grid">
-            <div class="channel-card" onclick="openPayment('ITV Tanzania')">
+            <div class="channel-card" onclick="openTVPayment('ITV Tanzania')">
                 <div class="channel-thumb" style="background: #fcd34d; color: black;">ITV</div>
                 <div class="channel-name">ITV Live</div>
-                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
+                <div class="lock-icon-tv"><i class="fas fa-lock"></i> VIP</div>
             </div>
-            <div class="channel-card" onclick="openPayment('TBC Taifa')">
-                <div class="channel-thumb" style="background: #22c55e;">TBC</div>
-                <div class="channel-name">TBC Taifa</div>
-                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
-            </div>
-            <div class="channel-card" onclick="openPayment('Channel 10')">
-                <div class="channel-thumb" style="background: #ef4444;">CH 10</div>
-                <div class="channel-name">Channel Ten</div>
-                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
-            </div>
-            <div class="channel-card" onclick="openPayment('Wasafi TV')">
+            <div class="channel-card" onclick="openTVPayment('Wasafi TV')">
                 <div class="channel-thumb" style="background: #3b82f6;">WCB</div>
                 <div class="channel-name">Wasafi TV</div>
-                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
+                <div class="lock-icon-tv"><i class="fas fa-lock"></i> VIP</div>
+            </div>
+        </div>
+    </main>
+
+    <main id="view-sms">
+        <div class="section-title">SMS Kali za Kusambaza</div>
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterSMS('mapenzi', this)">Mapenzi</button>
+            <button class="tab-btn" onclick="filterSMS('tech', this)">Tech & Info</button>
+            <button class="tab-btn" onclick="filterSMS('mahaba', this)">Mahaba Moto</button>
+        </div>
+        <div id="sms-container"></div>
+    </main>
+
+    <main id="view-simulizi">
+        <div class="section-title">Simulizi Mpya</div>
+        <div class="audio-player">
+            <div class="audio-cover" style="background-image: url('https://source.unsplash.com/random/800x400?story');"></div>
+            <div class="audio-controls">
+                <div style="font-size: 1.3rem; font-weight: bold; margin-bottom: 5px;">Chozi la Mamba - Sehemu ya 1</div>
+                <div style="color: var(--gray); margin-bottom: 15px;">Mtunzi: Hassan Bongo</div>
+                <audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
             </div>
         </div>
     </main>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchView('sms', this)">
-            <i class="fas fa-envelope-open-text"></i>
-            <span>SMS</span>
-        </div>
-        <div class="nav-item" onclick="switchView('simulizi', this)">
-            <i class="fas fa-headphones"></i>
-            <span>Simulizi</span>
-        </div>
-        <div class="nav-item" onclick="switchView('spin', this)">
-            <i class="fas fa-dice"></i>
-            <span>Spin</span>
+        <div class="nav-item active" onclick="switchView('spin', this)">
+            <i class="fas fa-dice"></i><span>Spin & Win</span>
         </div>
         <div class="nav-item" onclick="switchView('tv', this)">
-            <i class="fas fa-tv"></i>
-            <span>TV Live</span>
+            <i class="fas fa-tv"></i><span>TV Live</span>
+        </div>
+        <div class="nav-item" onclick="switchView('sms', this)">
+            <i class="fas fa-comment-alt"></i><span>SMS</span>
+        </div>
+        <div class="nav-item" onclick="switchView('simulizi', this)">
+            <i class="fas fa-headphones"></i><span>Simulizi</span>
         </div>
     </nav>
 
-    <div id="payment-modal" class="modal">
+    <div id="tv-payment-modal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <span class="close-modal" onclick="closeModal('tv-payment-modal')">&times;</span>
             
-            <div id="step-1" class="step-container active">
+            <div id="tv-step-1" class="step-container active">
                 <h3><i class="fas fa-crown"></i> Kifurushi cha VIP</h3>
-                <p>Chagua muda wa kutazama <span id="selected-channel" style="color:white;"></span></p>
-                <select class="form-select" id="package-select">
+                <p>Chagua muda wa kutazama <span id="selected-channel-name" style="color:var(--accent);"></span></p>
+                <select class="form-select" id="tv-package-select">
                     <option value="500">Siku 1 - Tsh 500</option>
                     <option value="2500">Wiki 1 - Tsh 2,500</option>
-                    <option value="8000">Mwezi 1 - Tsh 8,000</option>
                 </select>
-                <button class="pay-btn" onclick="nextStep(2)">Endelea</button>
+                <button class="action-btn-full" onclick="tvNextStep(2)">Endelea</button>
             </div>
 
-            <div id="step-2" class="step-container">
-                <h3>Ingiza Namba</h3>
-                <p>Namba ya simu ya malipo</p>
+            <div id="tv-step-2" class="step-container">
+                <h3>Chagua Mtandao Wako</h3>
+                <p>Gusa mtandao unaotumia kulipia</p>
+                <div class="networks-grid">
+                    <div class="network-option" onclick="selectTvNetwork(this, 'Vodacom')">
+                        <img src="image_7.png" alt="Vodacom" class="network-logo" style="object-position: 0 0;">
+                    </div>
+                    <div class="network-option" onclick="selectTvNetwork(this, 'Airtel')">
+                        <img src="image_7.png" alt="Airtel" class="network-logo" style="object-position: 100% 100%;">
+                    </div>
+                    <div class="network-option" onclick="selectTvNetwork(this, 'Halotel')">
+                        <img src="image_7.png" alt="Halotel" class="network-logo" style="object-position: 100% 0;">
+                    </div>
+                    <div class="network-option" onclick="selectTvNetwork(this, 'YasMixx')">
+                         <img src="image_7.png" alt="YasMixx" class="network-logo" style="object-position: 0 100%;">
+                    </div>
+                </div>
+                <input type="hidden" id="selected-tv-network">
+                <button class="action-btn-full" id="tv-net-btn" disabled onclick="tvNextStep(3)">Endelea</button>
+            </div>
+
+            <div id="tv-step-3" class="step-container">
+                <h3>Ingiza Namba ya <span id="tv-network-name" style="color:var(--accent);"></span></h3>
                 <input type="tel" class="form-input" placeholder="Mfano: 0750050767">
-                <button class="pay-btn" onclick="nextStep(3)">Endelea</button>
+                <p>Kiasi: <strong style="color:var(--accent);" id="tv-pay-amount">Isomeke hapa</strong></p>
+                <button class="action-btn-full" style="background: var(--success);" onclick="processTvPayment()">Lipa Sasa</button>
             </div>
 
-            <div id="step-3" class="step-container">
-                <h3>Kiasi cha Kulipa</h3>
-                <p>Hakiki kiasi unachotaka kulipa</p>
-                <input type="number" class="form-input" id="amount-input" value="500" readonly>
-                <button class="pay-btn" onclick="processPayment()">Lipa Sasa</button>
-            </div>
-
-            <div id="step-4" class="step-container">
-                <h3>Inachakata...</h3>
-                <div class="spinner"></div>
-                <p>Tafadhali subiri, tunawasiliana na mtandao wako...</p>
-            </div>
-
-            <div id="step-5" class="step-container">
-                <h3 style="color: var(--success);"><i class="fas fa-check-circle"></i> Imefanikiwa!</h3>
-                <p>Maombi yako yamefanikiwa. Tafadhali ingiza namba ya siri kwenye simu yako kuhakiki taarifa zako.</p>
-                <button class="pay-btn" onclick="closeModal()" style="background: var(--primary); border: 1px solid var(--accent);">Funga</button>
+            <div id="tv-step-4" class="step-container">
+                <h3>Inachakata Malipo...</h3>
+                <div class="spinner-large"></div>
+                <p>Tafadhali subiri, usifunge app hii. Tunawasiliana na mtandao wako.</p>
             </div>
         </div>
     </div>
 
-    <a href="https://wa.me/255750050767?text=Habari,%20nahitaji%20msaada%20kwenye%20app%20ya%20Bongo%20Vibes" class="support-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <div id="withdraw-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('withdraw-modal')">&times;</span>
+            
+            <div id="wd-step-1" class="step-container active">
+                <h3>Toa Vocha Yako</h3>
+                <p>Chagua mtandao unataka kupokea vocha ya <strong>Tsh <span id="wd-amount-display"></span></strong></p>
+                <div class="networks-grid">
+                    <div class="network-option" onclick="selectWdNetwork(this, 'Vodacom')">
+                        <img src="image_7.png" alt="Vodacom" class="network-logo" style="object-position: 0 0;">
+                    </div>
+                     <div class="network-option" onclick="selectWdNetwork(this, 'Halotel')">
+                        <img src="image_7.png" alt="Halotel" class="network-logo" style="object-position: 100% 0;">
+                    </div>
+                     <div class="network-option" onclick="selectWdNetwork(this, 'YasMixx')">
+                        <img src="image_7.png" alt="YasMixx" class="network-logo" style="object-position: 0 100%;">
+                    </div>
+                </div>
+                <input type="hidden" id="selected-wd-network">
+                <button class="action-btn-full" id="wd-net-btn" disabled onclick="wdNextStep(2)">Thibitisha Mtandao</button>
+            </div>
+
+            <div id="wd-step-2" class="step-container">
+                <h3><i class="fas fa-hourglass-half spin-anim"></i> Tunahakiki Taarifa</h3>
+                <div class="spinner-large" style="border-color: rgba(251, 191, 36, 0.2); border-left-color: var(--accent);"></div>
+                <p style="font-size: 1rem;">Tafadhali subiri. Mchakato huu wa kuhakiki ushindi wako na kuandaa vocha unaweza kuchukua hadi <strong>saa 1 (dakika 60)</strong>.</p>
+                <p style="font-size: 0.9rem; color: var(--gray);">Unaweza kuendelea kutumia app, tutakujulisha ikikamilika.</p>
+            </div>
+
+            <div id="wd-step-3" class="step-container">
+                <i class="fas fa-check-circle fa-4x" style="color: var(--success); margin-bottom: 20px;"></i>
+                <h3>Imekamilika!</h3>
+                <p style="font-size: 1.1rem; line-height: 1.6;">Pesa yako imetumwa kikamilifu katika muda wa mapumziko. Angalia SMS zako baada ya muda mfupi.</p>
+                <button class="action-btn-full" onclick="finishWithdraw()">Sawa, Asante</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/255750050767" class="support-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
     <script>
-        // --- 1. LOADING LOGIC ---
-        // Kaka ulisema sekunde 1000 au 60, nimeweka 5 (5000ms) kwa demo ili uone inafanya kazi.
-        // KUBADILI: Badilisha 5000 kuwa 60000 (kwa dakika 1) au unavyotaka.
-        const loadingTime = 5000; 
-
+        // --- 1. LOADING & INIT ---
         window.onload = function() {
-            const progress = document.getElementById('progress');
-            const loader = document.getElementById('loader');
-            const mainContent = document.querySelector('main'); // Select first main just to init
-            
-            // Animation bar
-            setTimeout(() => { progress.style.width = "50%"; }, 500);
-            setTimeout(() => { progress.style.width = "80%"; }, 2000);
-            setTimeout(() => { progress.style.width = "100%"; }, loadingTime - 500);
-
-            // Hide loader show content
+            // Loading animation (5 seconds demo)
+            setTimeout(() => document.getElementById('progress').style.width = "60%", 1500);
+            setTimeout(() => document.getElementById('progress').style.width = "100%", 4500);
             setTimeout(() => {
-                loader.style.opacity = '0';
+                document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                    document.getElementById('view-sms').style.display = 'block'; // Show SMS as default
-                }, 1000);
-            }, loadingTime);
+                    document.getElementById('loader').style.display = 'none';
+                    // Show SPIN as default view
+                    switchView('spin', document.querySelector('.nav-item.active')); 
+                }, 800);
+            }, 5000);
 
-            // Load Initial SMS
-            filterSMS('mapenzi');
+            // Load initial Data
+            filterSMS('mapenzi', document.querySelector('.tab-btn.active'));
+            updateBalanceUI();
         };
 
         // --- 2. NAVIGATION ---
-        function switchView(viewId, btnElement) {
-            // Hide all mains
+        function switchView(viewId, btn) {
             document.querySelectorAll('main').forEach(el => el.style.display = 'none');
-            // Show selected
             document.getElementById('view-' + viewId).style.display = 'block';
-            
-            // Update active icon
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            btnElement.classList.add('active');
+            btn.classList.add('active');
         }
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
-        // --- 3. SMS LOGIC ---
-        const smsDatabase = {
-            'mapenzi': [
-                "Mapenzi ni safari ndefu, lakini nikiwa na wewe safari inakuwa fupi kama hatua mbili.",
-                "Moyo wangu ni bustani, na wewe ndiye ua pekee linalochanua katikati yake. Nakupenda.",
-                "Usiku unapoingia, nyota huangaza, lakini kwangu mwangaza wangu ni tabasamu lako."
-            ],
-            'tech': [
-                "Je wajua? AI inazidi kuchukua nafasi kubwa katika maisha yetu ya kila siku.",
-                "Siri ya kufanikiwa mtandaoni ni kuwa na content nzuri na consistency. Usikate tamaa.",
-                "Bongo Vibes App imetengenezwa kwa HTML5 na inaweza kufanya kazi kwenye Android na iOS."
-            ],
-            'mahaba': [
-                "Baby, joto lako ndio blanketi langu nyakati za baridi.",
-                "Kila nikikuwaza, nahisi dunia imesimama kwa ajili yetu wawili tu.",
-                "Hata nikipata kila kitu duniani, bila wewe bado nitakuwa maskini wa moyo."
-            ],
-            'vichekesho': [
-                "Mlevi kaanguka kwenye mtaro, akaokota simu akapiga polisi: 'Njooni fasta, nimepata ajali nikiwa naendesha mtaro!'",
-                "Mwarabu kakutwa anakula nguruwe, alipoulizwa akasema: 'Huyu samaki ana mbwembwe sana, kavaa koti la ngozi!'"
-            ]
-        };
+        // --- 3. SPIN GAME LOGIC (NEW) ---
+        let voucherBalance = 0;
+        const WITHDRAW_LIMIT = 2000;
+        let canSpin = true;
 
-        function filterSMS(category) {
-            const container = document.getElementById('sms-container');
-            container.innerHTML = ''; // Clear current
-            
-            // Update tabs style
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active'); // Note: this works if clicked, needs adjustment for auto-load but okay for demo
+        // Prizes mapped to wheel segments (6 segments)
+        const prizes = [
+            { text: "Tsh 500", value: 500, color: "#ef4444" },
+            { text: "Tsh 1000", value: 1000, color: "#3b82f6" },
+            { text: "Tsh 500", value: 500, color: "#22c55e" },
+            { text: "Jaribu Tena", value: 0, color: "#eab308" },
+            { text: "Tsh 5000", value: 5000, color: "#a855f7" },
+            { text: "Tsh 500", value: 500, color: "#f97316" }
+        ];
 
-            const messages = smsDatabase[category] || smsDatabase['mapenzi'];
-            
-            messages.forEach(msg => {
-                const card = document.createElement('div');
-                card.className = 'sms-card';
-                card.innerHTML = `
-                    <p class="sms-text">${msg}</p>
-                    <div class="sms-actions">
-                        <button class="action-btn copy-btn" onclick="copyText('${msg}')">
-                            <i class="far fa-copy"></i> Copy
-                        </button>
-                        <button class="action-btn whatsapp-btn" onclick="shareWhatsApp('${msg}')">
-                            <i class="fab fa-whatsapp"></i> <i class="fas fa-male"></i> Send
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+        function updateBalanceUI() {
+            const balanceEl = document.getElementById('voucher-balance');
+            const btn = document.getElementById('withdraw-btn');
+            const icon = document.getElementById('withdraw-icon');
+            const text = document.getElementById('withdraw-text');
 
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Ujumbe umecopiwa!");
-            });
-        }
+            balanceEl.innerText = `Tsh ${voucherBalance.toLocaleString()}`;
 
-        function shareWhatsApp(text) {
-            // Icon ya kijana inapeleka hapa
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
-        }
-
-        // --- 4. SPIN GAME LOGIC ---
-        function spinWheel() {
-            const wheel = document.getElementById('wheel');
-            const resultText = document.getElementById('spin-result');
-            
-            // Reset result
-            resultText.innerText = "";
-            
-            // Calculate random deg (min 1080 deg for 3 spins)
-            const deg = 1080 + Math.floor(Math.random() * 360);
-            
-            wheel.style.transform = `rotate(${deg}deg)`;
-            
-            setTimeout(() => {
-                resultText.innerText = "HONGERA! UMEJARIBU VIZURI!";
-            }, 4000); // 4 seconds matches css transition
-        }
-
-        // --- 5. PAYMENT / TV LOGIC ---
-        let currentStep = 1;
-        
-        function openPayment(channelName) {
-            document.getElementById('selected-channel').innerText = channelName;
-            document.getElementById('payment-modal').style.display = 'flex';
-            showStep(1);
-        }
-
-        function closeModal() {
-            document.getElementById('payment-modal').style.display = 'none';
-        }
-
-        function showStep(step) {
-            document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
-            document.getElementById('step-' + step).classList.add('active');
-            currentStep = step;
-        }
-
-        function nextStep(step) {
-            if (step === 3) {
-                // Update amount based on selection
-                const price = document.getElementById('package-select').value;
-                document.getElementById('amount-input').value = price;
+            if (voucherBalance >= WITHDRAW_LIMIT) {
+                btn.classList.remove('locked');
+                btn.style.background = 'var(--success)';
+                icon.className = 'fas fa-unlock';
+                text.innerText = 'Toa Vocha Sasa';
+            } else {
+                btn.classList.add('locked');
+                icon.className = 'fas fa-lock';
+                text.innerText = `Fikisha Tsh ${WITHDRAW_LIMIT.toLocaleString()} Kutoa`;
             }
-            showStep(step);
         }
 
-        function processPayment() {
-            showStep(4); // Show Spinner
-            // Simulate processing time 
-            // Kaka ulisema inazunguka kama 100, hapa nimeweka sekunde chache
+        function spinWheel() {
+            if (!canSpin) return;
+            canSpin = false;
+            document.getElementById('spin-button').disabled = true;
+            document.getElementById('spin-result').innerText = "";
+
+            // Random spin calculation
+            const rounds = 5 + Math.floor(Math.random() * 3); // 5-7 rounds
+            const degrees = rounds * 360 + Math.floor(Math.random() * 360);
+            
+            const wheel = document.getElementById('wheel');
+            wheel.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
+            wheel.style.transform = `rotate(${degrees}deg)`;
+
             setTimeout(() => {
-                showStep(5); // Success message
+                // Calculate result based on final angle
+                const actualDeg = degrees % 360;
+                const segmentSize = 360 / prizes.length;
+                // Pointer is at top (0deg), wheel rotates clockwise.
+                // The segment under the pointer is determined by (360 - actualDeg)
+                const winningIndex = Math.floor((360 - actualDeg + segmentSize / 2) % 360 / segmentSize);
+                const prize = prizes[winningIndex];
+
+                document.getElementById('spin-result').innerText = `Umeshinda: ${prize.text}!`;
+                document.getElementById('spin-result').style.color = prize.color;
+
+                if (prize.value > 0) {
+                    voucherBalance += prize.value;
+                    updateBalanceUI();
+                }
+
+                // Reset for next spin
+                canSpin = true;
+                document.getElementById('spin-button').disabled = false;
+                // Optional: reset wheel rotation visually after a delay if desired
+                // setTimeout(() => { wheel.style.transition = 'none'; wheel.style.transform = 'rotate(0deg)'; }, 1000);
+
             }, 4000);
         }
 
-        // --- 6. LANGUAGE / SETTINGS (Placeholder) ---
-        function toggleLanguage() {
-            alert("Kubadilisha Lugha: Kiswahili (Chaguo-msingi) / English");
+        // --- 4. WITHDRAW PROCESS (NEW) ---
+        function initiateWithdraw() {
+            if (voucherBalance < WITHDRAW_LIMIT) {
+                 alert(`Samahani, unahitaji kufikisha Tsh ${WITHDRAW_LIMIT.toLocaleString()} ili kutoa.`);
+                 return;
+            }
+            document.getElementById('wd-amount-display').innerText = voucherBalance.toLocaleString();
+            
+            // Reset UI states
+            document.querySelectorAll('#wd-step-1 .network-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('wd-net-btn').disabled = true;
+            
+            document.getElementById('withdraw-modal').style.display = 'flex';
+            wdShowStep(1);
         }
 
+        function selectWdNetwork(el, networkName) {
+            document.querySelectorAll('#wd-step-1 .network-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('selected-wd-network').value = networkName;
+            document.getElementById('wd-net-btn').disabled = false;
+        }
+
+        function wdShowStep(step) {
+            document.querySelectorAll('#withdraw-modal .step-container').forEach(el => el.classList.remove('active'));
+            document.getElementById('wd-step-' + step).classList.add('active');
+        }
+
+        function wdNextStep(step) {
+            if (step === 2) {
+                // Start long verification simulation (e.g., 8 seconds for demo instead of 1 hour)
+                wdShowStep(2);
+                setTimeout(() => {
+                    wdNextStep(3);
+                }, 8000); // Kaka hapa ndio ile sekunde 100/saa 1. Nimeweka 8000ms (sekunde 8) kwa demo.
+            } else if (step === 3) {
+                 wdShowStep(3);
+            }
+        }
+
+        function finishWithdraw() {
+            closeModal('withdraw-modal');
+            voucherBalance = 0; // Reset balance after success
+            updateBalanceUI();
+        }
+
+
+        // --- 5. TV PAYMENT LOGIC (UPDATED with NETWORKS) ---
+        function openTVPayment(channel) {
+            document.getElementById('selected-channel-name').innerText = channel;
+            // Reset UI
+            document.querySelectorAll('#tv-step-2 .network-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('tv-net-btn').disabled = true;
+            
+            document.getElementById('tv-payment-modal').style.display = 'flex';
+            tvShowStep(1);
+        }
+
+        function tvShowStep(step) {
+            document.querySelectorAll('#tv-payment-modal .step-container').forEach(el => el.classList.remove('active'));
+            document.getElementById('tv-step-' + step).classList.add('active');
+        }
+
+        function selectTvNetwork(el, netName) {
+            document.querySelectorAll('#tv-step-2 .network-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('selected-tv-network').value = netName;
+            document.getElementById('tv-net-btn').disabled = false;
+        }
+
+        function tvNextStep(step) {
+            if (step === 3) {
+                const netName = document.getElementById('selected-tv-network').value;
+                const amount = document.getElementById('tv-package-select').value;
+                document.getElementById('tv-network-name').innerText = netName;
+                document.getElementById('tv-pay-amount').innerText = `Tsh ${parseInt(amount).toLocaleString()}`;
+            }
+            tvShowStep(step);
+        }
+
+        function processTvPayment() {
+            tvShowStep(4); // Show loading spinner
+            setTimeout(() => {
+                alert("Ombi la malipo limetumwa kwenye simu yako. Tafadhali ingiza namba ya siri kuthibitisha.");
+                closeModal('tv-payment-modal');
+                // Here you would typically check payment status silently
+            }, 4000);
+        }
+
+        // --- 6. SMS & OTHER FUNCTIONS ---
+        const smsData = {
+            'mapenzi': ["Moyo wangu ni wako milele.", "Upendo wako ni mwanga gizani kwangu."],
+            'tech': ["AI inabadilisha dunia haraka sana.", "Jifunze coding uwe na nguvu ya kidijitali."],
+            'mahaba': ["Huba lako lanipa joto la ajabu.", "Kila nikikuona nazidi kuchanganyikiwa."]
+        };
+
+        function filterSMS(cat, btn) {
+            document.querySelectorAll('.category-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            const container = document.getElementById('sms-container');
+            container.innerHTML = '';
+            (smsData[cat] || []).forEach(msg => {
+                container.innerHTML += `
+                    <div class="sms-card">
+                        <p class="sms-text">${msg}</p>
+                        <div class="sms-actions">
+                            <button class="action-btn copy-btn" onclick="navigator.clipboard.writeText('${msg}');alert('Imenakiliwa!')"><i class="far fa-copy"></i> Copy</button>
+                            <button class="action-btn whatsapp-btn" onclick="window.open('https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}')"><i class="fab fa-whatsapp"></i> Send</button>
+                        </div>
+                    </div>`;
+            });
+        }
     </script>
 </body>
-         </html>
+  </html>
