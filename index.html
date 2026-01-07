@@ -1,186 +1,760 @@
-         <!DOCTYPE html>
+                     <!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BongoVibe MAX - Dual Mode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bongo Vibes App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* --- CSS STYLES (Muonekano) --- */
         :root {
-            --bg-body: #050a0f;
-            --bg-card: #0d161f;
-            --primary: #00ff88; /* Kijani ya Button yako */
-            --accent: #2196F3;
+            --primary: #1e293b; /* Dark Blue */
+            --secondary: #0f172a; /* Darker Blue */
+            --accent: #fbbf24; /* Gold/Orange */
             --text: #ffffff;
+            --gray: #94a3b8;
+            --success: #22c55e;
+            --danger: #ef4444;
         }
 
-        body.light-mode {
-            --bg-body: #f4f7f6;
-            --bg-card: #ffffff;
-            --text: #1a1a1a;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-body);
+            background-color: var(--secondary);
             color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            transition: 0.3s;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- HEADER & GREEN BUTTON --- */
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+        }
+
+        .lion-logo {
+            font-size: 80px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .loader-bar {
+            width: 70%;
+            height: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .loader-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.5s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- HEADER --- */
         header {
-            display: flex; align-items: center; padding: 15px;
-            background: rgba(5, 10, 15, 0.95); position: sticky; top: 0; z-index: 1000;
-        }
-        .menu-btn {
-            background: var(--primary); width: 40px; height: 32px;
-            border-radius: 6px; display: flex; flex-direction: column;
-            justify-content: space-around; padding: 6px; cursor: pointer; margin-right: 15px;
-        }
-        .menu-btn div { width: 100%; height: 3px; background: #000; border-radius: 2px; }
-
-        /* --- DRAWER MENU --- */
-        .drawer {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-            background: var(--bg-card); z-index: 2000; transition: 0.4s;
-            padding: 25px; box-shadow: 10px 0 20px rgba(0,0,0,0.5);
-            overflow-y: auto;
-        }
-        .drawer.open { left: 0; }
-        .drawer h2 { color: var(--primary); font-size: 1.5rem; margin-bottom: 30px; }
-        .nav-link { 
-            display: flex; align-items: center; gap: 15px; padding: 15px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;
-            font-weight: 500;
+            padding: 15px 20px;
+            background: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* --- SIMULIZI SECTION --- */
-        .content-area { padding: 20px; }
-        .story-card {
-            background: var(--bg-card); border-radius: 15px; overflow: hidden;
-            margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.05);
+        .app-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text);
         }
-        .story-image {
-            width: 100%; height: 200px; background-size: cover;
-            background-position: center; position: relative;
-        }
-        .story-overlay {
-            position: absolute; bottom: 0; width: 100%; padding: 15px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            box-sizing: border-box;
-        }
-        .story-body { padding: 20px; }
-        .audio-player {
-            background: #1a2a3a; padding: 15px; border-radius: 10px;
-            margin-bottom: 15px; display: flex; align-items: center; gap: 10px;
-        }
-        .audio-player audio { width: 100%; height: 35px; }
         
-        .read-text { 
-            display: none; line-height: 1.8; color: #ccc; 
-            max-height: 200px; overflow-y: auto; padding: 10px;
-            background: rgba(0,0,0,0.2); border-radius: 8px;
+        .app-title span { color: var(--accent); }
+
+        .header-icons i {
+            font-size: 1.2rem;
+            margin-left: 15px;
+            color: var(--gray);
+            cursor: pointer;
         }
 
-        .toggle-read-btn {
-            background: var(--accent); color: white; border: none;
-            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem;
+        /* --- MAIN CONTENT AREAS --- */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 80px; /* Space for bottom nav */
+            display: none; /* Hidden until loaded */
         }
 
-        /* --- SETTINGS --- */
-        .settings-btn {
-            padding: 10px; background: #333; color: white; border-radius: 5px;
-            margin-top: 10px; text-align: center; cursor: pointer;
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--gray);
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
         }
 
-        #overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: none; z-index: 1500;
+        /* --- SMS CARDS --- */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
+
+        .tab-btn {
+            padding: 8px 16px;
+            background: var(--primary);
+            border: 1px solid var(--gray);
+            border-radius: 20px;
+            color: var(--text);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: var(--secondary);
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+
+        .sms-card {
+            background: var(--primary);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .sms-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+
+        .sms-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .whatsapp-btn { color: #25D366; }
+        .copy-btn { color: var(--accent); }
+
+        /* --- SIMULIZI / AUDIO --- */
+        .audio-player {
+            background: var(--primary);
+            border-radius: 15px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .audio-cover {
+            width: 100%;
+            height: 200px;
+            background-image: url('https://images.unsplash.com/photo-1478737270239-2f02b77ac6d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .audio-controls {
+            padding: 20px;
+        }
+
+        .audio-title { font-size: 1.2rem; margin-bottom: 5px; }
+        .audio-subtitle { color: var(--gray); font-size: 0.9rem; margin-bottom: 15px; }
+
+        audio { width: 100%; margin-top: 10px; }
+
+        /* --- SPIN GAME --- */
+        .spin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .wheel-outer {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 10px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            background: conic-gradient(
+                #ef4444 0deg 60deg, 
+                #3b82f6 60deg 120deg, 
+                #22c55e 120deg 180deg, 
+                #eab308 180deg 240deg, 
+                #a855f7 240deg 300deg, 
+                #f97316 300deg 360deg
+            );
+        }
+
+        .pointer {
+            width: 0; 
+            height: 0; 
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid var(--text);
+            position: absolute;
+            top: -10px;
+            z-index: 10;
+        }
+
+        .spin-btn {
+            margin-top: 30px;
+            background: var(--accent);
+            color: var(--secondary);
+            border: none;
+            padding: 12px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        /* --- TV CHANNELS (PREMIUM) --- */
+        .channel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .channel-card {
+            background: var(--primary);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .channel-card:active { transform: scale(0.95); }
+
+        .channel-thumb {
+            width: 100%;
+            height: 80px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .channel-name { font-weight: 600; font-size: 0.9rem; }
+        
+        .lock-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--primary);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gray);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+        .nav-item.active { color: var(--accent); }
+
+        /* --- MODAL (PAYMENT POPUP) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--primary);
+            width: 100%;
+            max-width: 350px;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            border: 1px solid var(--accent);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .step-container { display: none; }
+        .step-container.active { display: block; }
+
+        .modal h3 { color: var(--accent); margin-bottom: 15px; }
+        .modal p { color: var(--gray); margin-bottom: 20px; font-size: 0.9rem; }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: var(--secondary);
+            border: 1px solid var(--gray);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .pay-btn {
+            background: var(--success);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Spinner for Payment */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Floating Support Button */
+        .support-float {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 90;
+            text-decoration: none;
+        }
+
     </style>
 </head>
-<body id="mainBody">
+<body>
 
-    <div id="overlay" onclick="toggleMenu()"></div>
-
-    <div class="drawer" id="sideDrawer">
-        <h2>BONGOVIBE MENU</h2>
-        <div class="nav-link" onclick="toggleDarkMode()">🌓 Badili Mode (Dark/Light)</div>
-        <div class="nav-link">📖 Simulizi Kali</div>
-        <div class="nav-link">📡 Live TV Channel</div>
-        <div class="nav-link">💻 Tech & Ujanja</div>
-        <div class="nav-link">💌 SMS za Mapenzi</div>
-        <div class="nav-link">😂 Happy Knee</div>
-        <div class="nav-link" onclick="alert('Lugha: Kiswahili imewekwa')">🌍 Badili Lugha (SW/EN)</div>
+    <div id="loader">
+        <i class="fas fa-lion lion-logo"></i>
+        <h2 style="color:white; letter-spacing: 2px;">BONGO VIBES</h2>
+        <div class="loader-bar">
+            <div class="loader-progress" id="progress"></div>
+        </div>
+        <p style="color: #94a3b8; margin-top: 10px; font-size: 0.8rem;">Inapakua data...</p>
     </div>
 
     <header>
-        <div class="menu-btn" onclick="toggleMenu()">
-            <div></div><div></div><div></div>
+        <div class="app-title"><i class="fas fa-music"></i> Bongo <span>Vibes</span></div>
+        <div class="header-icons">
+            <i class="fas fa-language" onclick="toggleLanguage()"></i>
+            <i class="fas fa-cog"></i>
         </div>
-        <div style="font-size: 1.3rem; font-weight: 900;">BONGOVIBE <span style="color: var(--primary);">MAX</span></div>
     </header>
 
-    <div class="content-area">
-        <h3 style="color: var(--primary);">Simulizi ya Leo</h3>
+    <main id="view-sms">
+        <div class="section-title">SMS Kali za Kusambaza</div>
+        
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterSMS('mapenzi')">Mapenzi</button>
+            <button class="tab-btn" onclick="filterSMS('tech')">Tech & Info</button>
+            <button class="tab-btn" onclick="filterSMS('mahaba')">Mahaba Moto</button>
+            <button class="tab-btn" onclick="filterSMS('vichekesho')">Vichekesho</button>
+        </div>
 
-        <div class="story-card">
-            <div class="story-image" style="background-image: url('https://picsum.photos/800/400?random=1');">
-                <div class="story-overlay">
-                    <h2 style="margin:0;">KIVULI CHA MAUTI</h2>
-                </div>
+        <div id="sms-container">
             </div>
-            <div class="story-body">
-                <p style="margin-top:0; font-weight: bold; color: var(--primary);">🎧 Sikiliza Simulizi Hapa:</p>
-                <div class="audio-player">
-                    <audio controls>
-                        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-                        Browser yako haikubali sauti.
-                    </audio>
-                </div>
+    </main>
 
-                <button class="toggle-read-btn" onclick="toggleRead('text1')">📖 Soma Maandishi</button>
-                <div id="text1" class="read-text">
-                    <p>Hapa ndipo simulizi yako inapoanza... Mzee Kikala alikaa chini ya mwembe huku akiwaza maisha yake ya baadaye. Ghafla, kivuli kizito kilianza kusogea kuelekea upande wake. Hakujua kuwa huo ndio ungekuwa mwanzo wa safari yake ya kusisimua ndani ya msitu wa giza...</p>
-                </div>
+    <main id="view-simulizi">
+        <div class="section-title">Simulizi Mpya</div>
+        
+        <div class="audio-player">
+            <div class="audio-cover" style="background-image: url('https://img.freepik.com/free-photo/mysterious-shadow-figure_23-2149354737.jpg');"></div>
+            <div class="audio-controls">
+                <div class="audio-title">Chozi la Mamba - Sehemu ya 1</div>
+                <div class="audio-subtitle">Mtunzi: Hassan Bongo</div>
+                <audio controls>
+                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                    Browser yako haisupport audio.
+                </audio>
             </div>
         </div>
 
-        <h3 style="color: var(--primary);">Channel Mpya za Dunia</h3>
-        <div id="channels" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+        <br>
+        <div class="sms-card">
+            <h4 style="color:var(--accent); margin-bottom:5px;">Maelezo ya Simulizi</h4>
+            <p class="sms-text">Hii ni simulizi ya kusisimua inayohusu kijana aliyejitolea maisha yake kwa ajili ya familia... Sikiliza sasa.</p>
+        </div>
+    </main>
+
+    <main id="view-spin">
+        <div class="section-title">Cheza Ushinde</div>
+        <div class="spin-container">
+            <div class="pointer"></div>
+            <div class="wheel-outer" id="wheel">
+                </div>
+            <button class="spin-btn" onclick="spinWheel()">ZUNGUSHA</button>
+            <p id="spin-result" style="margin-top: 20px; color: var(--accent); font-weight: bold;"></p>
+        </div>
+    </main>
+
+    <main id="view-tv">
+        <div class="section-title">Chaneli za Live (VIP)</div>
+        <p style="color: var(--gray); font-size: 0.8rem; margin-bottom: 15px;">Lipia kifurushi kutazama chaneli hizi zenye ubora wa HD.</p>
+        
+        <div class="channel-grid">
+            <div class="channel-card" onclick="openPayment('ITV Tanzania')">
+                <div class="channel-thumb" style="background: #fcd34d; color: black;">ITV</div>
+                <div class="channel-name">ITV Live</div>
+                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
             </div>
+            <div class="channel-card" onclick="openPayment('TBC Taifa')">
+                <div class="channel-thumb" style="background: #22c55e;">TBC</div>
+                <div class="channel-name">TBC Taifa</div>
+                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
+            </div>
+            <div class="channel-card" onclick="openPayment('Channel 10')">
+                <div class="channel-thumb" style="background: #ef4444;">CH 10</div>
+                <div class="channel-name">Channel Ten</div>
+                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
+            </div>
+            <div class="channel-card" onclick="openPayment('Wasafi TV')">
+                <div class="channel-thumb" style="background: #3b82f6;">WCB</div>
+                <div class="channel-name">Wasafi TV</div>
+                <div class="lock-icon"><i class="fas fa-lock"></i> VIP</div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchView('sms', this)">
+            <i class="fas fa-envelope-open-text"></i>
+            <span>SMS</span>
+        </div>
+        <div class="nav-item" onclick="switchView('simulizi', this)">
+            <i class="fas fa-headphones"></i>
+            <span>Simulizi</span>
+        </div>
+        <div class="nav-item" onclick="switchView('spin', this)">
+            <i class="fas fa-dice"></i>
+            <span>Spin</span>
+        </div>
+        <div class="nav-item" onclick="switchView('tv', this)">
+            <i class="fas fa-tv"></i>
+            <span>TV Live</span>
+        </div>
+    </nav>
+
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            
+            <div id="step-1" class="step-container active">
+                <h3><i class="fas fa-crown"></i> Kifurushi cha VIP</h3>
+                <p>Chagua muda wa kutazama <span id="selected-channel" style="color:white;"></span></p>
+                <select class="form-select" id="package-select">
+                    <option value="500">Siku 1 - Tsh 500</option>
+                    <option value="2500">Wiki 1 - Tsh 2,500</option>
+                    <option value="8000">Mwezi 1 - Tsh 8,000</option>
+                </select>
+                <button class="pay-btn" onclick="nextStep(2)">Endelea</button>
+            </div>
+
+            <div id="step-2" class="step-container">
+                <h3>Ingiza Namba</h3>
+                <p>Namba ya simu ya malipo</p>
+                <input type="tel" class="form-input" placeholder="Mfano: 0750050767">
+                <button class="pay-btn" onclick="nextStep(3)">Endelea</button>
+            </div>
+
+            <div id="step-3" class="step-container">
+                <h3>Kiasi cha Kulipa</h3>
+                <p>Hakiki kiasi unachotaka kulipa</p>
+                <input type="number" class="form-input" id="amount-input" value="500" readonly>
+                <button class="pay-btn" onclick="processPayment()">Lipa Sasa</button>
+            </div>
+
+            <div id="step-4" class="step-container">
+                <h3>Inachakata...</h3>
+                <div class="spinner"></div>
+                <p>Tafadhali subiri, tunawasiliana na mtandao wako...</p>
+            </div>
+
+            <div id="step-5" class="step-container">
+                <h3 style="color: var(--success);"><i class="fas fa-check-circle"></i> Imefanikiwa!</h3>
+                <p>Maombi yako yamefanikiwa. Tafadhali ingiza namba ya siri kwenye simu yako kuhakiki taarifa zako.</p>
+                <button class="pay-btn" onclick="closeModal()" style="background: var(--primary); border: 1px solid var(--accent);">Funga</button>
+            </div>
+        </div>
     </div>
 
+    <a href="https://wa.me/255750050767?text=Habari,%20nahitaji%20msaada%20kwenye%20app%20ya%20Bongo%20Vibes" class="support-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script>
-        function toggleMenu() {
-            const drawer = document.getElementById('sideDrawer');
-            const overlay = document.getElementById('overlay');
-            drawer.classList.toggle('open');
-            overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
+        // --- 1. LOADING LOGIC ---
+        // Kaka ulisema sekunde 1000 au 60, nimeweka 5 (5000ms) kwa demo ili uone inafanya kazi.
+        // KUBADILI: Badilisha 5000 kuwa 60000 (kwa dakika 1) au unavyotaka.
+        const loadingTime = 5000; 
+
+        window.onload = function() {
+            const progress = document.getElementById('progress');
+            const loader = document.getElementById('loader');
+            const mainContent = document.querySelector('main'); // Select first main just to init
+            
+            // Animation bar
+            setTimeout(() => { progress.style.width = "50%"; }, 500);
+            setTimeout(() => { progress.style.width = "80%"; }, 2000);
+            setTimeout(() => { progress.style.width = "100%"; }, loadingTime - 500);
+
+            // Hide loader show content
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    document.getElementById('view-sms').style.display = 'block'; // Show SMS as default
+                }, 1000);
+            }, loadingTime);
+
+            // Load Initial SMS
+            filterSMS('mapenzi');
+        };
+
+        // --- 2. NAVIGATION ---
+        function switchView(viewId, btnElement) {
+            // Hide all mains
+            document.querySelectorAll('main').forEach(el => el.style.display = 'none');
+            // Show selected
+            document.getElementById('view-' + viewId).style.display = 'block';
+            
+            // Update active icon
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            btnElement.classList.add('active');
         }
 
-        function toggleRead(id) {
-            const text = document.getElementById(id);
-            text.style.display = (text.style.display === 'block') ? 'none' : 'block';
+        // --- 3. SMS LOGIC ---
+        const smsDatabase = {
+            'mapenzi': [
+                "Mapenzi ni safari ndefu, lakini nikiwa na wewe safari inakuwa fupi kama hatua mbili.",
+                "Moyo wangu ni bustani, na wewe ndiye ua pekee linalochanua katikati yake. Nakupenda.",
+                "Usiku unapoingia, nyota huangaza, lakini kwangu mwangaza wangu ni tabasamu lako."
+            ],
+            'tech': [
+                "Je wajua? AI inazidi kuchukua nafasi kubwa katika maisha yetu ya kila siku.",
+                "Siri ya kufanikiwa mtandaoni ni kuwa na content nzuri na consistency. Usikate tamaa.",
+                "Bongo Vibes App imetengenezwa kwa HTML5 na inaweza kufanya kazi kwenye Android na iOS."
+            ],
+            'mahaba': [
+                "Baby, joto lako ndio blanketi langu nyakati za baridi.",
+                "Kila nikikuwaza, nahisi dunia imesimama kwa ajili yetu wawili tu.",
+                "Hata nikipata kila kitu duniani, bila wewe bado nitakuwa maskini wa moyo."
+            ],
+            'vichekesho': [
+                "Mlevi kaanguka kwenye mtaro, akaokota simu akapiga polisi: 'Njooni fasta, nimepata ajali nikiwa naendesha mtaro!'",
+                "Mwarabu kakutwa anakula nguruwe, alipoulizwa akasema: 'Huyu samaki ana mbwembwe sana, kavaa koti la ngozi!'"
+            ]
+        };
+
+        function filterSMS(category) {
+            const container = document.getElementById('sms-container');
+            container.innerHTML = ''; // Clear current
+            
+            // Update tabs style
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active'); // Note: this works if clicked, needs adjustment for auto-load but okay for demo
+
+            const messages = smsDatabase[category] || smsDatabase['mapenzi'];
+            
+            messages.forEach(msg => {
+                const card = document.createElement('div');
+                card.className = 'sms-card';
+                card.innerHTML = `
+                    <p class="sms-text">${msg}</p>
+                    <div class="sms-actions">
+                        <button class="action-btn copy-btn" onclick="copyText('${msg}')">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
+                        <button class="action-btn whatsapp-btn" onclick="shareWhatsApp('${msg}')">
+                            <i class="fab fa-whatsapp"></i> <i class="fas fa-male"></i> Send
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
-        function toggleDarkMode() {
-            document.getElementById('mainBody').classList.toggle('light-mode');
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Ujumbe umecopiwa!");
+            });
         }
 
-        // Kutengeneza list ya Channel 50
-        const chContainer = document.getElementById('channels');
-        for (let i = 1; i <= 50; i++) {
-            const div = document.createElement('div');
-            div.style.background = 'var(--bg-card)';
-            div.style.padding = '10px';
-            div.style.borderRadius = '8px';
-            div.style.textAlign = 'center';
-            div.style.fontSize = '10px';
-            div.style.border = '1px solid #222';
-            div.innerHTML = `<img src="https://picsum.photos/seed/${i}/100" style="width:100%; border-radius:5px;"><br>Channel ${i}`;
-            chContainer.appendChild(div);
+        function shareWhatsApp(text) {
+            // Icon ya kijana inapeleka hapa
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
         }
+
+        // --- 4. SPIN GAME LOGIC ---
+        function spinWheel() {
+            const wheel = document.getElementById('wheel');
+            const resultText = document.getElementById('spin-result');
+            
+            // Reset result
+            resultText.innerText = "";
+            
+            // Calculate random deg (min 1080 deg for 3 spins)
+            const deg = 1080 + Math.floor(Math.random() * 360);
+            
+            wheel.style.transform = `rotate(${deg}deg)`;
+            
+            setTimeout(() => {
+                resultText.innerText = "HONGERA! UMEJARIBU VIZURI!";
+            }, 4000); // 4 seconds matches css transition
+        }
+
+        // --- 5. PAYMENT / TV LOGIC ---
+        let currentStep = 1;
+        
+        function openPayment(channelName) {
+            document.getElementById('selected-channel').innerText = channelName;
+            document.getElementById('payment-modal').style.display = 'flex';
+            showStep(1);
+        }
+
+        function closeModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + step).classList.add('active');
+            currentStep = step;
+        }
+
+        function nextStep(step) {
+            if (step === 3) {
+                // Update amount based on selection
+                const price = document.getElementById('package-select').value;
+                document.getElementById('amount-input').value = price;
+            }
+            showStep(step);
+        }
+
+        function processPayment() {
+            showStep(4); // Show Spinner
+            // Simulate processing time 
+            // Kaka ulisema inazunguka kama 100, hapa nimeweka sekunde chache
+            setTimeout(() => {
+                showStep(5); // Success message
+            }, 4000);
+        }
+
+        // --- 6. LANGUAGE / SETTINGS (Placeholder) ---
+        function toggleLanguage() {
+            alert("Kubadilisha Lugha: Kiswahili (Chaguo-msingi) / English");
+        }
+
     </script>
 </body>
-          </html>
+         </html>
