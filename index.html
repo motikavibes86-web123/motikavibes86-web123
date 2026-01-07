@@ -1,539 +1,481 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bongo Vibes App</title>
+    <title>Bongo Vibes - App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CSS STYLES --- */
+        /* --- GENERAL STYLES --- */
         :root {
-            --primary: #0f172a; /* Dark Background */
-            --secondary: #1e293b; /* Card Background */
-            --accent: #fbbf24; /* Gold/Yellow */
-            --accent-blue: #3b82f6; /* Blue */
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --gold: #fbbf24;
+            --blue: #3b82f6;
             --text: #ffffff;
             --gray: #94a3b8;
-            --success: #22c55e;
-            --danger: #ef4444;
+            --green: #22c55e;
+            --red: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--primary); color: var(--text); overflow-x: hidden; height: 100vh; display: flex; flex-direction: column; }
+        body { background-color: var(--bg-dark); color: var(--text); overflow-x: hidden; min-height: 100vh; }
 
-        /* --- 1. LOADING SCREEN (NEW LOGO) --- */
-        #loader {
+        /* --- 1. LOADING SCREEN --- */
+        #loader-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999; transition: opacity 1s ease;
+            background: var(--bg-dark); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
         }
-        .main-logo {
-            width: 180px; /* Adjust size as needed */
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
-        }
-        .loader-bar { width: 70%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; margin-top: 20px; }
-        .loader-progress { width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--accent)); transition: width 0.5s; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .logo-anim { width: 150px; animation: heartbeat 1.5s infinite; margin-bottom: 20px; }
+        .loading-bar-container { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .loading-bar { width: 0%; height: 100%; background: var(--gold); transition: width 0.3s; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* --- HEADER --- */
-        header { padding: 15px 20px; background: var(--secondary); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .app-title { font-size: 1.3rem; font-weight: bold; background: linear-gradient(90deg, #fff, var(--accent), var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-icons i { font-size: 1.2rem; margin-left: 15px; color: var(--gray); cursor: pointer; }
-
-        /* --- MAIN CONTENT --- */
-        main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 80px; display: none; }
-        .section-title { font-size: 1.1rem; margin-bottom: 15px; color: var(--gray); border-left: 4px solid var(--accent); padding-left: 10px; }
-
-        /* --- SPIN GAME (REVISED) --- */
-        .balance-card {
-            background: linear-gradient(135deg, var(--secondary), #1e3a8a);
-            padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
-        }
-        .balance-title { color: var(--gray); font-size: 0.9rem; margin-bottom: 5px; }
-        .balance-amount { font-size: 2rem; font-weight: bold; color: var(--accent); }
+        /* --- 2. AUTH & OTP SCREENS --- */
+        .auth-container { padding: 30px 20px; max-width: 400px; margin: 0 auto; display: none; min-height: 100vh; flex-direction: column; justify-content: center; }
+        .auth-header { text-align: center; margin-bottom: 30px; }
+        .auth-title { font-size: 1.8rem; font-weight: bold; color: var(--gold); margin-bottom: 10px; }
         
-        .withdraw-btn {
-            background: var(--success); color: white; border: none; padding: 10px 20px;
-            border-radius: 25px; font-weight: bold; margin-top: 15px; cursor: pointer;
-            display: flex; align-items: center; gap: 8px; margin-left: auto; margin-right: auto;
-        }
-        .withdraw-btn.locked { background: var(--gray); cursor: not-allowed; opacity: 0.7; }
-        .lock-icon { font-size: 1rem; }
-
-        .wheel-container { position: relative; width: 280px; height: 280px; margin: 0 auto 30px; }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: var(--text); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
-        .wheel {
-            width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--secondary);
-            background: conic-gradient(
-                #ef4444 0deg 60deg,   /* Tsh 500 */
-                #3b82f6 60deg 120deg, /* Tsh 1000 */
-                #22c55e 120deg 180deg,/* Tsh 500 */
-                #eab308 180deg 240deg,/* Jaribu Tena */
-                #a855f7 240deg 300deg,/* Tsh 5000 */
-                #f97316 300deg 360deg /* Tsh 500 */
-            );
-            transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); position: relative;
-        }
-        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: var(--secondary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; color: var(--accent); border: 4px solid var(--primary); z-index: 5; }
-        .spin-btn { background: linear-gradient(90deg, var(--accent), #f59e0b); color: var(--primary); border: none; padding: 15px 50px; font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; display: block; margin: 0 auto; box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
-
-        /* --- NETWORKS GRID (Kwa Malipo na Kutoa Pesa) --- */
-        .networks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
-        .network-option {
-            background: var(--secondary); border: 2px solid transparent; border-radius: 12px;
-            padding: 10px; cursor: pointer; transition: all 0.2s; display: flex;
-            align-items: center; justify-content: center; height: 70px;
-        }
-        .network-option.selected { border-color: var(--accent); background: rgba(251, 191, 36, 0.1); }
-        .network-logo { max-width: 80%; max-height: 50px; object-fit: contain; }
-
-        /* --- GENERIC MODAL & STEPS --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: var(--secondary); width: 100%; max-width: 380px; border-radius: 20px; padding: 30px 25px; text-align: center; position: relative; border: 1px solid rgba(255,255,255,0.1); }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: var(--gray); cursor: pointer; }
-        .step-container { display: none; }
-        .step-container.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .modal h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.3rem; }
-        .modal p { color: var(--gray); margin-bottom: 25px; line-height: 1.5; }
-        .form-input, .form-select { width: 100%; padding: 15px; margin-bottom: 20px; background: var(--primary); border: 1px solid var(--gray); color: white; border-radius: 10px; font-size: 1rem; outline: none; }
-        .form-input:focus { border-color: var(--accent); }
-        .action-btn-full { background: var(--accent-blue); color: white; width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .action-btn-full:hover { background: #2563eb; }
+        .input-group { margin-bottom: 20px; }
+        .input-label { display: block; color: var(--gray); margin-bottom: 8px; font-size: 0.9rem; }
+        .phone-input-wrapper { display: flex; gap: 10px; }
+        .country-select { background: var(--bg-card); color: white; border: 1px solid var(--gray); padding: 12px; border-radius: 8px; font-size: 1.2rem; }
+        .main-input { width: 100%; background: var(--bg-card); border: 1px solid var(--gray); padding: 12px; border-radius: 8px; color: white; outline: none; transition: border 0.3s; }
+        .main-input:focus { border-color: var(--gold); }
         
-        .spinner-large { border: 5px solid rgba(255, 255, 255, 0.1); border-left: 5px solid var(--accent); border-radius: 50%; width: 70px; height: 70px; animation: spin 1s linear infinite; margin: 30px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- BOTTOM NAV & OTHER STYLES --- */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--secondary); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; transition: color 0.2s; }
-        .nav-item i { font-size: 1.3rem; margin-bottom: 5px; }
-        .nav-item.active { color: var(--accent); }
-        .support-float { position: fixed; bottom: 90px; right: 20px; background: #25D366; color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 90; text-decoration: none; }
+        .btn-primary { width: 100%; background: linear-gradient(90deg, var(--gold), #f59e0b); color: var(--bg-dark); font-weight: bold; padding: 15px; border: none; border-radius: 30px; font-size: 1rem; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); }
         
-        /* Styles za SMS, Simulizi, TV (Zilizobaki) */
-        .channel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .channel-card { background: var(--secondary); border-radius: 12px; padding: 10px; text-align: center; position: relative; cursor: pointer; transition: transform 0.2s; }
-        .channel-card:active { transform: scale(0.98); }
-        .channel-thumb { width: 100%; height: 90px; background: #000; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; margin-bottom: 10px; position: relative; font-size: 1.2rem;}
-        .lock-icon-tv { position: absolute; top: 8px; right: 8px; background: var(--danger); color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; display: flex; align-items: center; gap: 4px; }
-        .category-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .tab-btn { padding: 8px 18px; background: var(--secondary); border: 1px solid var(--gray); border-radius: 25px; color: var(--text); white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
-        .tab-btn.active { background: var(--accent); color: var(--primary); border-color: var(--accent); font-weight: bold; }
-        .sms-card { background: var(--secondary); padding: 18px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.05); }
-        .sms-text { font-size: 1rem; line-height: 1.6; margin-bottom: 15px; color: #e2e8f0; }
-        .sms-actions { display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
-        .action-btn { background: none; border: none; color: var(--gray); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.95rem; padding: 5px 10px; border-radius: 8px; transition: background 0.2s; }
-        .action-btn:hover { background: rgba(255,255,255,0.05); }
-        .whatsapp-btn { color: #25D366; } .copy-btn { color: var(--accent); }
-        .audio-player { background: var(--secondary); border-radius: 15px; overflow: hidden; }
-        .audio-cover { width: 100%; height: 220px; background-size: cover; background-position: center; }
-        .audio-controls { padding: 25px; }
-        audio { width: 100%; margin-top: 15px; }
+        /* OTP Inputs */
+        .otp-grid { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+        .otp-box { width: 45px; height: 50px; background: var(--bg-card); border: 1px solid var(--gray); border-radius: 8px; color: white; font-size: 1.5rem; text-align: center; outline: none; }
+        .otp-box:focus { border-color: var(--gold); transform: translateY(-2px); }
+        .timer-text { text-align: center; color: var(--gray); font-size: 0.9rem; margin-top: 15px; }
+
+        /* --- 3. DASHBOARD --- */
+        #dashboard-screen { display: none; padding-bottom: 80px; }
+        header { padding: 15px 20px; background: var(--bg-card); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Spin Game Styles */
+        .balance-card { margin: 20px; background: linear-gradient(135deg, #1e3a8a, #0f172a); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .balance-label { color: var(--gray); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-value { font-size: 2.5rem; font-weight: 800; color: var(--gold); margin: 10px 0; text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3); }
+        
+        .wheel-wrap { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--bg-card); position: relative; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); background: conic-gradient(#ef4444 0deg 60deg, #3b82f6 60deg 120deg, #22c55e 120deg 180deg, #eab308 180deg 240deg, #a855f7 240deg 300deg, #f97316 300deg 360deg); }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid white; z-index: 10; }
+        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: var(--bg-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 5; border: 3px solid white; font-weight: bold; }
+        
+        /* Content Grids (SMS, TV) */
+        .section-header { padding: 0 20px; margin-top: 30px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title { font-size: 1.2rem; font-weight: bold; border-left: 4px solid var(--gold); padding-left: 10px; }
+        
+        .sms-scroll { height: 300px; overflow-y: auto; padding: 0 20px; }
+        .sms-item { background: var(--bg-card); padding: 15px; margin-bottom: 10px; border-radius: 10px; border-left: 3px solid var(--blue); }
+        .sms-body { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 10px; }
+        .sms-actions { display: flex; justify-content: flex-end; gap: 10px; }
+        .action-icon { color: var(--gray); font-size: 1.1rem; cursor: pointer; padding: 5px; }
+        .action-icon.copy { color: var(--gold); }
+        .action-icon.whatsapp { color: #25D366; }
+
+        .tv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px; }
+        .tv-item { background: var(--bg-card); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
+        .tv-thumb { height: 60px; background: #000; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; color: var(--gray); }
+        
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--bg-card); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 90; }
+        .nav-btn { color: var(--gray); text-align: center; font-size: 0.7rem; cursor: pointer; }
+        .nav-btn i { font-size: 1.3rem; margin-bottom: 4px; display: block; }
+        .nav-btn.active { color: var(--gold); }
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-box { background: var(--bg-card); width: 100%; max-width: 350px; border-radius: 20px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .network-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .network-opt { border: 2px solid var(--gray); padding: 10px; border-radius: 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .network-opt.selected { border-color: var(--gold); background: rgba(251, 191, 36, 0.1); }
+        .network-opt img { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 5px; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <img src="image_6.png" alt="Bongo Vibes Logo" class="main-logo">
-        <div class="loader-bar">
-            <div class="loader-progress" id="progress"></div>
+    <div id="loader-screen">
+        <img src="image_6.png" alt="Bongo Vibes" class="logo-anim"> 
+        <h2 style="color: var(--gold); margin-bottom: 10px;">BONGO VIBES</h2>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="load-bar"></div>
         </div>
-        <p style="color: var(--gray); margin-top: 15px; font-size: 0.9rem; letter-spacing: 1px;">Inapakua data...</p>
+        <p id="load-text" style="color: var(--gray); margin-top: 10px; font-size: 0.8rem;">Inaandaa data...</p>
     </div>
 
-    <header>
-        <div class="app-title">Bongo Vibes</div>
-        <div class="header-icons">
-            <i class="fas fa-language" onclick="alert('Lugha: Kiswahili')"></i>
-            <i class="fas fa-cog" onclick="alert('Mipangilio')"></i>
+    <div id="register-screen" class="auth-container">
+        <div class="auth-header">
+            <div class="auth-title">Fungua Akaunti</div>
+            <p style="color: var(--gray);">Jiunge na Bongo Vibes leo</p>
         </div>
-    </header>
-
-    <main id="view-spin">
-        <div class="section-title">Cheza Ushinde Pesa</div>
         
-        <div class="balance-card">
-            <div class="balance-title">Baki ya Vocha Yako</div>
-            <div class="balance-amount" id="voucher-balance">Tsh 0</div>
-            <button class="withdraw-btn locked" id="withdraw-btn" onclick="initiateWithdraw()">
-                <i class="fas fa-lock lock-icon" id="withdraw-icon"></i>
-                <span id="withdraw-text">Fikisha Tsh 2,000 Kutoa</span>
-            </button>
+        <div class="input-group">
+            <label class="input-label">Jina Kamili</label>
+            <input type="text" id="reg-name" class="main-input" placeholder="Weka jina lako">
         </div>
 
-        <div class="wheel-container">
-            <div class="pointer"></div>
-            <div class="wheel" id="wheel"></div>
-            <div class="wheel-center"><i class="fas fa-gift fa-2x"></i></div>
-        </div>
-        <button class="spin-btn" onclick="spinWheel()" id="spin-button">ZUNGUSHA SASA</button>
-        <p id="spin-result" style="text-align: center; margin-top: 20px; color: var(--accent); font-weight: bold; height: 25px;"></p>
-    </main>
-
-    <main id="view-tv">
-        <div class="section-title">Chaneli za Live (VIP)</div>
-        <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 20px;">Lipia kifurushi kutazama chaneli hizi zenye ubora wa HD.</p>
-        <div class="channel-grid">
-            <div class="channel-card" onclick="openTVPayment('ITV Tanzania')">
-                <div class="channel-thumb" style="background: #fcd34d; color: black;">ITV</div>
-                <div class="channel-name">ITV Live</div>
-                <div class="lock-icon-tv"><i class="fas fa-lock"></i> VIP</div>
-            </div>
-            <div class="channel-card" onclick="openTVPayment('Wasafi TV')">
-                <div class="channel-thumb" style="background: #3b82f6;">WCB</div>
-                <div class="channel-name">Wasafi TV</div>
-                <div class="lock-icon-tv"><i class="fas fa-lock"></i> VIP</div>
+        <div class="input-group">
+            <label class="input-label">Namba ya Simu</label>
+            <div class="phone-input-wrapper">
+                <select class="country-select" id="reg-country">
+                    <option value="+255">🇹🇿 +255</option>
+                    <option value="+254">🇰🇪 +254</option>
+                    <option value="+256">🇺🇬 +256</option>
+                    <option value="+250">🇷🇼 +250</option>
+                    <option value="+27">🇿🇦 +27</option>
+                </select>
+                <input type="tel" id="reg-phone" class="main-input" placeholder="712345678">
             </div>
         </div>
-    </main>
 
-    <main id="view-sms">
-        <div class="section-title">SMS Kali za Kusambaza</div>
-        <div class="category-tabs">
-            <button class="tab-btn active" onclick="filterSMS('mapenzi', this)">Mapenzi</button>
-            <button class="tab-btn" onclick="filterSMS('tech', this)">Tech & Info</button>
-            <button class="tab-btn" onclick="filterSMS('mahaba', this)">Mahaba Moto</button>
+        <div class="input-group">
+            <label class="input-label">Aliyekualika (Refferal)</label>
+            <input type="text" id="reg-ref" class="main-input" placeholder="Weka namba ya aliyekualika (Kama ipo)">
         </div>
-        <div id="sms-container"></div>
-    </main>
 
-    <main id="view-simulizi">
-        <div class="section-title">Simulizi Mpya</div>
-        <div class="audio-player">
-            <div class="audio-cover" style="background-image: url('https://source.unsplash.com/random/800x400?story');"></div>
-            <div class="audio-controls">
-                <div style="font-size: 1.3rem; font-weight: bold; margin-bottom: 5px;">Chozi la Mamba - Sehemu ya 1</div>
-                <div style="color: var(--gray); margin-bottom: 15px;">Mtunzi: Hassan Bongo</div>
-                <audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
+        <div class="input-group">
+            <label class="input-label">Nenosiri (Password)</label>
+            <input type="password" id="reg-pass" class="main-input" placeholder="Wekasiri la siri">
+        </div>
+
+        <button class="btn-primary" onclick="validateAndRegister()">Jisajili Sasa</button>
+    </div>
+
+    <div id="otp-screen" class="auth-container">
+        <div class="auth-header">
+            <i class="fas fa-shield-alt fa-3x" style="color: var(--gold); margin-bottom: 15px;"></i>
+            <div class="auth-title">Thibitisha Namba</div>
+            <p style="color: var(--gray);">Tumetuma kodi ya tarakimu 6 kwenda <br> <span id="otp-phone-display" style="color: white;"></span></p>
+        </div>
+
+        <div class="otp-grid">
+            <input type="number" class="otp-box" oninput="moveFocus(this, 1)">
+            <input type="number" class="otp-box" oninput="moveFocus(this, 2)">
+            <input type="number" class="otp-box" oninput="moveFocus(this, 3)">
+            <input type="number" class="otp-box" oninput="moveFocus(this, 4)">
+            <input type="number" class="otp-box" oninput="moveFocus(this, 5)">
+            <input type="number" class="otp-box" oninput="moveFocus(this, 6)">
+        </div>
+
+        <button class="btn-primary" onclick="verifyOTP()">Thibitisha</button>
+        
+        <div class="timer-text">
+            Tuma tena baada ya: <span id="otp-timer" style="color: var(--gold); font-weight: bold;">60</span>s
+        </div>
+    </div>
+
+    <div id="dashboard-screen">
+        <header>
+            <div style="font-weight: bold; font-size: 1.2rem;">Bongo Vibes <span style="color: var(--gold);">App</span></div>
+            <div style="display: flex; gap: 15px;">
+                <i class="fas fa-bell"></i>
+                <i class="fas fa-user-circle" onclick="logout()"></i>
             </div>
-        </div>
-    </main>
+        </header>
 
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchView('spin', this)">
-            <i class="fas fa-dice"></i><span>Spin & Win</span>
+        <div id="tab-home" class="tab-content">
+            <div class="balance-card">
+                <div class="balance-label">Salio Lako</div>
+                <div class="balance-value" id="display-balance">Tsh 0</div>
+                <button onclick="openWithdrawModal()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; cursor: pointer;">
+                    <i class="fas fa-wallet"></i> Toa Pesa
+                </button>
+            </div>
+
+            <div class="wheel-wrap">
+                <div class="pointer"></div>
+                <div class="wheel" id="wheel"></div>
+                <div class="wheel-center">SPIN</div>
+            </div>
+            <button class="btn-primary" style="width: 80%; margin: 0 auto; display: block;" onclick="spinWheel()" id="spin-btn">ZUNGUSHA (Free)</button>
         </div>
-        <div class="nav-item" onclick="switchView('tv', this)">
-            <i class="fas fa-tv"></i><span>TV Live</span>
+
+        <div id="tab-sms" class="tab-content hidden">
+            <div class="section-header">
+                <div class="section-title">SMS Kali (100+)</div>
+            </div>
+            <div class="sms-scroll" id="sms-container">
+                </div>
         </div>
-        <div class="nav-item" onclick="switchView('sms', this)">
-            <i class="fas fa-comment-alt"></i><span>SMS</span>
+
+        <div id="tab-tv" class="tab-content hidden">
+            <div class="section-header">
+                <div class="section-title">Channels (VIP)</div>
+            </div>
+            <div class="tv-grid" id="tv-container">
+                </div>
         </div>
-        <div class="nav-item" onclick="switchView('simulizi', this)">
-            <i class="fas fa-headphones"></i><span>Simulizi</span>
+    </div>
+
+    <nav class="bottom-nav" id="main-nav" style="display: none;">
+        <div class="nav-btn active" onclick="switchTab('home', this)">
+            <i class="fas fa-gamepad"></i> Game
+        </div>
+        <div class="nav-btn" onclick="switchTab('sms', this)">
+            <i class="fas fa-comment-dots"></i> SMS
+        </div>
+        <div class="nav-btn" onclick="switchTab('tv', this)">
+            <i class="fas fa-tv"></i> TV Live
         </div>
     </nav>
 
-    <div id="tv-payment-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('tv-payment-modal')">&times;</span>
-            
-            <div id="tv-step-1" class="step-container active">
-                <h3><i class="fas fa-crown"></i> Kifurushi cha VIP</h3>
-                <p>Chagua muda wa kutazama <span id="selected-channel-name" style="color:var(--accent);"></span></p>
-                <select class="form-select" id="tv-package-select">
-                    <option value="500">Siku 1 - Tsh 500</option>
-                    <option value="2500">Wiki 1 - Tsh 2,500</option>
-                </select>
-                <button class="action-btn-full" onclick="tvNextStep(2)">Endelea</button>
-            </div>
-
-            <div id="tv-step-2" class="step-container">
-                <h3>Chagua Mtandao Wako</h3>
-                <p>Gusa mtandao unaotumia kulipia</p>
-                <div class="networks-grid">
-                    <div class="network-option" onclick="selectTvNetwork(this, 'Vodacom')">
-                        <img src="image_7.png" alt="Vodacom" class="network-logo" style="object-position: 0 0;">
-                    </div>
-                    <div class="network-option" onclick="selectTvNetwork(this, 'Airtel')">
-                        <img src="image_7.png" alt="Airtel" class="network-logo" style="object-position: 100% 100%;">
-                    </div>
-                    <div class="network-option" onclick="selectTvNetwork(this, 'Halotel')">
-                        <img src="image_7.png" alt="Halotel" class="network-logo" style="object-position: 100% 0;">
-                    </div>
-                    <div class="network-option" onclick="selectTvNetwork(this, 'YasMixx')">
-                         <img src="image_7.png" alt="YasMixx" class="network-logo" style="object-position: 0 100%;">
-                    </div>
-                </div>
-                <input type="hidden" id="selected-tv-network">
-                <button class="action-btn-full" id="tv-net-btn" disabled onclick="tvNextStep(3)">Endelea</button>
-            </div>
-
-            <div id="tv-step-3" class="step-container">
-                <h3>Ingiza Namba ya <span id="tv-network-name" style="color:var(--accent);"></span></h3>
-                <input type="tel" class="form-input" placeholder="Mfano: 0750050767">
-                <p>Kiasi: <strong style="color:var(--accent);" id="tv-pay-amount">Isomeke hapa</strong></p>
-                <button class="action-btn-full" style="background: var(--success);" onclick="processTvPayment()">Lipa Sasa</button>
-            </div>
-
-            <div id="tv-step-4" class="step-container">
-                <h3>Inachakata Malipo...</h3>
-                <div class="spinner-large"></div>
-                <p>Tafadhali subiri, usifunge app hii. Tunawasiliana na mtandao wako.</p>
-            </div>
-        </div>
-    </div>
-
     <div id="withdraw-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('withdraw-modal')">&times;</span>
+        <div class="modal-box">
+            <span style="position: absolute; right: 20px; top: 20px; font-size: 1.5rem; cursor: pointer;" onclick="document.getElementById('withdraw-modal').style.display='none'">&times;</span>
             
-            <div id="wd-step-1" class="step-container active">
-                <h3>Toa Vocha Yako</h3>
-                <p>Chagua mtandao unataka kupokea vocha ya <strong>Tsh <span id="wd-amount-display"></span></strong></p>
-                <div class="networks-grid">
-                    <div class="network-option" onclick="selectWdNetwork(this, 'Vodacom')">
-                        <img src="image_7.png" alt="Vodacom" class="network-logo" style="object-position: 0 0;">
-                    </div>
-                     <div class="network-option" onclick="selectWdNetwork(this, 'Halotel')">
-                        <img src="image_7.png" alt="Halotel" class="network-logo" style="object-position: 100% 0;">
-                    </div>
-                     <div class="network-option" onclick="selectWdNetwork(this, 'YasMixx')">
-                        <img src="image_7.png" alt="YasMixx" class="network-logo" style="object-position: 0 100%;">
-                    </div>
+            <div id="wd-step-1">
+                <h3 style="color: var(--gold); margin-bottom: 10px;">Chagua Mtandao</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 15px;">Pesa itatumwa kwenye namba uliyosajili.</p>
+                <div class="network-grid">
+                    <div class="network-opt" onclick="selectNet(this, 'Vodacom')"><img src="image_7.png" alt="Voda">Vodacom</div>
+                    <div class="network-opt" onclick="selectNet(this, 'Airtel')"><img src="image_7.png" alt="Airtel">Airtel</div>
+                    <div class="network-opt" onclick="selectNet(this, 'Tigo')"><img src="image_7.png" alt="Tigo">Tigo</div>
+                    <div class="network-opt" onclick="selectNet(this, 'Halotel')"><img src="image_7.png" alt="Halo">Halotel</div>
                 </div>
-                <input type="hidden" id="selected-wd-network">
-                <button class="action-btn-full" id="wd-net-btn" disabled onclick="wdNextStep(2)">Thibitisha Mtandao</button>
+                <button class="btn-primary" id="wd-btn-1" disabled onclick="wdNextStep(2)">Endelea</button>
             </div>
 
-            <div id="wd-step-2" class="step-container">
-                <h3><i class="fas fa-hourglass-half spin-anim"></i> Tunahakiki Taarifa</h3>
-                <div class="spinner-large" style="border-color: rgba(251, 191, 36, 0.2); border-left-color: var(--accent);"></div>
-                <p style="font-size: 1rem;">Tafadhali subiri. Mchakato huu wa kuhakiki ushindi wako na kuandaa vocha unaweza kuchukua hadi <strong>saa 1 (dakika 60)</strong>.</p>
-                <p style="font-size: 0.9rem; color: var(--gray);">Unaweza kuendelea kutumia app, tutakujulisha ikikamilika.</p>
+            <div id="wd-step-2" class="hidden">
+                <i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--gold); margin: 20px 0;"></i>
+                <h3>Inahakiki Taarifa...</h3>
+                <p>Tafadhali subiri wakati mitambo inaangalia uhalali wa ushindi wako.</p>
             </div>
 
-            <div id="wd-step-3" class="step-container">
-                <i class="fas fa-check-circle fa-4x" style="color: var(--success); margin-bottom: 20px;"></i>
-                <h3>Imekamilika!</h3>
-                <p style="font-size: 1.1rem; line-height: 1.6;">Pesa yako imetumwa kikamilifu katika muda wa mapumziko. Angalia SMS zako baada ya muda mfupi.</p>
-                <button class="action-btn-full" onclick="finishWithdraw()">Sawa, Asante</button>
+            <div id="wd-step-3" class="hidden">
+                <i class="fas fa-check-circle fa-4x" style="color: var(--green); margin-bottom: 15px;"></i>
+                <h3>Imepokelewa!</h3>
+                <p>Ombi lako limetumwa. Pesa itaingia ndani ya muda mfupi baada ya uhakiki kukamilika.</p>
+                <button class="btn-primary" onclick="document.getElementById('withdraw-modal').style.display='none'">Funga</button>
             </div>
         </div>
     </div>
-
-    <a href="https://wa.me/255750050767" class="support-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
     <script>
-        // --- 1. LOADING & INIT ---
+        // --- 1. SYSTEM LOGIC & INIT ---
+        let userBalance = 0;
+        let registeredPhone = localStorage.getItem('bv_phone');
+        
         window.onload = function() {
-            // Loading animation (5 seconds demo)
-            setTimeout(() => document.getElementById('progress').style.width = "60%", 1500);
-            setTimeout(() => document.getElementById('progress').style.width = "100%", 4500);
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    // Show SPIN as default view
-                    switchView('spin', document.querySelector('.nav-item.active')); 
-                }, 800);
-            }, 5000);
+            // Loading Animation Simulation
+            let bar = document.getElementById('load-bar');
+            let text = document.getElementById('load-text');
+            setTimeout(() => { bar.style.width = "40%"; }, 500);
+            setTimeout(() => { bar.style.width = "80%"; text.innerText = "Inahakiki mtandao..."; }, 1500);
+            setTimeout(() => { 
+                bar.style.width = "100%"; 
+                document.getElementById('loader-screen').style.display = 'none';
+                checkLoginStatus();
+            }, 3000);
 
-            // Load initial Data
-            filterSMS('mapenzi', document.querySelector('.tab-btn.active'));
-            updateBalanceUI();
+            // Generate Content (100 SMS & Channels)
+            generateContent();
         };
 
-        // --- 2. NAVIGATION ---
-        function switchView(viewId, btn) {
-            document.querySelectorAll('main').forEach(el => el.style.display = 'none');
-            document.getElementById('view-' + viewId).style.display = 'block';
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-        }
-        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
-
-        // --- 3. SPIN GAME LOGIC (NEW) ---
-        let voucherBalance = 0;
-        const WITHDRAW_LIMIT = 2000;
-        let canSpin = true;
-
-        // Prizes mapped to wheel segments (6 segments)
-        const prizes = [
-            { text: "Tsh 500", value: 500, color: "#ef4444" },
-            { text: "Tsh 1000", value: 1000, color: "#3b82f6" },
-            { text: "Tsh 500", value: 500, color: "#22c55e" },
-            { text: "Jaribu Tena", value: 0, color: "#eab308" },
-            { text: "Tsh 5000", value: 5000, color: "#a855f7" },
-            { text: "Tsh 500", value: 500, color: "#f97316" }
-        ];
-
-        function updateBalanceUI() {
-            const balanceEl = document.getElementById('voucher-balance');
-            const btn = document.getElementById('withdraw-btn');
-            const icon = document.getElementById('withdraw-icon');
-            const text = document.getElementById('withdraw-text');
-
-            balanceEl.innerText = `Tsh ${voucherBalance.toLocaleString()}`;
-
-            if (voucherBalance >= WITHDRAW_LIMIT) {
-                btn.classList.remove('locked');
-                btn.style.background = 'var(--success)';
-                icon.className = 'fas fa-unlock';
-                text.innerText = 'Toa Vocha Sasa';
+        function checkLoginStatus() {
+            if (registeredPhone) {
+                // User already registered
+                showDashboard();
             } else {
-                btn.classList.add('locked');
-                icon.className = 'fas fa-lock';
-                text.innerText = `Fikisha Tsh ${WITHDRAW_LIMIT.toLocaleString()} Kutoa`;
+                // New User
+                document.getElementById('register-screen').style.display = 'flex';
             }
         }
 
-        function spinWheel() {
-            if (!canSpin) return;
-            canSpin = false;
-            document.getElementById('spin-button').disabled = true;
-            document.getElementById('spin-result').innerText = "";
+        // --- 2. REGISTRATION LOGIC ---
+        function validateAndRegister() {
+            const name = document.getElementById('reg-name').value;
+            const country = document.getElementById('reg-country').value;
+            const phone = document.getElementById('reg-phone').value;
+            const pass = document.getElementById('reg-pass').value;
 
-            // Random spin calculation
-            const rounds = 5 + Math.floor(Math.random() * 3); // 5-7 rounds
-            const degrees = rounds * 360 + Math.floor(Math.random() * 360);
+            if (name.length < 3 || phone.length < 9 || pass.length < 4) {
+                alert("Tafadhali jaza taarifa zote kwa usahihi.");
+                return;
+            }
+
+            // Combine Country code + Phone
+            const fullPhone = country + phone;
+            
+            // Check if already exists (Simulation)
+            if (localStorage.getItem('bv_phone_exist') === fullPhone) {
+                alert("Namba hii tayari imesajiliwa! Tafadhali login.");
+                return; // In real app, redirect to login
+            }
+
+            // Proceed to OTP
+            localStorage.setItem('temp_phone', fullPhone);
+            localStorage.setItem('temp_name', name);
+            
+            document.getElementById('register-screen').style.display = 'none';
+            document.getElementById('otp-screen').style.display = 'flex';
+            document.getElementById('otp-phone-display').innerText = fullPhone;
+            startOtpTimer();
+        }
+
+        // --- 3. OTP LOGIC ---
+        function moveFocus(elem, index) {
+            if (elem.value.length >= 1) {
+                const next = elem.nextElementSibling;
+                if (next) next.focus();
+            }
+        }
+
+        function startOtpTimer() {
+            let time = 60;
+            const timerEl = document.getElementById('otp-timer');
+            const interval = setInterval(() => {
+                time--;
+                timerEl.innerText = time;
+                if (time <= 0) {
+                    clearInterval(interval);
+                    timerEl.innerText = "0 (Tuma tena)";
+                    // Logic to resend would go here
+                }
+            }, 1000);
+        }
+
+        function verifyOTP() {
+            // In simulation, any 6 digits work
+            const inputs = document.querySelectorAll('.otp-box');
+            let code = "";
+            inputs.forEach(i => code += i.value);
+
+            if (code.length === 6) {
+                alert("Imethibitishwa Kikamilifu!");
+                // Save User permanently
+                const phone = localStorage.getItem('temp_phone');
+                localStorage.setItem('bv_phone', phone);
+                localStorage.setItem('bv_phone_exist', phone);
+                registeredPhone = phone;
+                
+                document.getElementById('otp-screen').style.display = 'none';
+                showDashboard();
+            } else {
+                alert("Weka namba 6 za uhakiki.");
+            }
+        }
+
+        // --- 4. DASHBOARD LOGIC ---
+        function showDashboard() {
+            document.getElementById('dashboard-screen').style.display = 'block';
+            document.getElementById('main-nav').style.display = 'flex';
+        }
+
+        function switchTab(tabName, btn) {
+            document.querySelec.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function logout() {
+            if(confirm("Unataka kutoka?")) {
+                // Just reload for demo, or clear session
+                location.reload();
+            }
+        }
+
+        // --- 5. SPIN GAME ---
+        function spinWheel() {
+            const btn = document.getElementById('spin-btn');
+            btn.disabled = true;
+            btn.innerText = "Inazunguka...";
             
             const wheel = document.getElementById('wheel');
-            wheel.style.transition = 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
-            wheel.style.transform = `rotate(${degrees}deg)`;
+            const rot = 1000 + Math.random() * 1000; // Random rotation
+            wheel.style.transform = `rotate(${rot}deg)`;
 
             setTimeout(() => {
-                // Calculate result based on final angle
-                const actualDeg = degrees % 360;
-                const segmentSize = 360 / prizes.length;
-                // Pointer is at top (0deg), wheel rotates clockwise.
-                // The segment under the pointer is determined by (360 - actualDeg)
-                const winningIndex = Math.floor((360 - actualDeg + segmentSize / 2) % 360 / segmentSize);
-                const prize = prizes[winningIndex];
-
-                document.getElementById('spin-result').innerText = `Umeshinda: ${prize.text}!`;
-                document.getElementById('spin-result').style.color = prize.color;
-
-                if (prize.value > 0) {
-                    voucherBalance += prize.value;
-                    updateBalanceUI();
-                }
-
-                // Reset for next spin
-                canSpin = true;
-                document.getElementById('spin-button').disabled = false;
-                // Optional: reset wheel rotation visually after a delay if desired
-                // setTimeout(() => { wheel.style.transition = 'none'; wheel.style.transform = 'rotate(0deg)'; }, 1000);
-
+                const winAmount = [500, 1000, 200, 0, 5000, 100][Math.floor(Math.random()*6)];
+                userBalance += winAmount;
+                document.getElementById('display-balance').innerText = `Tsh ${userBalance.toLocaleString()}`;
+                
+                alert(winAmount > 0 ? `Hongera! Umeshinda Tsh ${winAmount}` : "Jaribu Tena!");
+                
+                btn.disabled = false;
+                btn.innerText = "ZUNGUSHA (Free)";
             }, 4000);
         }
 
-        // --- 4. WITHDRAW PROCESS (NEW) ---
-        function initiateWithdraw() {
-            if (voucherBalance < WITHDRAW_LIMIT) {
-                 alert(`Samahani, unahitaji kufikisha Tsh ${WITHDRAW_LIMIT.toLocaleString()} ili kutoa.`);
-                 return;
+        // --- 6. GENERATE MANY CONTENTS (100+) ---
+        function generateContent() {
+            // A. SMS
+            const smsList = [
+                "Mapenzi ni safari, na wewe ndiye dereva wangu.",
+                "Moyo wangu unadunda kwa ajili yako tu.",
+                "Kila nikikuona, dunia inasimama.",
+                "Wewe ni nyota inayong'aa usiku wangu.",
+                "Hakuna kama wewe maishani mwangu.",
+                "Upendo wako ni tiba ya moyo wangu."
+            ];
+            const smsContainer = document.getElementById('sms-container');
+            for(let i=0; i<100; i++) {
+                const text = smsList[i % smsList.length] + ` (Msg #${i+1})`;
+                smsContainer.innerHTML += `
+                <div class="sms-item">
+                    <div class="sms-body">${text}</div>
+                    <div class="sms-actions">
+                        <i class="far fa-copy action-icon copy" onclick="alert('Imenakiliwa!')"></i>
+                        <i class="fab fa-whatsapp action-icon whatsapp"></i>
+                    </div>
+                </div>`;
             }
-            document.getElementById('wd-amount-display').innerText = voucherBalance.toLocaleString();
-            
-            // Reset UI states
-            document.querySelectorAll('#wd-step-1 .network-option').forEach(el => el.classList.remove('selected'));
-            document.getElementById('wd-net-btn').disabled = true;
-            
+
+            // B. TV CHANNELS
+            const tvContainer = document.getElementById('tv-container');
+            const channels = ["ITV", "Clouds", "Wasafi", "EATV", "TBC1", "Azam Two", "Sinema", "Maisha", "Sports"];
+            for(let i=0; i<100; i++) {
+                const name = channels[i % channels.length] + (Math.floor(i/channels.length) + 1);
+                tvContainer.innerHTML += `
+                <div class="tv-item" onclick="alert('Lipia kifurushi kutazama ${name}')">
+                    <div class="tv-thumb">${name}</div>
+                    <div style="font-size:0.8rem; color:var(--gold);">Live <i class="fas fa-lock"></i></div>
+                </div>`;
+            }
+        }
+
+        // --- 7. WITHDRAWAL ---
+        function openWithdrawModal() {
+            if (userBalance < 1000) {
+                alert("Kima cha chini kutoa ni Tsh 1,000. Endelea kucheza!");
+                return;
+            }
             document.getElementById('withdraw-modal').style.display = 'flex';
-            wdShowStep(1);
+            document.getElementById('wd-step-1').classList.remove('hidden');
+            document.getElementById('wd-step-2').classList.add('hidden');
+            document.getElementById('wd-step-3').classList.add('hidden');
         }
 
-        function selectWdNetwork(el, networkName) {
-            document.querySelectorAll('#wd-step-1 .network-option').forEach(opt => opt.classList.remove('selected'));
+        function selectNet(el, name) {
+            document.querySelectorAll('.network-opt').forEach(x => x.classList.remove('selected'));
             el.classList.add('selected');
-            document.getElementById('selected-wd-network').value = networkName;
-            document.getElementById('wd-net-btn').disabled = false;
-        }
-
-        function wdShowStep(step) {
-            document.querySelectorAll('#withdraw-modal .step-container').forEach(el => el.classList.remove('active'));
-            document.getElementById('wd-step-' + step).classList.add('active');
+            document.getElementById('wd-btn-1').disabled = false;
         }
 
         function wdNextStep(step) {
             if (step === 2) {
-                // Start long verification simulation (e.g., 8 seconds for demo instead of 1 hour)
-                wdShowStep(2);
+                document.getElementById('wd-step-1').classList.add('hidden');
+                document.getElementById('wd-step-2').classList.remove('hidden');
+                // Simulate long loading
                 setTimeout(() => {
                     wdNextStep(3);
-                }, 8000); // Kaka hapa ndio ile sekunde 100/saa 1. Nimeweka 8000ms (sekunde 8) kwa demo.
+                }, 5000); // 5 seconds wait
             } else if (step === 3) {
-                 wdShowStep(3);
+                document.getElementById('wd-step-2').classList.add('hidden');
+                document.getElementById('wd-step-3').classList.remove('hidden');
+                userBalance = 0; // Reset balance
+                document.getElementById('display-balance').innerText = "Tsh 0";
             }
-        }
-
-        function finishWithdraw() {
-            closeModal('withdraw-modal');
-            voucherBalance = 0; // Reset balance after success
-            updateBalanceUI();
-        }
-
-
-        // --- 5. TV PAYMENT LOGIC (UPDATED with NETWORKS) ---
-        function openTVPayment(channel) {
-            document.getElementById('selected-channel-name').innerText = channel;
-            // Reset UI
-            document.querySelectorAll('#tv-step-2 .network-option').forEach(el => el.classList.remove('selected'));
-            document.getElementById('tv-net-btn').disabled = true;
-            
-            document.getElementById('tv-payment-modal').style.display = 'flex';
-            tvShowStep(1);
-        }
-
-        function tvShowStep(step) {
-            document.querySelectorAll('#tv-payment-modal .step-container').forEach(el => el.classList.remove('active'));
-            document.getElementById('tv-step-' + step).classList.add('active');
-        }
-
-        function selectTvNetwork(el, netName) {
-            document.querySelectorAll('#tv-step-2 .network-option').forEach(opt => opt.classList.remove('selected'));
-            el.classList.add('selected');
-            document.getElementById('selected-tv-network').value = netName;
-            document.getElementById('tv-net-btn').disabled = false;
-        }
-
-        function tvNextStep(step) {
-            if (step === 3) {
-                const netName = document.getElementById('selected-tv-network').value;
-                const amount = document.getElementById('tv-package-select').value;
-                document.getElementById('tv-network-name').innerText = netName;
-                document.getElementById('tv-pay-amount').innerText = `Tsh ${parseInt(amount).toLocaleString()}`;
-            }
-            tvShowStep(step);
-        }
-
-        function processTvPayment() {
-            tvShowStep(4); // Show loading spinner
-            setTimeout(() => {
-                alert("Ombi la malipo limetumwa kwenye simu yako. Tafadhali ingiza namba ya siri kuthibitisha.");
-                closeModal('tv-payment-modal');
-                // Here you would typically check payment status silently
-            }, 4000);
-        }
-
-        // --- 6. SMS & OTHER FUNCTIONS ---
-        const smsData = {
-            'mapenzi': ["Moyo wangu ni wako milele.", "Upendo wako ni mwanga gizani kwangu."],
-            'tech': ["AI inabadilisha dunia haraka sana.", "Jifunze coding uwe na nguvu ya kidijitali."],
-            'mahaba': ["Huba lako lanipa joto la ajabu.", "Kila nikikuona nazidi kuchanganyikiwa."]
-        };
-
-        function filterSMS(cat, btn) {
-            document.querySelectorAll('.category-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            const container = document.getElementById('sms-container');
-            container.innerHTML = '';
-            (smsData[cat] || []).forEach(msg => {
-                container.innerHTML += `
-                    <div class="sms-card">
-                        <p class="sms-text">${msg}</p>
-                        <div class="sms-actions">
-                            <button class="action-btn copy-btn" onclick="navigator.clipboard.writeText('${msg}');alert('Imenakiliwa!')"><i class="far fa-copy"></i> Copy</button>
-                            <button class="action-btn whatsapp-btn" onclick="window.open('https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}')"><i class="fab fa-whatsapp"></i> Send</button>
-                        </div>
-                    </div>`;
-            });
         }
     </script>
 </body>
-  </html>
+                </html>
