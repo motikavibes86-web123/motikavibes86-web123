@@ -1,96 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
-</html>
+    <!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bongo Hub</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    header {
+      background: #020617;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #22c55e;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #020617;
+      border-top: 1px solid #1e293b;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: #e5e7eb;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    nav button.active {
+      background: #1e293b;
+      color: #22c55e;
+    }
+
+    section {
+      display: none;
+      padding: 15px;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .card {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card a {
+      color: #22c55e;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  BONGO HUB
+</header>
+
+<nav>
+  <button class="active" onclick="openTab('mpira', this)">Mpira</button>
+  <button onclick="openTab('simulizi', this)">Simulizi</button>
+  <button onclick="openTab('elimu', this)">Elimu</button>
+  <button onclick="openTab('sms', this)">SMS</button>
+</nav>
+
+<!-- MPIRA -->
+<section id="mpira" class="active">
+  <div class="card">
+    <h3>Channel za Mpira Duniani</h3>
+    <p><a href="https://example.com" target="_blank">Azam Sports</a></p>
+    <p><a href="https://example.com" target="_blank">SuperSport</a></p>
+    <p><a href="https://example.com" target="_blank">BeIN Sports</a></p>
+  </div>
+
+  <div class="card">
+    <h3>Ratiba ya Leo</h3>
+    <p>Yanga vs Simba – 22:00</p>
+    <p>Arsenal vs Chelsea – 19:30</p>
+  </div>
+</section>
+
+<!-- SIMULIZI -->
+<section id="simulizi">
+  <div class="card">
+    <h3>Simulizi ya Moja kwa Moja</h3>
+    <p>Dakika 45: Bao safi ⚽🔥</p>
+    <p>Dakika 60: Mchezo umechacha!</p>
+  </div>
+</section>
+
+<!-- ELIMU -->
+<section id="elimu">
+  <div class="card">
+    <h3>Elimu & Mafunzo</h3>
+    <p>✔️ Jinsi ya kujifunza online</p>
+    <p>✔️ Teknolojia na AI</p>
+    <p>✔️ Biashara mtandaoni</p>
+  </div>
+</section>
+
+<!-- SMS -->
+<section id="sms">
+  <div class="card">
+    <h3>SMS za Mapenzi</h3>
+    <p>"Nakupenda zaidi ya maneno ❤️"</p>
+    <p>"Wewe ni zawadi ya maisha yangu 💌"</p>
+  </div>
+</section>
+
+<footer>
+  © 2026 Bongo Hub • Mpira • Simulizi • Elimu
+</footer>
+
+<script>
+  function openTab(id, btn) {
+    document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active");
+    btn.classList.add("active");
+  }
+</script>
+
+</body>
+    </html>
