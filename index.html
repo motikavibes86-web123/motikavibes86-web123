@@ -1,481 +1,262 @@
- <!DOCTYPE html>
+ 
+                                        "<!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bongo Vibes - App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS FREE-NET | Unlimited Access</title>
     <style>
-        /* --- GENERAL STYLES --- */
         :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --gold: #fbbf24;
-            --blue: #3b82f6;
-            --text: #ffffff;
-            --gray: #94a3b8;
-            --green: #22c55e;
-            --red: #ef4444;
+            --primary: #00f7ff;
+            --secondary: #7000ff;
+            --dark: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-dark); color: var(--text); overflow-x: hidden; min-height: 100vh; }
-
-        /* --- 1. LOADING SCREEN --- */
-        #loader-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-dark); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        .logo-anim { width: 150px; animation: heartbeat 1.5s infinite; margin-bottom: 20px; }
-        .loading-bar-container { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .loading-bar { width: 0%; height: 100%; background: var(--gold); transition: width 0.3s; }
-        @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* --- 2. AUTH & OTP SCREENS --- */
-        .auth-container { padding: 30px 20px; max-width: 400px; margin: 0 auto; display: none; min-height: 100vh; flex-direction: column; justify-content: center; }
-        .auth-header { text-align: center; margin-bottom: 30px; }
-        .auth-title { font-size: 1.8rem; font-weight: bold; color: var(--gold); margin-bottom: 10px; }
-        
-        .input-group { margin-bottom: 20px; }
-        .input-label { display: block; color: var(--gray); margin-bottom: 8px; font-size: 0.9rem; }
-        .phone-input-wrapper { display: flex; gap: 10px; }
-        .country-select { background: var(--bg-card); color: white; border: 1px solid var(--gray); padding: 12px; border-radius: 8px; font-size: 1.2rem; }
-        .main-input { width: 100%; background: var(--bg-card); border: 1px solid var(--gray); padding: 12px; border-radius: 8px; color: white; outline: none; transition: border 0.3s; }
-        .main-input:focus { border-color: var(--gold); }
-        
-        .btn-primary { width: 100%; background: linear-gradient(90deg, var(--gold), #f59e0b); color: var(--bg-dark); font-weight: bold; padding: 15px; border: none; border-radius: 30px; font-size: 1rem; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3); }
-        
-        /* OTP Inputs */
-        .otp-grid { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
-        .otp-box { width: 45px; height: 50px; background: var(--bg-card); border: 1px solid var(--gray); border-radius: 8px; color: white; font-size: 1.5rem; text-align: center; outline: none; }
-        .otp-box:focus { border-color: var(--gold); transform: translateY(-2px); }
-        .timer-text { text-align: center; color: var(--gray); font-size: 0.9rem; margin-top: 15px; }
+        body {
+            background: radial-gradient(circle at top right, #1a1a2e, #0a0a0c);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        /* --- 3. DASHBOARD --- */
-        #dashboard-screen { display: none; padding-bottom: 80px; }
-        header { padding: 15px 20px; background: var(--bg-card); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        
-        /* Spin Game Styles */
-        .balance-card { margin: 20px; background: linear-gradient(135deg, #1e3a8a, #0f172a); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .balance-label { color: var(--gray); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-        .balance-value { font-size: 2.5rem; font-weight: 800; color: var(--gold); margin: 10px 0; text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3); }
-        
-        .wheel-wrap { position: relative; width: 280px; height: 280px; margin: 20px auto; }
-        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 10px solid var(--bg-card); position: relative; transition: transform 4s cubic-bezier(0.1, 0.7, 0.1, 1); background: conic-gradient(#ef4444 0deg 60deg, #3b82f6 60deg 120deg, #22c55e 120deg 180deg, #eab308 180deg 240deg, #a855f7 240deg 300deg, #f97316 300deg 360deg); }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid white; z-index: 10; }
-        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: var(--bg-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 5; border: 3px solid white; font-weight: bold; }
-        
-        /* Content Grids (SMS, TV) */
-        .section-header { padding: 0 20px; margin-top: 30px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title { font-size: 1.2rem; font-weight: bold; border-left: 4px solid var(--gold); padding-left: 10px; }
-        
-        .sms-scroll { height: 300px; overflow-y: auto; padding: 0 20px; }
-        .sms-item { background: var(--bg-card); padding: 15px; margin-bottom: 10px; border-radius: 10px; border-left: 3px solid var(--blue); }
-        .sms-body { font-size: 0.95rem; line-height: 1.5; color: #e2e8f0; margin-bottom: 10px; }
-        .sms-actions { display: flex; justify-content: flex-end; gap: 10px; }
-        .action-icon { color: var(--gray); font-size: 1.1rem; cursor: pointer; padding: 5px; }
-        .action-icon.copy { color: var(--gold); }
-        .action-icon.whatsapp { color: #25D366; }
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--dark);
+            height: 90vh;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), border: 1px solid rgba(255,255,255,0.1);
+        }
 
-        .tv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 20px; }
-        .tv-item { background: var(--bg-card); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
-        .tv-thumb { height: 60px; background: #000; border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; color: var(--gray); }
+        /* Pages */
+        .page {
+            display: none;
+            padding: 25px;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .active { display: flex; }
+
+        /* Auth Styles */
+        h2 { margin-bottom: 20px; font-weight: 600; text-align: center; color: var(--primary); }
         
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--bg-card); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 90; }
-        .nav-btn { color: var(--gray); text-align: center; font-size: 0.7rem; cursor: pointer; }
-        .nav-btn i { font-size: 1.3rem; margin-bottom: 4px; display: block; }
-        .nav-btn.active { color: var(--gold); }
+        .input-group { margin-bottom: 15px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+        }
 
-        /* Modal Styles */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { background: var(--bg-card); width: 100%; max-width: 350px; border-radius: 20px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .network-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .network-opt { border: 2px solid var(--gray); padding: 10px; border-radius: 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-        .network-opt.selected { border-color: var(--gold); background: rgba(251, 191, 36, 0.1); }
-        .network-opt img { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 5px; }
+        .btn {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
 
-        .hidden { display: none; }
+        /* Loading Area */
+        .loading-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .circle-loader {
+            width: 150px;
+            height: 150px;
+            border: 5px solid var(--card-bg);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .gb-counter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary);
+        }
+
+        .status-text {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            height: 20px;
+        }
+
+        /* Settings */
+        .settings-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-link { color: #555; cursor: pointer; font-size: 0.8rem; text-decoration: none; }
+        .nav-link.active-nav { color: var(--primary); }
+
     </style>
 </head>
 <body>
 
-    <div id="loader-screen">
-        <img src="image_6.png" alt="Bongo Vibes" class="logo-anim"> 
-        <h2 style="color: var(--gold); margin-bottom: 10px;">BONGO VIBES</h2>
-        <div class="loading-bar-container">
-            <div class="loading-bar" id="load-bar"></div>
+<div class="app-container">
+    
+    <div id="loginPage" class="page active">
+        <h2>Ingia</h2>
+        <div class="input-group">
+            <input type="text" placeholder="Jina la mtumiaji">
         </div>
-        <p id="load-text" style="color: var(--gray); margin-top: 10px; font-size: 0.8rem;">Inaandaa data...</p>
+        <div class="input-group">
+            <input type="password" placeholder="Nenosiri">
+        </div>
+        <button class="btn" onclick="showPage('homePage')">LOGIN</button>
+        <p style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #888;">
+            Huna akaunti? <span style="color: var(--primary); cursor: pointer;" onclick="showPage('registerPage')">Jisajili</span>
+        </p>
     </div>
 
-    <div id="register-screen" class="auth-container">
-        <div class="auth-header">
-            <div class="auth-title">Fungua Akaunti</div>
-            <p style="color: var(--gray);">Jiunge na Bongo Vibes leo</p>
+    <div id="registerPage" class="page">
+        <h2>Jisajili</h2>
+        <input type="text" placeholder="Jina kamili" style="margin-bottom:10px">
+        <input type="email" placeholder="Barua pepe" style="margin-bottom:10px">
+        <input type="password" placeholder="Nenosiri" style="margin-bottom:10px">
+        <button class="btn" onclick="showPage('loginPage')">REGISTER</button>
+    </div>
+
+    <div id="homePage" class="page">
+        <h3 style="text-align: center;">NEXUS FREE-NET</h3>
+        <div class="loading-box">
+            <div id="loader" class="circle-loader" style="display: none;"></div>
+            <div class="gb-counter" id="gbValue">0.00 GB</div>
+            <div class="status-text" id="statusLabel">Tayari kuunganishwa...</div>
+            <button class="btn" id="startBtn" style="width: 80%;" onclick="startLoading()">ANZA KULOAD DATA</button>
         </div>
+    </div>
+
+    <div id="settingsPage" class="page">
+        <h2>Mipangilio</h2>
+        <div class="settings-item">
+            <span>Lugha</span>
+            <select style="background:none; color:white; border:none; outline:none;">
+                <option>Kiswahili</option>
+                <option>English</option>
+            </select>
+        </div>
+        <div class="settings-item">
+            <span>Server Selection</span>
+            <span style="color: var(--primary);">Auto (Fastest)</span>
+        </div>
+        <div class="settings-item">
+            <span>Dark Mode</span>
+            <input type="checkbox" checked>
+        </div>
+        <button class="btn" onclick="showPage('loginPage')" style="background: red;">LOGOUT</button>
+    </div>
+
+    <div class="nav-bar" id="navbar" style="display: none;">
+        <div class="nav-link active-nav" onclick="showPage('homePage')">HOME</div>
+        <div class="nav-link" onclick="showPage('settingsPage')">SETTINGS</div>
+    </div>
+</div>
+
+<script>
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
         
-        <div class="input-group">
-            <label class="input-label">Jina Kamili</label>
-            <input type="text" id="reg-name" class="main-input" placeholder="Weka jina lako">
-        </div>
+        // Ficha/Onyesha navbar
+        const navbar = document.getElementById('navbar');
+        if(pageId === 'homePage' || pageId === 'settingsPage') {
+            navbar.style.display = 'flex';
+        } else {
+            navbar.style.display = 'none';
+        }
+    }
 
-        <div class="input-group">
-            <label class="input-label">Namba ya Simu</label>
-            <div class="phone-input-wrapper">
-                <select class="country-select" id="reg-country">
-                    <option value="+255">🇹🇿 +255</option>
-                    <option value="+254">🇰🇪 +254</option>
-                    <option value="+256">🇺🇬 +256</option>
-                    <option value="+250">🇷🇼 +250</option>
-                    <option value="+27">🇿🇦 +27</option>
-                </select>
-                <input type="tel" id="reg-phone" class="main-input" placeholder="712345678">
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label class="input-label">Aliyekualika (Refferal)</label>
-            <input type="text" id="reg-ref" class="main-input" placeholder="Weka namba ya aliyekualika (Kama ipo)">
-        </div>
-
-        <div class="input-group">
-            <label class="input-label">Nenosiri (Password)</label>
-            <input type="password" id="reg-pass" class="main-input" placeholder="Wekasiri la siri">
-        </div>
-
-        <button class="btn-primary" onclick="validateAndRegister()">Jisajili Sasa</button>
-    </div>
-
-    <div id="otp-screen" class="auth-container">
-        <div class="auth-header">
-            <i class="fas fa-shield-alt fa-3x" style="color: var(--gold); margin-bottom: 15px;"></i>
-            <div class="auth-title">Thibitisha Namba</div>
-            <p style="color: var(--gray);">Tumetuma kodi ya tarakimu 6 kwenda <br> <span id="otp-phone-display" style="color: white;"></span></p>
-        </div>
-
-        <div class="otp-grid">
-            <input type="number" class="otp-box" oninput="moveFocus(this, 1)">
-            <input type="number" class="otp-box" oninput="moveFocus(this, 2)">
-            <input type="number" class="otp-box" oninput="moveFocus(this, 3)">
-            <input type="number" class="otp-box" oninput="moveFocus(this, 4)">
-            <input type="number" class="otp-box" oninput="moveFocus(this, 5)">
-            <input type="number" class="otp-box" oninput="moveFocus(this, 6)">
-        </div>
-
-        <button class="btn-primary" onclick="verifyOTP()">Thibitisha</button>
+    function startLoading() {
+        const btn = document.getElementById('startBtn');
+        const loader = document.getElementById('loader');
+        const gbText = document.getElementById('gbValue');
+        const status = document.getElementById('statusLabel');
         
-        <div class="timer-text">
-            Tuma tena baada ya: <span id="otp-timer" style="color: var(--gold); font-weight: bold;">60</span>s
-        </div>
-    </div>
-
-    <div id="dashboard-screen">
-        <header>
-            <div style="font-weight: bold; font-size: 1.2rem;">Bongo Vibes <span style="color: var(--gold);">App</span></div>
-            <div style="display: flex; gap: 15px;">
-                <i class="fas fa-bell"></i>
-                <i class="fas fa-user-circle" onclick="logout()"></i>
-            </div>
-        </header>
-
-        <div id="tab-home" class="tab-content">
-            <div class="balance-card">
-                <div class="balance-label">Salio Lako</div>
-                <div class="balance-value" id="display-balance">Tsh 0</div>
-                <button onclick="openWithdrawModal()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; cursor: pointer;">
-                    <i class="fas fa-wallet"></i> Toa Pesa
-                </button>
-            </div>
-
-            <div class="wheel-wrap">
-                <div class="pointer"></div>
-                <div class="wheel" id="wheel"></div>
-                <div class="wheel-center">SPIN</div>
-            </div>
-            <button class="btn-primary" style="width: 80%; margin: 0 auto; display: block;" onclick="spinWheel()" id="spin-btn">ZUNGUSHA (Free)</button>
-        </div>
-
-        <div id="tab-sms" class="tab-content hidden">
-            <div class="section-header">
-                <div class="section-title">SMS Kali (100+)</div>
-            </div>
-            <div class="sms-scroll" id="sms-container">
-                </div>
-        </div>
-
-        <div id="tab-tv" class="tab-content hidden">
-            <div class="section-header">
-                <div class="section-title">Channels (VIP)</div>
-            </div>
-            <div class="tv-grid" id="tv-container">
-                </div>
-        </div>
-    </div>
-
-    <nav class="bottom-nav" id="main-nav" style="display: none;">
-        <div class="nav-btn active" onclick="switchTab('home', this)">
-            <i class="fas fa-gamepad"></i> Game
-        </div>
-        <div class="nav-btn" onclick="switchTab('sms', this)">
-            <i class="fas fa-comment-dots"></i> SMS
-        </div>
-        <div class="nav-btn" onclick="switchTab('tv', this)">
-            <i class="fas fa-tv"></i> TV Live
-        </div>
-    </nav>
-
-    <div id="withdraw-modal" class="modal">
-        <div class="modal-box">
-            <span style="position: absolute; right: 20px; top: 20px; font-size: 1.5rem; cursor: pointer;" onclick="document.getElementById('withdraw-modal').style.display='none'">&times;</span>
-            
-            <div id="wd-step-1">
-                <h3 style="color: var(--gold); margin-bottom: 10px;">Chagua Mtandao</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 15px;">Pesa itatumwa kwenye namba uliyosajili.</p>
-                <div class="network-grid">
-                    <div class="network-opt" onclick="selectNet(this, 'Vodacom')"><img src="image_7.png" alt="Voda">Vodacom</div>
-                    <div class="network-opt" onclick="selectNet(this, 'Airtel')"><img src="image_7.png" alt="Airtel">Airtel</div>
-                    <div class="network-opt" onclick="selectNet(this, 'Tigo')"><img src="image_7.png" alt="Tigo">Tigo</div>
-                    <div class="network-opt" onclick="selectNet(this, 'Halotel')"><img src="image_7.png" alt="Halo">Halotel</div>
-                </div>
-                <button class="btn-primary" id="wd-btn-1" disabled onclick="wdNextStep(2)">Endelea</button>
-            </div>
-
-            <div id="wd-step-2" class="hidden">
-                <i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--gold); margin: 20px 0;"></i>
-                <h3>Inahakiki Taarifa...</h3>
-                <p>Tafadhali subiri wakati mitambo inaangalia uhalali wa ushindi wako.</p>
-            </div>
-
-            <div id="wd-step-3" class="hidden">
-                <i class="fas fa-check-circle fa-4x" style="color: var(--green); margin-bottom: 15px;"></i>
-                <h3>Imepokelewa!</h3>
-                <p>Ombi lako limetumwa. Pesa itaingia ndani ya muda mfupi baada ya uhakiki kukamilika.</p>
-                <button class="btn-primary" onclick="document.getElementById('withdraw-modal').style.display='none'">Funga</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- 1. SYSTEM LOGIC & INIT ---
-        let userBalance = 0;
-        let registeredPhone = localStorage.getItem('bv_phone');
+        btn.style.display = 'none';
+        loader.style.display = 'block';
         
-        window.onload = function() {
-            // Loading Animation Simulation
-            let bar = document.getElementById('load-bar');
-            let text = document.getElementById('load-text');
-            setTimeout(() => { bar.style.width = "40%"; }, 500);
-            setTimeout(() => { bar.style.width = "80%"; text.innerText = "Inahakiki mtandao..."; }, 1500);
-            setTimeout(() => { 
-                bar.style.width = "100%"; 
-                document.getElementById('loader-screen').style.display = 'none';
-                checkLoginStatus();
-            }, 3000);
+        let currentGb = 0;
+        const targetGb = (Math.random() * (50 - 10) + 10).toFixed(2); // Random GB kati ya 10 na 50
+        
+        const logs = [
+            "Inatafuta seva...",
+            "Inatengeneza tunnel...",
+            "Inakwepa vizuizi...",
+            "Inapokea pakiti...",
+            "Inakamilisha muunganisho..."
+        ];
 
-            // Generate Content (100 SMS & Channels)
-            generateContent();
-        };
-
-        function checkLoginStatus() {
-            if (registeredPhone) {
-                // User already registered
-                showDashboard();
-            } else {
-                // New User
-                document.getElementById('register-screen').style.display = 'flex';
-            }
-        }
-
-        // --- 2. REGISTRATION LOGIC ---
-        function validateAndRegister() {
-            const name = document.getElementById('reg-name').value;
-            const country = document.getElementById('reg-country').value;
-            const phone = document.getElementById('reg-phone').value;
-            const pass = document.getElementById('reg-pass').value;
-
-            if (name.length < 3 || phone.length < 9 || pass.length < 4) {
-                alert("Tafadhali jaza taarifa zote kwa usahihi.");
-                return;
-            }
-
-            // Combine Country code + Phone
-            const fullPhone = country + phone;
-            
-            // Check if already exists (Simulation)
-            if (localStorage.getItem('bv_phone_exist') === fullPhone) {
-                alert("Namba hii tayari imesajiliwa! Tafadhali login.");
-                return; // In real app, redirect to login
-            }
-
-            // Proceed to OTP
-            localStorage.setItem('temp_phone', fullPhone);
-            localStorage.setItem('temp_name', name);
-            
-            document.getElementById('register-screen').style.display = 'none';
-            document.getElementById('otp-screen').style.display = 'flex';
-            document.getElementById('otp-phone-display').innerText = fullPhone;
-            startOtpTimer();
-        }
-
-        // --- 3. OTP LOGIC ---
-        function moveFocus(elem, index) {
-            if (elem.value.length >= 1) {
-                const next = elem.nextElementSibling;
-                if (next) next.focus();
-            }
-        }
-
-        function startOtpTimer() {
-            let time = 60;
-            const timerEl = document.getElementById('otp-timer');
-            const interval = setInterval(() => {
-                time--;
-                timerEl.innerText = time;
-                if (time <= 0) {
-                    clearInterval(interval);
-                    timerEl.innerText = "0 (Tuma tena)";
-                    // Logic to resend would go here
+        let logIndex = 0;
+        const interval = setInterval(() => {
+            if (currentGb < targetGb) {
+                currentGb += 0.23;
+                gbText.innerText = currentGb.toFixed(2) + " GB";
+                
+                // Badilisha status text kila baada ya muda
+                if(Math.floor(currentGb) % 5 === 0) {
+                    status.innerText = logs[logIndex % logs.length];
+                    logIndex++;
                 }
-            }, 1000);
-        }
-
-        function verifyOTP() {
-            // In simulation, any 6 digits work
-            const inputs = document.querySelectorAll('.otp-box');
-            let code = "";
-            inputs.forEach(i => code += i.value);
-
-            if (code.length === 6) {
-                alert("Imethibitishwa Kikamilifu!");
-                // Save User permanently
-                const phone = localStorage.getItem('temp_phone');
-                localStorage.setItem('bv_phone', phone);
-                localStorage.setItem('bv_phone_exist', phone);
-                registeredPhone = phone;
-                
-                document.getElementById('otp-screen').style.display = 'none';
-                showDashboard();
             } else {
-                alert("Weka namba 6 za uhakiki.");
+                clearInterval(interval);
+                gbText.innerText = targetGb + " GB";
+                status.innerText = "Imekamilika! Furahia intaneti.";
+                status.style.color = "#00ff88";
+                loader.style.borderTopColor = "#00ff88";
+                loader.style.animation = "none";
+                alert("Hongera! GB " + targetGb + " zimeongezwa kwenye akaunti yako.");
             }
-        }
+        }, 50);
+    }
+</script>
 
-        // --- 4. DASHBOARD LOGIC ---
-        function showDashboard() {
-            document.getElementById('dashboard-screen').style.display = 'block';
-            document.getElementById('main-nav').style.display = 'flex';
-        }
-
-        function switchTab(tabName, btn) {
-            document.querySelec.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function logout() {
-            if(confirm("Unataka kutoka?")) {
-                // Just reload for demo, or clear session
-                location.reload();
-            }
-        }
-
-        // --- 5. SPIN GAME ---
-        function spinWheel() {
-            const btn = document.getElementById('spin-btn');
-            btn.disabled = true;
-            btn.innerText = "Inazunguka...";
-            
-            const wheel = document.getElementById('wheel');
-            const rot = 1000 + Math.random() * 1000; // Random rotation
-            wheel.style.transform = `rotate(${rot}deg)`;
-
-            setTimeout(() => {
-                const winAmount = [500, 1000, 200, 0, 5000, 100][Math.floor(Math.random()*6)];
-                userBalance += winAmount;
-                document.getElementById('display-balance').innerText = `Tsh ${userBalance.toLocaleString()}`;
-                
-                alert(winAmount > 0 ? `Hongera! Umeshinda Tsh ${winAmount}` : "Jaribu Tena!");
-                
-                btn.disabled = false;
-                btn.innerText = "ZUNGUSHA (Free)";
-            }, 4000);
-        }
-
-        // --- 6. GENERATE MANY CONTENTS (100+) ---
-        function generateContent() {
-            // A. SMS
-            const smsList = [
-                "Mapenzi ni safari, na wewe ndiye dereva wangu.",
-                "Moyo wangu unadunda kwa ajili yako tu.",
-                "Kila nikikuona, dunia inasimama.",
-                "Wewe ni nyota inayong'aa usiku wangu.",
-                "Hakuna kama wewe maishani mwangu.",
-                "Upendo wako ni tiba ya moyo wangu."
-            ];
-            const smsContainer = document.getElementById('sms-container');
-            for(let i=0; i<100; i++) {
-                const text = smsList[i % smsList.length] + ` (Msg #${i+1})`;
-                smsContainer.innerHTML += `
-                <div class="sms-item">
-                    <div class="sms-body">${text}</div>
-                    <div class="sms-actions">
-                        <i class="far fa-copy action-icon copy" onclick="alert('Imenakiliwa!')"></i>
-                        <i class="fab fa-whatsapp action-icon whatsapp"></i>
-                    </div>
-                </div>`;
-            }
-
-            // B. TV CHANNELS
-            const tvContainer = document.getElementById('tv-container');
-            const channels = ["ITV", "Clouds", "Wasafi", "EATV", "TBC1", "Azam Two", "Sinema", "Maisha", "Sports"];
-            for(let i=0; i<100; i++) {
-                const name = channels[i % channels.length] + (Math.floor(i/channels.length) + 1);
-                tvContainer.innerHTML += `
-                <div class="tv-item" onclick="alert('Lipia kifurushi kutazama ${name}')">
-                    <div class="tv-thumb">${name}</div>
-                    <div style="font-size:0.8rem; color:var(--gold);">Live <i class="fas fa-lock"></i></div>
-                </div>`;
-            }
-        }
-
-        // --- 7. WITHDRAWAL ---
-        function openWithdrawModal() {
-            if (userBalance < 1000) {
-                alert("Kima cha chini kutoa ni Tsh 1,000. Endelea kucheza!");
-                return;
-            }
-            document.getElementById('withdraw-modal').style.display = 'flex';
-            document.getElementById('wd-step-1').classList.remove('hidden');
-            document.getElementById('wd-step-2').classList.add('hidden');
-            document.getElementById('wd-step-3').classList.add('hidden');
-        }
-
-        function selectNet(el, name) {
-            document.querySelectorAll('.network-opt').forEach(x => x.classList.remove('selected'));
-            el.classList.add('selected');
-            document.getElementById('wd-btn-1').disabled = false;
-        }
-
-        function wdNextStep(step) {
-            if (step === 2) {
-                document.getElementById('wd-step-1').classList.add('hidden');
-                document.getElementById('wd-step-2').classList.remove('hidden');
-                // Simulate long loading
-                setTimeout(() => {
-                    wdNextStep(3);
-                }, 5000); // 5 seconds wait
-            } else if (step === 3) {
-                document.getElementById('wd-step-2').classList.add('hidden');
-                document.getElementById('wd-step-3').classList.remove('hidden');
-                userBalance = 0; // Reset balance
-                document.getElementById('display-balance').innerText = "Tsh 0";
-            }
-        }
-    </script>
 </body>
-                </html>
+         </html>
