@@ -1,261 +1,249 @@
-"<!DOCTYPE html>
+"        .                <!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS FREE-NET | Unlimited Access</title>
+    <title>NEXUS FREE-NET | Pro</title>
     <style>
         :root {
             --primary: #00f7ff;
-            --secondary: #7000ff;
-            --dark: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.05);
+            --voda: #e60000;
+            --airtel: #ff0000;
+            --tigo: #0033a0;
+            --halotel: #ff6600;
+            --bg: #050505;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: white; overflow: hidden; }
 
-        body {
-            background: radial-gradient(circle at top right, #1a1a2e, #0a0a0c);
-            color: white;
-            min-height: 100vh;
+        /* SPLASH SCREEN */
+        #splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            z-index: 9999;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 400px;
-            background: var(--dark);
-            height: 90vh;
-            border-radius: 30px;
-            position: relative;
+        .loader-line {
+            width: 200px;
+            height: 4px;
+            background: #222;
+            margin-top: 20px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Pages */
-        .page {
-            display: none;
-            padding: 25px;
+        .loader-fill {
+            width: 0%;
             height: 100%;
-            flex-direction: column;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            animation: fillUp 3s forwards;
         }
 
+        @keyframes fillUp { 100% { width: 100%; } }
+
+        /* APP CONTAINER */
+        .app-container {
+            max-width: 450px;
+            margin: auto;
+            height: 100vh;
+            background: #0a0a0c;
+            position: relative;
+            display: none; /* Inafichwa hadi splash iishe */
+        }
+
+        .page { padding: 20px; display: none; height: 100%; flex-direction: column; }
         .active { display: flex; }
 
-        /* Auth Styles */
-        h2 { margin-bottom: 20px; font-weight: 600; text-align: center; color: var(--primary); }
-        
-        .input-group { margin-bottom: 15px; }
-        input {
-            width: 100%;
-            padding: 12px;
-            background: var(--card-bg);
+        /* NETWORK BUTTONS */
+        .network-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .net-card {
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
             border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .voda { background: rgba(230, 0, 0, 0.2); border-color: var(--voda); }
+        .airtel { background: rgba(255, 0, 0, 0.2); border-color: var(--airtel); }
+        .tigo { background: rgba(0, 51, 160, 0.2); border-color: var(--tigo); }
+        .halotel { background: rgba(255, 102, 0, 0.2); border-color: var(--halotel); }
+
+        .net-card:hover { transform: scale(1.05); }
+
+        /* PACKAGES */
+        .pkg-item {
+            background: #1a1a1e;
+            padding: 15px;
+            margin-bottom: 10px;
             border-radius: 10px;
-            color: white;
-            outline: none;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .pkg-item:hover { background: var(--primary); color: #000; }
+
+        /* CONSOLE/LOGS */
+        .console {
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            height: 150px;
+            overflow-y: hidden;
+            border: 1px solid #333;
+            margin-top: 20px;
+            color: #00ff00;
         }
 
         .btn {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 14px;
+            background: var(--primary);
+            color: black;
+            padding: 15px;
             border: none;
             border-radius: 10px;
+            font-weight: bold;
+            margin-top: 20px;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
         }
 
-        /* Loading Area */
-        .loading-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .circle-loader {
-            width: 150px;
-            height: 150px;
-            border: 5px solid var(--card-bg);
-            border-top: 5px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .gb-counter {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            text-shadow: 0 0 15px var(--primary);
-        }
-
-        .status-text {
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            height: 20px;
-        }
-
-        /* Settings */
-        .settings-item {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-bar {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .nav-link { color: #555; cursor: pointer; font-size: 0.8rem; text-decoration: none; }
-        .nav-link.active-nav { color: var(--primary); }
+        .header-title { font-size: 1.5rem; text-align: center; margin-bottom: 20px; color: var(--primary); }
 
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    
-    <div id="loginPage" class="page active">
-        <h2>Ingia</h2>
-        <div class="input-group">
-            <input type="text" placeholder="Jina la mtumiaji">
-        </div>
-        <div class="input-group">
-            <input type="password" placeholder="Nenosiri">
-        </div>
-        <button class="btn" onclick="showPage('homePage')">LOGIN</button>
-        <p style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #888;">
-            Huna akaunti? <span style="color: var(--primary); cursor: pointer;" onclick="showPage('registerPage')">Jisajili</span>
-        </p>
-    </div>
-
-    <div id="registerPage" class="page">
-        <h2>Jisajili</h2>
-        <input type="text" placeholder="Jina kamili" style="margin-bottom:10px">
-        <input type="email" placeholder="Barua pepe" style="margin-bottom:10px">
-        <input type="password" placeholder="Nenosiri" style="margin-bottom:10px">
-        <button class="btn" onclick="showPage('loginPage')">REGISTER</button>
-    </div>
-
-    <div id="homePage" class="page">
-        <h3 style="text-align: center;">NEXUS FREE-NET</h3>
-        <div class="loading-box">
-            <div id="loader" class="circle-loader" style="display: none;"></div>
-            <div class="gb-counter" id="gbValue">0.00 GB</div>
-            <div class="status-text" id="statusLabel">Tayari kuunganishwa...</div>
-            <button class="btn" id="startBtn" style="width: 80%;" onclick="startLoading()">ANZA KULOAD DATA</button>
+    <div id="splash">
+        <h1 style="color: var(--primary); letter-spacing: 5px;">NEXUS FREE-NET</h1>
+        <p style="font-size: 0.8rem; color: #555; margin-top: 5px;">Verifying Secure Tunnel...</p>
+        <div class="loader-line">
+            <div class="loader-fill"></div>
         </div>
     </div>
 
-    <div id="settingsPage" class="page">
-        <h2>Mipangilio</h2>
-        <div class="settings-item">
-            <span>Lugha</span>
-            <select style="background:none; color:white; border:none; outline:none;">
-                <option>Kiswahili</option>
-                <option>English</option>
-            </select>
-        </div>
-        <div class="settings-item">
-            <span>Server Selection</span>
-            <span style="color: var(--primary);">Auto (Fastest)</span>
-        </div>
-        <div class="settings-item">
-            <span>Dark Mode</span>
-            <input type="checkbox" checked>
-        </div>
-        <button class="btn" onclick="showPage('loginPage')" style="background: red;">LOGOUT</button>
-    </div>
-
-    <div class="nav-bar" id="navbar" style="display: none;">
-        <div class="nav-link active-nav" onclick="showPage('homePage')">HOME</div>
-        <div class="nav-link" onclick="showPage('settingsPage')">SETTINGS</div>
-    </div>
-</div>
-
-<script>
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
+    <div class="app-container" id="appBody">
         
-        // Ficha/Onyesha navbar
-        const navbar = document.getElementById('navbar');
-        if(pageId === 'homePage' || pageId === 'settingsPage') {
-            navbar.style.display = 'flex';
-        } else {
-            navbar.style.display = 'none';
+        <div id="loginPage" class="page active">
+            <h2 class="header-title">Karibu Tena</h2>
+            <input type="text" placeholder="Username" style="width:100%; padding:15px; border-radius:10px; border:none; background:#1a1a1e; color:white; margin-bottom:10px;">
+            <input type="password" placeholder="Password" style="width:100%; padding:15px; border-radius:10px; border:none; background:#1a1a1e; color:white;">
+            <button class="btn" onclick="goToStep('networkPage')">INGIA</button>
+        </div>
+
+        <div id="networkPage" class="page">
+            <h2 class="header-title">Chagua Mtandao Wako</h2>
+            <div class="network-grid">
+                <div class="net-card voda" onclick="selectNet('Vodacom')">VODACOM</div>
+                <div class="net-card airtel" onclick="selectNet('Airtel')">AIRTEL</div>
+                <div class="net-card tigo" onclick="selectNet('Tigo')">TIGO</div>
+                <div class="net-card halotel" onclick="selectNet('Halotel')">HALOTEL</div>
+            </div>
+        </div>
+
+        <div id="packagePage" class="page">
+            <h2 class="header-title">Chagua Kifurushi</h2>
+            <p id="selectedNetDisplay" style="text-align:center; color: #888; margin-bottom:10px;"></p>
+            <div class="pkg-item" onclick="selectPkg('500MB')"><span>Normal Pack</span> <span>500 MB</span></div>
+            <div class="pkg-item" onclick="selectPkg('2GB')"><span>Premium Pack</span> <span>2.0 GB</span></div>
+            <div class="pkg-item" onclick="selectPkg('5GB')"><span>Ultra Pack</span> <span>5.0 GB</span></div>
+            <div class="pkg-item" onclick="selectPkg('10GB')"><span>Unlimited Trial</span> <span>10.0 GB</span></div>
+        </div>
+
+        <div id="loadingPage" class="page">
+            <h2 class="header-title">Inasindika...</h2>
+            <div style="text-align: center; font-size: 2rem; font-weight: bold; color: var(--primary);" id="counter">0%</div>
+            <div class="console" id="consoleLogs">
+                > Initializing exploit...<br>
+            </div>
+            <div id="successBtn" style="display: none;">
+                <button class="btn" style="width:100%; background:#00ff88;" onclick="location.reload()">FUNGUA INTERNET SASA</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Splash Screen Logic
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('appBody').style.display = 'block';
+        }, 3500);
+
+        let selectedNetwork = "";
+        let selectedPackage = "";
+
+        function goToStep(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
         }
-    }
 
-    function startLoading() {
-        const btn = document.getElementById('startBtn');
-        const loader = document.getElementById('loader');
-        const gbText = document.getElementById('gbValue');
-        const status = document.getElementById('statusLabel');
-        
-        btn.style.display = 'none';
-        loader.style.display = 'block';
-        
-        let currentGb = 0;
-        const targetGb = (Math.random() * (50 - 10) + 10).toFixed(2); // Random GB kati ya 10 na 50
-        
-        const logs = [
-            "Inatafuta seva...",
-            "Inatengeneza tunnel...",
-            "Inakwepa vizuizi...",
-            "Inapokea pakiti...",
-            "Inakamilisha muunganisho..."
-        ];
+        function selectNet(net) {
+            selectedNetwork = net;
+            document.getElementById('selectedNetDisplay').innerText = "Mtandao: " + net;
+            goToStep('packagePage');
+        }
 
-        let logIndex = 0;
-        const interval = setInterval(() => {
-            if (currentGb < targetGb) {
-                currentGb += 0.23;
-                gbText.innerText = currentGb.toFixed(2) + " GB";
-                
-                // Badilisha status text kila baada ya muda
-                if(Math.floor(currentGb) % 5 === 0) {
-                    status.innerText = logs[logIndex % logs.length];
-                    logIndex++;
-               }
-            } else {
-                clearInterval(interval);
-                gbText.innerText = targetGb + " GB";
-                status.innerText = "Imekamilika! Furahia intaneti.";
-                status.style.color = "#00ff88";
-                loader.style.borderTopColor = "#00ff88";
-                loader.style.animation = "none";
-                alert("Hongera! GB " + targetGb + " zimeongezwa kwenye akaunti yako.");
-            }
-        }, 50);
-    }
-</script>
+        function selectPkg(pkg) {
+            selectedPackage = pkg;
+            goToStep('loadingPage');
+            startHacking();
+        }
 
+        function startHacking() {
+            const consoleBox = document.getElementById('consoleLogs');
+            const counterText = document.getElementById('counter');
+            const messages = [
+                "> Connecting to " + selectedNetwork + " bypass server...",
+                "> Local IP detected: 192.168." + Math.floor(Math.random()*255) + ".1",
+                "> Searching for vulnerabilities...",
+                "> Port 8080 found open.",
+                "> Injecting data packets...",
+                "> Bypassing ISP firewall...",
+                "> Generating " + selectedPackage + " on your line...",
+                "> Syncing with database...",
+                "> Connection stable.",
+                "> Finalizing encryption (SSL)..."
+            ];
+
+            let progress = 0;
+            let msgIndex = 0;
+
+            const interval = setInterval(() => {
+                if (progress < 100) {
+                    progress += 1;
+                    counterText.innerText = progress + "%";
+                    
+                    if (progress % 10 === 0 && msgIndex < messages.length) {
+                        consoleBox.innerHTML += messages[msgIndex] + "<br>";
+                        consoleBox.scrollTop = consoleBox.scrollHeight;
+                        msgIndex++;
+                    }
+                } else {
+                    clearInterval(interval);
+                    document.getElementById('successBtn').style.display = 'block';
+                    counterText.innerText = "DONE!";
+                    counterText.style.color = "#00ff88";
+                    alert("Kifurushi cha " + selectedPackage + " kimeongezwa kwenye namba yako ya " + selectedNetwork);
+                }
+            }, 80);
+        }
+    </script>
 </body>
-         </h 
+                                                                                                       </html>
