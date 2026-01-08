@@ -1,261 +1,257 @@
-"<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS FREE-NET | Unlimited Access</title>
+    <title>NEXUS PRO | Ultimate Free-Net</title>
     <style>
         :root {
             --primary: #00f7ff;
-            --secondary: #7000ff;
-            --dark: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.05);
+            --bg: #050505;
+            --sidebar-w: 250px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: white; overflow: hidden; }
 
-        body {
-            background: radial-gradient(circle at top right, #1a1a2e, #0a0a0c);
-            color: white;
-            min-height: 100vh;
+        /* SPLASH SCREEN */
+        #splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            z-index: 10000;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 400px;
-            background: var(--dark);
-            height: 90vh;
-            border-radius: 30px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), border: 1px solid rgba(255,255,255,0.1);
+        .loader-fill {
+            width: 0%; height: 100%; background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            animation: fillUp 2.5s forwards;
         }
 
-        /* Pages */
-        .page {
-            display: none;
-            padding: 25px;
-            height: 100%;
-            flex-direction: column;
+        @keyframes fillUp { 100% { width: 100%; } }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: calc(-1 * var(--sidebar-w));
+            top: 0; width: var(--sidebar-w); height: 100%;
+            background: #0f0f12;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            padding-top: 60px;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
 
-        .active { display: flex; }
+        .sidebar.open { left: 0; }
 
-        /* Auth Styles */
-        h2 { margin-bottom: 20px; font-weight: 600; text-align: center; color: var(--primary); }
-        
-        .input-group { margin-bottom: 15px; }
-        input {
-            width: 100%;
-            padding: 12px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            color: white;
-            outline: none;
-        }
-
-        .btn {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
+        .menu-item {
+            padding: 15px 25px;
+            font-size: 1rem;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            transition: 0.3s;
         }
 
-        /* Loading Area */
-        .loading-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
+        .menu-item:hover { background: var(--primary); color: #000; font-weight: bold; }
 
-        .circle-loader {
-            width: 150px;
-            height: 150px;
-            border: 5px solid var(--card-bg);
-            border-top: 5px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .gb-counter {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            text-shadow: 0 0 15px var(--primary);
-        }
-
-        .status-text {
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            height: 20px;
-        }
-
-        /* Settings */
-        .settings-item {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-bar {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+        /* TOP NAV */
+        .top-nav {
+            position: fixed;
+            top: 0; width: 100%; height: 60px;
             background: rgba(0,0,0,0.8);
             display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            align-items: center;
+            padding: 0 20px;
+            z-index: 998;
+            backdrop-filter: blur(10px);
         }
 
-        .nav-link { color: #555; cursor: pointer; font-size: 0.8rem; text-decoration: none; }
-        .nav-link.active-nav { color: var(--primary); }
+        .menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            margin-right: 20px;
+        }
 
+        /* MAIN APP CONTAINER */
+        .app-container {
+            margin-top: 60px;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            padding: 20px;
+            display: none;
+        }
+
+        .page { display: none; animation: slideIn 0.4s ease-out; }
+        .page.active { display: block; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* NEWS CARDS */
+        .news-cat {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .cat-chip {
+            padding: 8px 20px;
+            background: #1a1a1e;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .cat-chip.active { background: var(--primary); color: #000; }
+
+        .news-card {
+            background: #111;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+
+        .news-img { width: 100%; height: 150px; background: #222; display: flex; align-items: center; justify-content: center; color: #444; }
+
+        /* GALLERY AI */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .ai-img {
+            aspect-ratio: 1/1;
+            background: #1a1a1e;
+            border-radius: 10px;
+            border: 1px solid var(--primary);
+        }
+
+        /* BUTTONS */
+        .btn {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    
-    <div id="loginPage" class="page active">
-        <h2>Ingia</h2>
-        <div class="input-group">
-            <input type="text" placeholder="Jina la mtumiaji">
-        </div>
-        <div class="input-group">
-            <input type="password" placeholder="Nenosiri">
-        </div>
-        <button class="btn" onclick="showPage('homePage')">LOGIN</button>
-        <p style="text-align: center; margin-top: 20px; font-size: 0.8rem; color: #888;">
-            Huna akaunti? <span style="color: var(--primary); cursor: pointer;" onclick="showPage('registerPage')">Jisajili</span>
-        </p>
-    </div>
-
-    <div id="registerPage" class="page">
-        <h2>Jisajili</h2>
-        <input type="text" placeholder="Jina kamili" style="margin-bottom:10px">
-        <input type="email" placeholder="Barua pepe" style="margin-bottom:10px">
-        <input type="password" placeholder="Nenosiri" style="margin-bottom:10px">
-        <button class="btn" onclick="showPage('loginPage')">REGISTER</button>
-    </div>
-
-    <div id="homePage" class="page">
-        <h3 style="text-align: center;">NEXUS FREE-NET</h3>
-        <div class="loading-box">
-            <div id="loader" class="circle-loader" style="display: none;"></div>
-            <div class="gb-counter" id="gbValue">0.00 GB</div>
-            <div class="status-text" id="statusLabel">Tayari kuunganishwa...</div>
-            <button class="btn" id="startBtn" style="width: 80%;" onclick="startLoading()">ANZA KULOAD DATA</button>
+    <div id="splash">
+        <h1 style="color: var(--primary); font-size: 2rem;">NEXUS PRO</h1>
+        <div style="width: 200px; height: 3px; background: #222; margin-top: 20px; border-radius: 10px; overflow: hidden;">
+            <div class="loader-fill"></div>
         </div>
     </div>
 
-    <div id="settingsPage" class="page">
-        <h2>Mipangilio</h2>
-        <div class="settings-item">
-            <span>Lugha</span>
-            <select style="background:none; color:white; border:none; outline:none;">
-                <option>Kiswahili</option>
-                <option>English</option>
-            </select>
-        </div>
-        <div class="settings-item">
-            <span>Server Selection</span>
-            <span style="color: var(--primary);">Auto (Fastest)</span>
-        </div>
-        <div class="settings-item">
-            <span>Dark Mode</span>
-            <input type="checkbox" checked>
-        </div>
-        <button class="btn" onclick="showPage('loginPage')" style="background: red;">LOGOUT</button>
+    <div class="sidebar" id="sidebar">
+        <div class="menu-item" onclick="openPage('homePage')">Mwanzo (Home)</div>
+        <div class="menu-item" onclick="openPage('newsPage')">Habari (News)</div>
+        <div class="menu-item" onclick="openPage('galleryPage')">AI Gallery</div>
+        <div class="menu-item" onclick="openPage('settingsPage')">Mipangilio</div>
     </div>
 
-    <div class="nav-bar" id="navbar" style="display: none;">
-        <div class="nav-link active-nav" onclick="showPage('homePage')">HOME</div>
-        <div class="nav-link" onclick="showPage('settingsPage')">SETTINGS</div>
+    <div class="top-nav" id="topNav" style="display:none;">
+        <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+        <div style="font-weight: bold; color: var(--primary);">NEXUS FREE-NET</div>
     </div>
-</div>
 
-<script>
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
+    <div class="app-container" id="appBody">
         
-        // Ficha/Onyesha navbar
-        const navbar = document.getElementById('navbar');
-        if(pageId === 'homePage' || pageId === 'settingsPage') {
-            navbar.style.display = 'flex';
-        } else {
-            navbar.style.display = 'none';
+        <div id="homePage" class="page active">
+            <h3 style="margin-bottom: 20px;">Pata Data Bure</h3>
+            <input type="text" placeholder="Weka Namba ya Simu" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:white; border-radius:10px; margin-bottom:15px;">
+            <p style="font-size: 0.9rem; color: #888; margin-bottom: 10px;">Chagua Mtandao:</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="cat-chip" onclick="this.classList.toggle('active')">Airtel</button>
+                <button class="cat-chip" onclick="this.classList.toggle('active')">Vodacom</button>
+                <button class="cat-chip" onclick="this.classList.toggle('active')">Tigo</button>
+                <button class="cat-chip" onclick="this.classList.toggle('active')">Halotel</button>
+            </div>
+            <button class="btn" onclick="startHack()">ANZA KULOAD GB</button>
+            <div id="hackStatus" style="margin-top: 20px; font-family: monospace; font-size: 0.8rem; color: #00ff88;"></div>
+        </div>
+
+        <div id="newsPage" class="page">
+            <h3 style="margin-bottom: 15px;">Habari Mpya</h3>
+            <div class="news-cat">
+                <div class="cat-chip active">Tech</div>
+                <div class="cat-chip">Kijamii</div>
+                <div class="cat-chip">Michezo</div>
+            </div>
+            <div class="news-card">
+                <div class="news-img">IMAGE TECH</div>
+                <div style="padding: 15px;">
+                    <h4>AI Inavyobadili Tanzania</h4>
+                    <p style="font-size: 0.8rem; color: #888;">Dakika 5 zilizopita</p>
+                </div>
+            </div>
+            <div class="news-card">
+                <div class="news-img">IMAGE SOCIAL</div>
+                <div style="padding: 15px;">
+                    <h4>Serikali Yazindua Mkongo Mpya</h4>
+                    <p style="font-size: 0.8rem; color: #888;">Leo 10:00 AM</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="galleryPage" class="page">
+            <h3 style="margin-bottom: 15px;">AI Art Gallery</h3>
+            <div class="gallery-grid">
+                <div class="ai-img"></div>
+                <div class="ai-img"></div>
+                <div class="ai-img"></div>
+                <div class="ai-img"></div>
+            </div>
+            <button class="btn" style="background:#222; color:white;">Generate New Image</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Splash logic
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('appBody').style.display = 'block';
+            document.getElementById('topNav').style.display = 'flex';
+        }, 2800);
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
         }
-    }
 
-    function startLoading() {
-        const btn = document.getElementById('startBtn');
-        const loader = document.getElementById('loader');
-        const gbText = document.getElementById('gbValue');
-        const status = document.getElementById('statusLabel');
-        
-        btn.style.display = 'none';
-        loader.style.display = 'block';
-        
-        let currentGb = 0;
-        const targetGb = (Math.random() * (50 - 10) + 10).toFixed(2); // Random GB kati ya 10 na 50
-        
-        const logs = [
-            "Inatafuta seva...",
-            "Inatengeneza tunnel...",
-            "Inakwepa vizuizi...",
-            "Inapokea pakiti...",
-            "Inakamilisha muunganisho..."
-        ];
+        function openPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            toggleSidebar(); // Funga menu baada ya kuchagua
+        }
 
-        let logIndex = 0;
-        const interval = setInterval(() => {
-            if (currentGb < targetGb) {
-                currentGb += 0.23;
-                gbText.innerText = currentGb.toFixed(2) + " GB";
-                
-                // Badilisha status text kila baada ya muda
-                if(Math.floor(currentGb) % 5 === 0) {
-                    status.innerText = logs[logIndex % logs.length];
-                    logIndex++;
-               }
-            } else {
-                clearInterval(interval);
-                gbText.innerText = targetGb + " GB";
-                status.innerText = "Imekamilika! Furahia intaneti.";
-                status.style.color = "#00ff88";
-                loader.style.borderTopColor = "#00ff88";
-                loader.style.animation = "none";
-                alert("Hongera! GB " + targetGb + " zimeongezwa kwenye akaunti yako.");
-            }
-        }, 50);
-    }
-</script>
-
+        function startHack() {
+            const status = document.getElementById('hackStatus');
+            status.innerHTML = "> Inatafuta mpenyo...<br>";
+            let p = 0;
+            const iv = setInterval(() => {
+                p += 5;
+                status.innerHTML += "> Loading Secure Pack " + p + "%<br>";
+                if(p >= 100) {
+                    clearInterval(iv);
+                    alert("GB Zimeunganishwa! Angalia salio baada ya muda.");
+                }
+            }, 100);
+        }
+    </script>
 </body>
-         </h 
+            </html>                              
