@@ -254,4 +254,166 @@
         }
     </script>
 </body>
-            </html>                              
+            </html>      eo-box">
+                    <div style="color: #00ff41;">VOICE ACTIVE</div>
+                    <div class="video-label" id="active-caller">Searching Node...</div>
+                </div>
+            </div>
+            <button class="chat-btn" style="width: 100%; margin-top: 10px;" onclick="closeVoiceChat()">[ TERMINATE CONNECTION ]</button>
+        </div>
+    </div>
+
+    <div id="reg-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1500; flex-direction: column; justify-content: center; align-items: center;">
+        <div class="gate-container">
+            <div class="terminal-header">NODE REGISTRATION</div>
+            <input type="text" id="reg-name" placeholder="INGIZA JINA (HACKER ALIAS)" style="background: #000; border: 1px solid #00ff41; color: #00ff41; padding: 12px; width: 100%; margin-bottom: 10px; outline: none;">
+            <select id="reg-code" style="background: #000; border: 1px solid #00ff41; color: #00ff41; padding: 12px; width: 100%; margin-bottom: 15px; outline: none;">
+                <option value="">CHAGUA CODE YAKO</option>
+                <option value="200">CODE-200</option>
+                <option value="300">CODE-300</option>
+                <option value="500">CODE-500</option>
+                <option value="600">CODE-600</option>
+                <option value="700">CODE-700</option>
+            </select>
+            <button id="final-join-btn" class="chat-btn" style="width: 100%;">[ ACTIVATE PROFILE ]</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Matrix Background Logic
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const alphabet = "010101ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00ff41";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 35);
+
+        // 2. Access Control Logic
+        let attempts = 0;
+        let userData = { name: "", code: "" };
+
+        const loginBtn = document.getElementById('login-btn');
+        const passInput = document.getElementById('password-input');
+        const gate = document.getElementById('password-gate');
+        const regScreen = document.getElementById('reg-screen');
+        const nexus = document.getElementById('nexus-interface');
+
+        loginBtn.addEventListener('click', () => {
+            if (passInput.value === "2026") {
+                gate.style.display = 'none';
+                regScreen.style.display = 'flex';
+            } else {
+                attempts++;
+                passInput.style.border = "2px solid red";
+                passInput.style.boxShadow = "0 0 20px red";
+                if (attempts >= 3) {
+                    alert("!!! SECURITY BREACH !!! Unauthorized access detected.");
+                    location.reload();
+                }
+            }
+        });
+
+        // Registration Logic
+        document.getElementById('final-join-btn').addEventListener('click', () => {
+            const name = document.getElementById('reg-name').value;
+            const code = document.getElementById('reg-code').value;
+
+            if (name && code) {
+                userData.name = name.toUpperCase();
+                userData.code = code;
+                regScreen.style.display = 'none';
+                nexus.style.display = 'block';
+                
+                // Set Profile
+                document.getElementById('user-id').innerText = userData.name + "_" + userData.code;
+                document.getElementById('room-id').innerText = "#HACKER_LOUNGE";
+                
+                startSystem();
+            } else {
+                alert("Jaza taarifa zote ili uingie kwenye network!");
+            }
+        });
+
+        // 3. Chat & System Logic
+        function startSystem() {
+            sendSystemMessage("ENCRYPTION KEYS GENERATED...");
+            sendSystemMessage("WELCOME, " + userData.name + ". Karibu kwenye Group la Mahacker Tanzania.");
+            
+            // Get Battery & Location
+            if (navigator.getBattery) {
+                navigator.getBattery().then(b => {
+                    sendSystemMessage("NODE BATTERY: " + Math.floor(b.level * 100) + "%");
+                });
+            }
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(p => {
+                    sendSystemMessage("LOCATION LOCKED: LAT " + p.coords.latitude.toFixed(2));
+                });
+            }
+        }
+
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (text) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message sent';
+                msgDiv.innerHTML = `
+                    <div class="message-header"><span>${userData.name}</span></div>
+                    <div class="message-content">${text}</div>
+                `;
+                chatMessages.appendChild(msgDiv);
+                messageInput.value = "";
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Fake Reply
+                setTimeout(() => {
+                    sendAutoReply();
+                }, 2000);
+            }
+        }
+
+        function sendSystemMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.innerHTML = `<div style="color:yellow; font-size:10px;">[SYSTEM]</div><div>${text}</div>`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendAutoReply() {
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.innerHTML = `<div class="message-header"><span>ADMIN_ROOT</span></div><div>Copy that, ${userData.name}. Signal received.</div>`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Modal Controls
+        function showVoiceChat() { document.getElementById('voice-modal').style.display = 'flex'; }
+        function closeVoiceChat() { document.getElementById('voice-modal').style.display = 'none'; }
+        
+        // Enter Key to Send
+        messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage(); });
+    </script>
+</body>
+</html>                        
