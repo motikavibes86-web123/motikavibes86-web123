@@ -1,257 +1,228 @@
-  <!DOCTYPE html>
-<html lang="sw">
+ <!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS PRO | Ultimate Free-Net</title>
-    <style>
-        :root {
-            --primary: #00f7ff;
-            --bg: #050505;
-            --sidebar-w: 250px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: white; overflow: hidden; }
-
-        /* SPLASH SCREEN */
-        #splash {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-
-        .loader-fill {
-            width: 0%; height: 100%; background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-            animation: fillUp 2.5s forwards;
-        }
-
-        @keyframes fillUp { 100% { width: 100%; } }
-
-        /* SIDEBAR */
-        .sidebar {
-            position: fixed;
-            left: calc(-1 * var(--sidebar-w));
-            top: 0; width: var(--sidebar-w); height: 100%;
-            background: #0f0f12;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 999;
-            padding-top: 60px;
-            border-right: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .sidebar.open { left: 0; }
-
-        .menu-item {
-            padding: 15px 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.02);
-            transition: 0.3s;
-        }
-
-        .menu-item:hover { background: var(--primary); color: #000; font-weight: bold; }
-
-        /* TOP NAV */
-        .top-nav {
-            position: fixed;
-            top: 0; width: 100%; height: 60px;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 998;
-            backdrop-filter: blur(10px);
-        }
-
-        .menu-btn {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--primary);
-            margin-right: 20px;
-        }
-
-        /* MAIN APP CONTAINER */
-        .app-container {
-            margin-top: 60px;
-            height: calc(100vh - 60px);
-            overflow-y: auto;
-            padding: 20px;
-            display: none;
-        }
-
-        .page { display: none; animation: slideIn 0.4s ease-out; }
-        .page.active { display: block; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-
-        /* NEWS CARDS */
-        .news-cat {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-
-        .cat-chip {
-            padding: 8px 20px;
-            background: #1a1a1e;
-            border-radius: 20px;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .cat-chip.active { background: var(--primary); color: #000; }
-
-        .news-card {
-            background: #111;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            border: 1px solid #222;
-        }
-
-        .news-img { width: 100%; height: 150px; background: #222; display: flex; align-items: center; justify-content: center; color: #444; }
-
-        /* GALLERY AI */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .ai-img {
-            aspect-ratio: 1/1;
-            background: #1a1a1e;
-            border-radius: 10px;
-            border: 1px solid var(--primary);
-        }
-
-        /* BUTTONS */
-        .btn {
-            width: 100%;
-            background: var(--primary);
-            color: #000;
-            padding: 15px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundry Books Payment Dashboard</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f2f2f2; margin:0; padding:0;}
+  header { background:#4CAF50; color:white; padding:1rem; text-align:center; }
+  h1 { margin:0; }
+  .container { padding:2rem; max-width:1200px; margin:auto; }
+  .book-list { display:grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap:1rem; }
+  .book { background:white; padding:1rem; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+  .book h3 { margin-top:0; }
+  .book button { background:#4CAF50; color:white; border:none; padding:0.5rem 1rem; border-radius:5px; cursor:pointer; }
+  .book button:hover { background:#45a049; }
+  .message { margin-top:1rem; padding:0.5rem; border-radius:5px; }
+  .success { background:#d4edda; color:#155724; }
+  .error { background:#f8d7da; color:#721c24; }
+</style>
 </head>
 <body>
 
-    <div id="splash">
-        <h1 style="color: var(--primary); font-size: 2rem;">NEXUS PRO</h1>
-        <div style="width: 200px; height: 3px; background: #222; margin-top: 20px; border-radius: 10px; overflow: hidden;">
-            <div class="loader-fill"></div>
-        </div>
-    </div>
+<header>
+  <h1>Fundry Books Payment</h1>
+</header>
 
-    <div class="sidebar" id="sidebar">
-        <div class="menu-item" onclick="openPage('homePage')">Mwanzo (Home)</div>
-        <div class="menu-item" onclick="openPage('newsPage')">Habari (News)</div>
-        <div class="menu-item" onclick="openPage('galleryPage')">AI Gallery</div>
-        <div class="menu-item" onclick="openPage('settingsPage')">Mipangilio</div>
-    </div>
+<div class="container">
+  <div class="book-list" id="bookList">
+    <!-- Vitabu vitatokea hapa -->
+  </div>
+  <div id="message"></div>
+</div>
 
-    <div class="top-nav" id="topNav" style="display:none;">
-        <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-        <div style="font-weight: bold; color: var(--primary);">NEXUS FREE-NET</div>
-    </div>
+<script>
+// ====== Configuration ======
+const API_TOKEN = "YOUR_API_TOKEN"; // Badilisha na token yako
+const USER_ID = 25; // Badilisha na user_id yako
+const VENDOR = "TILL61103867";
+const REDIRECT_URL = "https://yourdomain.com/success";
+const CANCEL_URL = "https://yourdomain.com/cancel";
+const WEBHOOK_URL = "https://yourdomain.com/webhook";
 
-    <div class="app-container" id="appBody">
-        
-        <div id="homePage" class="page active">
-            <h3 style="margin-bottom: 20px;">Pata Data Bure</h3>
-            <input type="text" placeholder="Weka Namba ya Simu" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:white; border-radius:10px; margin-bottom:15px;">
-            <p style="font-size: 0.9rem; color: #888; margin-bottom: 10px;">Chagua Mtandao:</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Airtel</button>
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Vodacom</button>
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Tigo</button>
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Halotel</button>
-            </div>
-            <button class="btn" onclick="startHack()">ANZA KULOAD GB</button>
-            <div id="hackStatus" style="margin-top: 20px; font-family: monospace; font-size: 0.8rem; color: #00ff88;"></div>
-        </div>
+// ====== Generate 250 books ======
+const books = [];
+for(let i=1;i<=250;i++){
+  books.push({id:i, title:`Book ${i}`, price:Math.floor(Math.random()*900)+100});
+}
 
-        <div id="newsPage" class="page">
-            <h3 style="margin-bottom: 15px;">Habari Mpya</h3>
-            <div class="news-cat">
-                <div class="cat-chip active">Tech</div>
-                <div class="cat-chip">Kijamii</div>
-                <div class="cat-chip">Michezo</div>
-            </div>
-            <div class="news-card">
-                <div class="news-img">IMAGE TECH</div>
-                <div style="padding: 15px;">
-                    <h4>AI Inavyobadili Tanzania</h4>
-                    <p style="font-size: 0.8rem; color: #888;">Dakika 5 zilizopita</p>
-                </div>
-            </div>
-            <div class="news-card">
-                <div class="news-img">IMAGE SOCIAL</div>
-                <div style="padding: 15px;">
-                    <h4>Serikali Yazindua Mkongo Mpya</h4>
-                    <p style="font-size: 0.8rem; color: #888;">Leo 10:00 AM</p>
-                </div>
-            </div>
-        </div>
+// ====== Display books ======
+const bookList = document.getElementById("bookList");
+books.forEach(book => {
+  const div = document.createElement("div");
+  div.className = "book";
+  div.innerHTML = `
+    <h3>${book.title}</h3>
+    <p>Price: TZS ${book.price}</p>
+    <button onclick="payBook(${book.id})">Lipa</button>
+  `;
+  bookList.appendChild(div);
+});
 
-        <div id="galleryPage" class="page">
-            <h3 style="margin-bottom: 15px;">AI Art Gallery</h3>
-            <div class="gallery-grid">
-                <div class="ai-img"></div>
-                <div class="ai-img"></div>
-                <div class="ai-img"></div>
-                <div class="ai-img"></div>
-            </div>
-            <button class="btn" style="background:#222; color:white;">Generate New Image</button>
-        </div>
+// ====== Show messages ======
+function showMessage(msg,type="success"){
+  const messageDiv = document.getElementById("message");
+  messageDiv.className = `message ${type}`;
+  messageDiv.innerText = msg;
+}
 
-    </div>
+// ====== Pay via PalmPesa API ======
+async function payBook(bookId){
+  const book = books.find(b=>b.id===bookId);
+  if(!book) return;
 
-    <script>
-        // Splash logic
-        setTimeout(() => {
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('appBody').style.display = 'block';
-            document.getElementById('topNav').style.display = 'flex';
-        }, 2800);
+  const orderId = "ORDER-" + Date.now(); // unique order id
+  const buyerName = prompt("Ingiza jina lako:");
+  const buyerPhone = prompt("Ingiza namba yako (e.g., 255744000000):");
+  const buyerEmail = prompt("Ingiza email yako:");
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
+  if(!buyerName || !buyerPhone || !buyerEmail){
+    showMessage("Tafadhali jaza taarifa zote!", "error");
+    return;
+  }
 
-        function openPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            toggleSidebar(); // Funga menu baada ya kuchagua
-        }
+  const payload = {
+    user_id: USER_ID,
+    vendor: VENDOR,
+    order_id: orderId,
+    buyer_email: buyerEmail,
+    buyer_name: buyerName,
+    buyer_phone: buyerPhone,
+    amount: book.price,
+    currency: "TZS",
+    redirect_url: REDIRECT_URL,
+    cancel_url: CANCEL_URL,
+    webhook: WEBHOOK_URL,
+    buyer_remarks: "Online Book Purchase",
+    merchant_remarks: book.title,
+    no_of_items:1
+  };
 
-        function startHack() {
-            const status = document.getElementById('hackStatus');
-            status.innerHTML = "> Inatafuta mpenyo...<br>";
-            let p = 0;
-            const iv = setInterval(() => {
-                p += 5;
-                status.innerHTML += "> Loading Secure Pack " + p + "%<br>";
-                if(p >= 100) {
-                    clearInterval(iv);
-                    alert("GB Zimeunganishwa! Angalia salio baada ya muda.");
-                }
-            }, 100);
-        }
-    </script>
+  try{
+    const res = await fetch("https://palmpesa.drmlelwa.co.tz/api/process-payment",{
+      method:"POST",
+      headers:{
+        "Authorization":"Bearer "+API_TOKEN,
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(data.raw && data.raw.payment_gateway_url){
+      window.open(data.raw.payment_gateway_url,"_blank");
+      showMessage(`Payment link ya "${book.title}" imetengenezwa, dirisha jipya limefunguliwa.`);
+    }else{
+      showMessage("Tatizo limetokea, jaribu tena.", "error");
+      console.log(data);
+    }
+  }catch(err){
+    showMessage("Network error. Jaribu tena.", "error");
+    console.error(err);
+  }
+}
+</script>
+
 </body>
-            </html>                              
+</html>  <div class="container">
+  <div class="book-list" id="bookList">
+    <!-- Vitabu vitatokea hapa -->
+  </div>
+  <div id="message"></div>
+</div>
+
+<script>
+// ====== Configuration ======
+const API_TOKEN = "YOUR_API_TOKEN"; // Badilisha na token yako
+const USER_ID = 25; // Badilisha na user_id yako
+const VENDOR = "TILL61103867";
+const REDIRECT_URL = "https://yourdomain.com/success";
+const CANCEL_URL = "https://yourdomain.com/cancel";
+const WEBHOOK_URL = "https://yourdomain.com/webhook";
+
+// ====== Generate 250 books ======
+const books = [];
+for(let i=1;i<=250;i++){
+  books.push({id:i, title:`Book ${i}`, price:Math.floor(Math.random()*900)+100});
+}
+
+// ====== Display books ======
+const bookList = document.getElementById("bookList");
+books.forEach(book => {
+  const div = document.createElement("div");
+  div.className = "book";
+  div.innerHTML = `
+    <h3>${book.title}</h3>
+    <p>Price: TZS ${book.price}</p>
+    <button onclick="payBook(${book.id})">Lipa</button>
+  `;
+  bookList.appendChild(div);
+});
+
+// ====== Show messages ======
+function showMessage(msg,type="success"){
+  const messageDiv = document.getElementById("message");
+  messageDiv.className = `message ${type}`;
+  messageDiv.innerText = msg;
+}
+
+// ====== Pay via PalmPesa API ======
+async function payBook(bookId){
+  const book = books.find(b=>b.id===bookId);
+  if(!book) return;
+
+  const orderId = "ORDER-" + Date.now();
+  const buyerName = prompt("Ingiza jina lako:");
+  const buyerPhone = prompt("Ingiza namba yako (e.g., 255744000000):");
+  const buyerEmail = prompt("Ingiza email yako:");
+
+  if(!buyerName || !buyerPhone || !buyerEmail){
+    showMessage("Tafadhali jaza taarifa zote!", "error");
+    return;
+  }
+
+  const payload = {
+    user_id: USER_ID,
+    vendor: VENDOR,
+    order_id: orderId,
+    buyer_email: buyerEmail,
+    buyer_name: buyerName,
+    buyer_phone: buyerPhone,
+    amount: book.price,
+    currency: "TZS",
+    redirect_url: REDIRECT_URL,
+    cancel_url: CANCEL_URL,
+    webhook: WEBHOOK_URL,
+    buyer_remarks: "Online Book Purchase",
+    merchant_remarks: book.title,
+    no_of_items:1
+  };
+
+  try{
+    const res = await fetch("https://palmpesa.drmlelwa.co.tz/api/process-payment",{
+      method:"POST",
+      headers:{
+        "Authorization":"Bearer "+API_TOKEN,
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(data.raw && data.raw.payment_gateway_url){
+      window.open(data.raw.payment_gateway_url,"_blank");
+      showMessage(`Payment link ya "${book.title}" imetengenezwa, dirisha jipya limefunguliwa.`);
+    }else{
+      showMessage("Tatizo limetokea, jaribu tena.", "error");
+      console.log(data);
+    }
+  }catch(err){
+    showMessage("Network error. Jaribu tena.", "error");
+    console.error(err);
+  }
+}
+</script>
+
+</body>
+</html>                           
