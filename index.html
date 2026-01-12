@@ -1,257 +1,223 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sw">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS PRO | Ultimate Free-Net</title>
-    <style>
-        :root {
-            --primary: #00f7ff;
-            --bg: #050505;
-            --sidebar-w: 250px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motika Vibes – Digital Books</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: white; overflow: hidden; }
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont;
+  background:radial-gradient(circle at top,#1b1f3b,#0b0b12 60%);
+  color:#fff;
+}
 
-        /* SPLASH SCREEN */
-        #splash {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
+/* HERO */
+.hero{
+  padding:60px 20px 40px;
+  text-align:center;
+}
+.badge{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:20px;
+  background:linear-gradient(90deg,#ff4ecd,#7a5cff);
+  font-size:13px;
+  margin-bottom:20px;
+}
+.hero h1{
+  font-size:42px;
+  letter-spacing:3px;
+  margin:10px 0;
+  background:linear-gradient(90deg,#ff4ecd,#7a5cff,#2dd4ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero p{
+  max-width:520px;
+  margin:0 auto 25px;
+  opacity:.85;
+}
+.hero .btn{
+  display:inline-block;
+  padding:14px 24px;
+  border-radius:16px;
+  background:linear-gradient(90deg,#ff4ecd,#7a5cff,#2dd4ff);
+  color:#000;
+  font-weight:700;
+  text-decoration:none;
+}
 
-        .loader-fill {
-            width: 0%; height: 100%; background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-            animation: fillUp 2.5s forwards;
-        }
-
-        @keyframes fillUp { 100% { width: 100%; } }
-
-        /* SIDEBAR */
-        .sidebar {
-            position: fixed;
-            left: calc(-1 * var(--sidebar-w));
-            top: 0; width: var(--sidebar-w); height: 100%;
-            background: #0f0f12;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 999;
-            padding-top: 60px;
-            border-right: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .sidebar.open { left: 0; }
-
-        .menu-item {
-            padding: 15px 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.02);
-            transition: 0.3s;
-        }
-
-        .menu-item:hover { background: var(--primary); color: #000; font-weight: bold; }
-
-        /* TOP NAV */
-        .top-nav {
-            position: fixed;
-            top: 0; width: 100%; height: 60px;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 998;
-            backdrop-filter: blur(10px);
-        }
-
-        .menu-btn {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--primary);
-            margin-right: 20px;
-        }
-
-        /* MAIN APP CONTAINER */
-        .app-container {
-            margin-top: 60px;
-            height: calc(100vh - 60px);
-            overflow-y: auto;
-            padding: 20px;
-            display: none;
-        }
-
-        .page { display: none; animation: slideIn 0.4s ease-out; }
-        .page.active { display: block; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-
-        /* NEWS CARDS */
-        .news-cat {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-
-        .cat-chip {
-            padding: 8px 20px;
-            background: #1a1a1e;
-            border-radius: 20px;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .cat-chip.active { background: var(--primary); color: #000; }
-
-        .news-card {
-            background: #111;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            border: 1px solid #222;
-        }
-
-        .news-img { width: 100%; height: 150px; background: #222; display: flex; align-items: center; justify-content: center; color: #444; }
-
-        /* GALLERY AI */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .ai-img {
-            aspect-ratio: 1/1;
-            background: #1a1a1e;
-            border-radius: 10px;
-            border: 1px solid var(--primary);
-        }
-
-        /* BUTTONS */
-        .btn {
-            width: 100%;
-            background: var(--primary);
-            color: #000;
-            padding: 15px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-    </style>
+/* BOOKS */
+.container{
+  padding:20px;
+  max-width:1200px;
+  margin:auto;
+}
+.books{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px;
+}
+.book-card{
+  background:linear-gradient(180deg,#151522,#0c0c14);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.45);
+  position:relative;
+}
+.book-card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+}
+.tag{
+  position:absolute;
+  top:12px;
+  left:12px;
+  padding:6px 12px;
+  border-radius:14px;
+  background:#ff4ecd;
+  font-size:12px;
+  font-weight:600;
+}
+.book-content{
+  padding:16px;
+}
+.book-content h3{
+  margin:0 0 6px;
+  font-size:18px;
+}
+.stars{
+  color:#ff4ecd;
+  font-size:14px;
+}
+.price{
+  font-size:22px;
+  font-weight:800;
+  margin:12px 0;
+  color:#c084fc;
+}
+.buy-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:13px;
+  border-radius:16px;
+  background:linear-gradient(90deg,#ff4ecd,#7a5cff);
+  color:#000;
+  font-weight:700;
+  text-decoration:none;
+}
+.footer{
+  text-align:center;
+  padding:30px 10px;
+  opacity:.6;
+  font-size:14px;
+}
+</style>
 </head>
+
 <body>
 
-    <div id="splash">
-        <h1 style="color: var(--primary); font-size: 2rem;">NEXUS PRO</h1>
-        <div style="width: 200px; height: 3px; background: #222; margin-top: 20px; border-radius: 10px; overflow: hidden;">
-            <div class="loader-fill"></div>
-        </div>
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">✨ CEO Motika Company</div>
+  <h1>MOTIKA VIBES</h1>
+  <p>
+    Platform ya vitabu vya kidijitali na maarifa ya maisha.
+    Lipa mara moja, pata access papo hapo.
+  </p>
+  <a href="#vitabu" class="btn">▶ Tazama Vitabu</a>
+</section>
+
+<!-- BOOKS -->
+<section class="container" id="vitabu">
+  <div class="books">
+
+    <!-- 1000 TZS (5 books) -->
+    <div class="book-card">
+      <div class="tag">Maarufu</div>
+      <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800">
+      <div class="book-content">
+        <div class="stars">★★★★★</div>
+        <h3>Siri za Matajiri</h3>
+        <div class="price">1,000 TZS</div>
+        <a href="#" class="buy-btn">🛒 Nunua Sasa</a>
+      </div>
     </div>
 
-    <div class="sidebar" id="sidebar">
-        <div class="menu-item" onclick="openPage('homePage')">Mwanzo (Home)</div>
-        <div class="menu-item" onclick="openPage('newsPage')">Habari (News)</div>
-        <div class="menu-item" onclick="openPage('galleryPage')">AI Gallery</div>
-        <div class="menu-item" onclick="openPage('settingsPage')">Mipangilio</div>
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800">
+      <div class="book-content">
+        <div class="stars">★★★★★</div>
+        <h3>Akili ya Mafanikio</h3>
+        <div class="price">1,000 TZS</div>
+        <a href="#" class="buy-btn">🛒 Nunua Sasa</a>
+      </div>
     </div>
 
-    <div class="top-nav" id="topNav" style="display:none;">
-        <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-        <div style="font-weight: bold; color: var(--primary);">NEXUS FREE-NET</div>
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800">
+      <div class="book-content">
+        <div class="stars">★★★★★</div>
+        <h3>Njia za Utajiri</h3>
+        <div class="price">1,000 TZS</div>
+        <a href="#" class="buy-btn">🛒 Nunua Sasa</a>
+      </div>
     </div>
 
-    <div class="app-container" id="appBody">
-        
-        <div id="homePage" class="page active">
-            <h3 style="margin-bottom: 20px;">Pata Data Bure</h3>
-            <input type="text" placeholder="Weka Namba ya Simu" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:white; border-radius:10px; margin-bottom:15px;">
-            <p style="font-size: 0.9rem; color: #888; margin-bottom: 10px;">Chagua Mtandao:</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Airtel</button>
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Vodacom</button>
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Tigo</button>
-                <button class="cat-chip" onclick="this.classList.toggle('active')">Halotel</button>
-            </div>
-            <button class="btn" onclick="startHack()">ANZA KULOAD GB</button>
-            <div id="hackStatus" style="margin-top: 20px; font-family: monospace; font-size: 0.8rem; color: #00ff88;"></div>
-        </div>
-
-        <div id="newsPage" class="page">
-            <h3 style="margin-bottom: 15px;">Habari Mpya</h3>
-            <div class="news-cat">
-                <div class="cat-chip active">Tech</div>
-                <div class="cat-chip">Kijamii</div>
-                <div class="cat-chip">Michezo</div>
-            </div>
-            <div class="news-card">
-                <div class="news-img">IMAGE TECH</div>
-                <div style="padding: 15px;">
-                    <h4>AI Inavyobadili Tanzania</h4>
-                    <p style="font-size: 0.8rem; color: #888;">Dakika 5 zilizopita</p>
-                </div>
-            </div>
-            <div class="news-card">
-                <div class="news-img">IMAGE SOCIAL</div>
-                <div style="padding: 15px;">
-                    <h4>Serikali Yazindua Mkongo Mpya</h4>
-                    <p style="font-size: 0.8rem; color: #888;">Leo 10:00 AM</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="galleryPage" class="page">
-            <h3 style="margin-bottom: 15px;">AI Art Gallery</h3>
-            <div class="gallery-grid">
-                <div class="ai-img"></div>
-                <div class="ai-img"></div>
-                <div class="ai-img"></div>
-                <div class="ai-img"></div>
-            </div>
-            <button class="btn" style="background:#222; color:white;">Generate New Image</button>
-        </div>
-
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800">
+      <div class="book-content">
+        <div class="stars">★★★★☆</div>
+        <h3>Ujasiriamali Kisasa</h3>
+        <div class="price">1,000 TZS</div>
+        <a href="#" class="buy-btn">🛒 Nunua Sasa</a>
+      </div>
     </div>
 
-    <script>
-        // Splash logic
-        setTimeout(() => {
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('appBody').style.display = 'block';
-            document.getElementById('topNav').style.display = 'flex';
-        }, 2800);
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800">
+      <div class="book-content">
+        <div class="stars">★★★★★</div>
+        <h3>Money Mindset</h3>
+        <div class="price">1,000 TZS</div>
+        <a href="#" class="buy-btn">🛒 Nunua Sasa</a>
+      </div>
+    </div>
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
+    <!-- 500 TZS -->
+    <div class="book-card">
+      <div class="tag">Bei Nafuu</div>
+      <img src="https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=800">
+      <div class="book-content">
+        <div class="stars">★★★★☆</div>
+        <h3>Maisha Bora</h3>
+        <div class="price">500 TZS</div>
+        <a href="#" class="buy-btn">🛒 Nunua Sasa</a>
+      </div>
+    </div>
 
-        function openPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            toggleSidebar(); // Funga menu baada ya kuchagua
-        }
+    <div class="book-card">
+      <img src="https://images.unsplash.com/photo-1496104679561-38b3b4d71b45?w=800">
+      <div class="book-content">
+        <div class="stars">★★★★☆</div>
+        <h3>Mbinu za Akiba</h3>
+        <div class="price">500 TZS</div>
+        <a href="#" class="buy-btn">🛒 Nunua Sasa</a>
+      </div>
+    </div>
 
-        function startHack() {
-            const status = document.getElementById('hackStatus');
-            status.innerHTML = "> Inatafuta mpenyo...<br>";
-            let p = 0;
-            const iv = setInterval(() => {
-                p += 5;
-                status.innerHTML += "> Loading Secure Pack " + p + "%<br>";
-                if(p >= 100) {
-                    clearInterval(iv);
-                    alert("GB Zimeunganishwa! Angalia salio baada ya muda.");
-                }
-            }, 100);
-        }
-    </script>
+  </div>
+</section>
+
+<div class="footer">
+  © 2026 Motika Vibes. All rights reserved.
+</div>
+
 </body>
-            </html>                              
+  </html>                      
