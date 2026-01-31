@@ -1,24 +1,27 @@
-# Bongo Vibes 🎮✨
+# 🎓 CHUO-GIG PLATFORM
 
-Bongo Vibes ni jukwaa la burudani na elimu linalokuwezesha kila mtu kufurahia michezo, elimu, na vichekesho kwa njia ya kipekee.
+### "Piga Pesa, Jenga Ujuzi"
+CHUO-GIG ni mfumo wa kidijitali unaowaunganisha wanafunzi wa vyuo nchini Tanzania na fursa za kazi ndogondogo (micro-tasks) na masoko kupitia QR Code technology.
 
-## Vipengele vya Kuu
+## 🚀 Teknolojia Inayotumika
+- **Frontend:** Next.js (Deployed on Vercel)
+- **Backend:** Django Rest Framework (Python)
+- **Database:** PostgreSQL (Supabase/ElephantSQL)
+- **Security:** GitHub Actions, Environment Variables, NIDA Integration
 
-| Kipengele        | Maelezo                                                   |
-|-----------------|-----------------------------------------------------------|
-| 🎮 Michezo       | Cheza michezo ya kuvutia na kulipwa kwa uchezaji         |
-| 🌍 Mechi za Dunia | Angalia matukio ya michezo na mechi za soka duniani    |
-| 😂 Vichekesho    | Furahia vichekesho na simulizi za kipekee              |
-| 📚 Elimu        | Pata elimu kwa njia ya burudani                           |
+## 🛠️ Muundo wa Mradi
+- `/frontend`: Interface ya Wanafunzi, Maduka, na Admin.
+- `/backend`: API engine, usimamizi wa pesa, na QR Generator.
 
-## Kwa Nini Usichague Bongo Vibes?
+## 🔐 Ulinzi na Usalama
+1. **QR Code Unique ID:** Kila mwanafunzi ana ID isiyoweza kughushiwa.
+2. **2FA:** Uthibitisho wa miamala kwa namba ya simu.
+3. **Encryption:** Taarifa zote za kibenki na NIDA zimesimbwa.
 
-- 💸 Pata malipo kwa uchezaji wa michezo  
-- 🎯 Angalia mechi na matukio ya dunia kwa muda halisi  
-- 🤣 Burudani na vichekesho vya kila siku  
-- 🧠 Jifunze mambo mapya kwa njia ya raha  
+## 📈 Roadmap
+- [ ] Phase 1: MVP (Website kwanza)
+- [ ] Phase 2: Pilot Program (Vyuo 5 vya Dar)
+- [ ] Phase 3: Mobile App (Android & iOS)
 
-## Mafundi wa Tech
-
-Kila kitu kuhusu Bongo Vibes kinapewa ufafanuzi na mafundi wa tech wa **Mapenz Group**. Usikose kujiunga na channel yetu ya WhatsApp:  
-[Jiunge na Mapenz Group](https://chat.whatsapp.com/BlFL9hDyCtaHDdUNBFNm4p)!
+---
+© 2026 Chuo-Gig Africa. Haki zote zimehifadhiwa.
