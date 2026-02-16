@@ -1,70 +1,59 @@
-## 🏆 WekezaApp Gold – Digital Agriculture Stock Exchange
-> **"Dhahabu ya Kijani Mikononi Mwako"**
+# 🛡️ GLOBAL CYBERSECURITY & DIGITAL DEFENSE PORTFOLIO 🔒
 
-[![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Android%20%7C%20iOS-gold)](https://github.com/)
-[![License](https://img.shields.io/badge/Security-SSL%20Encrypted-green)](https://github.com/)
-[![Status](https://img.shields.io/badge/Status-Live%20Market-orange)](https://github.com/)
+Welcome to my professional security laboratory! I am **Masaidiez**, a dedicated Cybersecurity Enthusiast and Researcher. This repository documents my technical journey in securing digital landscapes and defending against cyber threats.
 
 ---
 
-## 🌟 Kuhusu Mradi (Overview)
-**WekezaApp Gold** ni jukwaa la kisasa la uwekezaji (Micro-Investment Platform) linalowawezesha watu wa kawaida kumiliki hisa kwenye mazao ya kimkakati, mifugo, na viwanda vidogo nchini Tanzania. 
-
-Tumeunganisha teknolojia ya **AI Assistant**, **Real-time Market Data**, na **Secure Payments** ili kumpa mwekezaji uzoefu wa kimataifa kama wa masoko ya hisa ya New York (NYSE) au London (LSE), lakini kwa bidhaa zetu za Kitanzania kama Korosho, Maparachichi, na Dhahabu.
-
----
-
-## 🚀 Sifa Kuu (Core Features)
-
-### 📈 Soko la Mazao 40+ (Diverse Portfolio)
-Kuanzia mbogamboga kama Nyanya na Karoti, mpaka mazao ya thamani kubwa kama Maparachichi (Green Gold) na Mbao. Kila mradi una mchanganuo wa faida na maelezo ya kina.
-
-### 🤖 AI-Powered Support
-Mfumo wetu unaongozwa na **AI Assistant** anayejibu maswali ya wawekezaji 24/7 automatic, akitoa msaada wa haraka kuhusu faida na jinsi ya kuanza.
-
-### 🛡️ Usalama wa Hali ya Juu (Broker-Backed)
-Kila uwekezaji unaratibiwa na Brokers waliosajiliwa. Tumeshirikiana na mawakala waaminifu (Ally Said & Said) kuhakikisha risiti na malipo yanashughulikiwa kwa weledi.
-
-### ⚡ Live Investment Alerts
-Mfumo unaonyesha "Live" wawekezaji wengine wanavyoingia sokoni, jambo linaloongeza uwazi (Transparency) na imani kwa watumiaji wapya.
+## 👤 CONTACT INFORMATION / MAWASILIANO
+📍 **Location:** Tanzania 🇹🇿
+📞 **Personal Phone:** [+255 750 020 767](tel:+255750020767) (Masaidiez)
+👨‍💼 **Supervisor/Mkuu:** [+255 798 241 398](tel:+255798241398)
 
 ---
 
-## 🛠 Teknolojia Tulizotumia (Tech Stack)
-* **Frontend:** HTML5, CSS3 (Premium Gold Theme), JavaScript (ES6+).
-* **AI Engine:** Custom Logic-based Neural Response System.
-* **Hosting:** Cloudflare Pages / GitHub Pages (Edge Computing).
-* **Integrations:** WhatsApp Business API & Palmpesa Gateway.
+## 🎓 COURSE OVERVIEW & DESCRIPTION
+This repository encompasses a deep dive into **Offensive and Defensive Security**. The course focuses on identifying vulnerabilities before the bad actors do, and implementing robust security frameworks to protect organizational assets.
+
+### 🛠️ CORE TECHNICAL SKILLS (SKILLS ZA KITAALAMU)
+*   **🌐 Network Security:** Deep packet analysis, Firewall configuration, and VPN tunneling.
+*   **🕵️‍♂️ Penetration Testing:** Systematic vulnerability scanning and exploitation using industry-standard frameworks.
+*   **💻 System Hardening:** Securing Linux (Kali/Ubuntu) and Windows Server environments.
+*   **📱 Mobile Security:** Analyzing Android/iOS application vulnerabilities (Special focus on devices like Redmi/Xiaomi).
+*   **🛡️ Threat Hunting:** Monitoring logs and detecting anomalies using SIEM tools.
 
 ---
 
-## 📊 Mchanganuo wa Faida (Profit Tiers)
-| Aina ya Mradi | Kima cha Chini | Faida (Monthly) | Riski (Risk Level) |
-| :--- | :--- | :--- | :--- |
-| **Mazao ya Muda Mfupi** | TSH 2,000 | 12% - 20% | Low |
-| **Mifugo & Samaki** | TSH 10,000 | 25% - 35% | Medium |
-| **Viwanda & Misitu** | TSH 50,000 | 40% - 45% | Secure |
+## 🧰 TOOLS OF THE TRADE (VIFAA NINAZOTUMIA)
+| Category | Tools |
+| :--- | :--- |
+| **Operating Systems** | 🐉 Kali Linux, 🐧 Parrot OS, 💻 Windows 11 Pro |
+| **Scanning/Enumeration** | 🔎 Nmap, 🐍 Python Scanners, 🕸️ Gobuster |
+| **Exploitation** | ⚡ Metasploit, 🧪 BeEF, 🏹 SQLmap |
+| **Web Analysis** | 🟠 Burp Suite, 🦈 Wireshark, 🧤 OWASP ZAP |
+| **Coding for Sec** | 🐍 Python, 🐚 Bash Scripting, ⚡ PowerShell |
 
 ---
 
-## 📖 Jinsi ya Kuanza (Installation & Usage)
-1.  **Jisajili:** Jaza taarifa zako (Majina 3, Benki, na Mtandao wa Simu).
-2.  **Chagua Mradi:** Vinjari soko na usome maelezo ya faida.
-3.  **Wekeza:** Bonyeza "Nimekubali" na kamilisha malipo.
-4.  **Vuna:** Fuatilia ukuaji wa mtaji wako kupitia Dashboard ya Kitalamu.
+## 📈 PROJECTS & LABS (KAZI ZA VITENDO)
+1. **Wireless Network Auditing:** Successfully testing WPA2/WPA3 vulnerabilities in controlled lab environments.
+2. **Social Engineering Simulations:** Creating awareness campaigns against Phishing attacks.
+3. **Malware Analysis:** Deconstructing trojans and ransomware inside isolated Sandboxes.
 
 ---
 
-## 🤝 Msaada na Mawasiliano
-Kama unahitaji msaada wa kiufundi au unataka kuwa Broker:
-* **WhatsApp:** [+255 750 020 767](https://wa.me/255750020767)
-* **Website:** [WekezaApp-Gold.pages.dev](https://wekezaapp-gold.pages.dev)
-* **Location:** Dar es Salaam, Tanzania.
+## 📜 CERTIFICATIONS IN PROGRESS
+- [ ] **CompTIA Security+** 🛡️
+- [ ] **Google Cybersecurity Professional** 🎓
+- [ ] **Certified Ethical Hacker (CEH)** 🥊
 
 ---
 
-## 📜 Leseni na Sheria
-Mradi huu ni mali ya **WekezaApp Gold Team**. Hairuhusiwi kuiga kodi bila kibali. Uwekezaji unaambatana na vigezo na masharti ya masoko ya bidhaa.
+## 🤝 CONNECT WITH ME
+Feel free to reach out for collaborations or security consultations. 
+> *"Security is not a product, but a process."* 🔐
+
+**[WhatsApp Masaidiez](https://wa.me)** | **[Call Supervisor](tel:+255798241398)**
 
 ---
-**Designed with ❤️ for Tanzanian Investors.**
+© 2026 Masaidiez Cyber-Lab | All Rights Reserved.
+.**
