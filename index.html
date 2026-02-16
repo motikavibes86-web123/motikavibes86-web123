@@ -3,210 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WekezaApp Gold | Smart Farming</title>
+    <title>NEXT GEN | CYBER OPS CENTRE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Plus+Jakarta+Sans:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'sw'}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <style>
-        :root { --gold: #c5a059; --green: #27ae60; --dark: #111; --light: #f9f9f9; }
-        body { font-family: 'Poppins', sans-serif; background: var(--light); margin: 0; padding-bottom: 90px; }
-        .hidden { display: none !important; }
+        :root { --neon: #00f2ff; --bg: #000; --danger: #ff3366; --success: #00ff88; }
+        * { margin: 0; padding: 0; box-sizing: border-box; text-transform: uppercase; }
+        body, html { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100%; }
 
-        /* Kifahali Modal */
-        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; }
-        .modal-card { background:white; padding:25px; border-radius:25px; text-align:center; width:100%; max-width:380px; border-top: 6px solid var(--gold); animation: slideUp 0.3s; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* --- STYLING MPYA ZA USER PANEL --- */
+        .stat-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: #111; padding: 10px; border: 1px solid var(--neon); flex: 1; text-align: center; font-size: 10px; }
+        
+        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #080808; border-bottom: 1px solid #222; margin-bottom: 5px; font-size: 12px; }
+        .status-active { color: var(--success); }
+        .status-blocked { color: var(--danger); }
 
-        /* Auth */
-        .auth-container { padding: 30px 20px; max-width: 450px; margin: auto; }
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #eee; border-radius: 12px; box-sizing: border-box; }
-        .btn-gold { width: 100%; padding: 15px; background: var(--dark); color: white; border: 1px solid var(--gold); border-radius: 12px; font-weight: bold; cursor: pointer; }
+        /* --- AI ASSISTANT --- */
+        #aiBot { position: fixed; bottom: 30px; left: 30px; z-index: 10000; cursor: pointer; }
+        #aiChat { position: fixed; bottom: 100px; left: 30px; width: 300px; background: #0a0a0a; border: 1px solid var(--neon); display: none; padding: 20px; z-index: 10000; border-radius: 15px; }
 
-        /* Dashboard */
-        .header { background: var(--dark); color: white; padding: 40px 20px 60px; border-radius: 0 0 40px 40px; }
-        .balance-card { background: white; margin: -40px 20px 20px; padding: 25px; border-radius: 25px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .act-btn { padding: 12px; border-radius: 12px; border: none; font-weight: bold; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
-
-        /* Mazao Cards */
-        .crop-card { background: white; margin: 15px 20px; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
-        .crop-img { width: 100%; height: 170px; object-fit: cover; }
-        .crop-body { padding: 15px; }
-
-        /* Bottom Menu */
-        .bottom-menu { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000; }
-        .menu-btn { text-align: center; color: #aaa; font-size: 11px; cursor: pointer; }
-        .active { color: var(--gold); font-weight: bold; }
+        /* --- MENU & OTHERS (FROM PREVIOUS) --- */
+        #entryPage { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.pexels.com/photos/5380664/pexels-photo-5380664.jpeg?auto=compress&cs=tinysrgb&w=1200'); background-size: cover; z-index: 15000; display: flex; align-items: center; justify-content: center; }
+        #regPage { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .reg-input { width: 80%; max-width: 400px; padding: 20px; background: #111; border: 2px solid var(--neon); color: #fff; margin-bottom: 15px; text-align: center; }
+        .sidebar { position: fixed; top: 0; left: -100%; width: 320px; height: 100%; background: #000; z-index: 5000; transition: 0.5s; padding: 80px 25px; border-right: 1px solid var(--neon); overflow-y: auto; }
+        .sidebar.active { left: 0; }
+        .feed-container { width: 100%; height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; display: none; }
+        .post { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; align-items: flex-end; background-size: cover; background-position: center; }
+        .post-overlay { width: 100%; padding: 100px 5% 150px; background: linear-gradient(to top, #000 60%, transparent); }
+        .admin-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9000; display: none; padding: 40px 5%; overflow-y: auto; }
+        
     </style>
 </head>
 <body>
 
-<div id="infoModal" class="modal hidden">
-    <div class="modal-card">
-        <h2 id="mTitle" style="color:var(--gold); margin-top:0;">💎 Taarifa</h2>
-        <div id="mBody" style="text-align: left; font-size: 14px; color: #444; margin-bottom: 20px;"></div>
-        <div id="mActions"></div>
-    </div>
-</div>
-
-<div id="authBox" class="auth-container">
-    <div id="signupPage" class="card">
-        <h2 style="color:var(--gold); text-align:center;">Jisajili</h2>
-        <input type="text" id="regFullName" placeholder="Majina Matatu">
-        <input type="text" id="regUser" placeholder="Username (Mfano: juma01)">
-        <input type="email" id="regEmail" placeholder="Barua Pepe (Email)">
-        <input type="tel" id="regPhone" placeholder="Namba ya Simu">
-        <select id="regNetwork">
-            <option value="">Chagua Mtandao</option>
-            <option>M-Pesa</option><option>Tigo Pesa</option><option>Airtel Money</option>
-        </select>
-        <input type="text" id="regBankName" placeholder="Jina la Benki">
-        <input type="text" id="regBankAcc" placeholder="Namba ya Akaunti">
-        <input type="password" id="regPass" placeholder="Password">
-        <button class="btn-gold" onclick="handleSignup()">TENGENEZA AKAUNTI</button>
-        <p style="text-align:center; font-size:12px; cursor:pointer;" onclick="toggleAuth('login')">Unayo akaunti? <b>Ingia</b></p>
+    <div id="entryPage">
+        <button onclick="goToReg()" style="padding: 20px 40px; border: 2px solid var(--neon); background: transparent; color: var(--neon); font-family: 'Syncopate'; cursor: pointer;">INITIALIZE SYSTEM</button>
     </div>
 
-    <div id="loginPage" class="card hidden">
-        <h2 style="color:var(--gold); text-align:center;">Ingia</h2>
-        <input type="text" id="loginUser" placeholder="Username">
-        <input type="password" id="loginPass" placeholder="Password">
-        <button class="btn-gold" onclick="handleLogin()">INGIA</button>
-        <p style="text-align:center; font-size:12px; cursor:pointer;" onclick="toggleAuth('signup')">Huna akaunti? <b>Jisajili</b></p>
-    </div>
-</div>
-
-<div id="dashboard" class="hidden">
-    <div class="header">
-        <h3 id="welc">Karibu!</h3>
-        <span style="border:1px solid var(--gold); padding:2px 10px; border-radius:15px; font-size:10px; color:var(--gold);">GOLD MEMBER 🏆</span>
+    <div id="regPage">
+        <h1 style="font-family:'Syncopate'; margin-bottom: 30px;">IDENTITY_CHECK</h1>
+        <input type="text" id="uName" class="reg-input" placeholder="INGIZA JINA LAKO">
+        <button onclick="finishReg()" class="reg-input" style="background:var(--neon); color:#000; cursor:pointer;">ACCESS SYSTEM</button>
     </div>
 
-    <div class="balance-card">
-        <p style="color:#888; font-size:12px; margin:0;">SALIO LA DHAMANA</p>
-        <div style="font-size:32px; font-weight:800;">0.00 <span style="font-size:14px; color:var(--gold);">TSH</span></div>
-        <div class="action-row">
-            <button class="act-btn" style="background:var(--green);" onclick="nav('marketSec')">➕ NUNUA</button>
-            <button class="act-btn" style="background:#444;" onclick="openAlert('Huwezi kuuza hisa kwa sasa. Hisa zako lazima zifikie mwezi 1 tangu kuwekeza ili kutoa faida.')">➖ UZA</button>
+    <div style="position:fixed; top:0; width:100%; height:80px; z-index:2000; display:flex; justify-content:space-between; align-items:center; padding:0 5%;">
+        <div onclick="toggleMenu()" style="font-size: 24px; cursor: pointer;"><i class="fas fa-bars-staggered"></i></div>
+        <div id="userGreeting" style="font-family:'Syncopate'; font-weight:700; color:var(--neon); font-size: 14px;">AGENT: GUEST</div>
+        <div onclick="openAdmin()" style="font-size: 24px; cursor: pointer;"><i class="fas fa-user-shield"></i></div>
+    </div>
+
+    <div id="aiBot" onclick="toggleChat()">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" width="60" style="filter: drop-shadow(0 0 10px var(--neon));">
+    </div>
+    <div id="aiChat">
+        <h4 style="color:var(--neon); margin-bottom: 10px;">AI ASSISTANT</h4>
+        <div id="chatBox" style="font-size: 12px; height: 150px; overflow-y: auto; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 10px;">
+            Hujambo! Mimi ni AI wa NEXT GEN. Karibu kwenye ulimwengu wa hacking. Unahitaji nini?
         </div>
+        <input type="text" id="aiInput" placeholder="Uliza chochote..." style="width:100%; background:#111; border:1px solid var(--neon); color:#fff; padding:5px;">
+        <button onclick="askAI()" style="width:100%; background:var(--neon); border:none; margin-top:5px; padding:5px; font-weight:800;">TUMA</button>
     </div>
 
-    <div id="marketSec" class="page-sec">
-        <h4 style="margin-left:20px;">Soko la Mazao Leo 🌽</h4>
+    <nav class="sidebar" id="sidebar">
+        <div onclick="toggleMenu()" style="font-size: 30px; margin-bottom: 30px; cursor: pointer;">×</div>
+        <p style="font-size: 10px; color: var(--neon); margin-bottom: 5px;">LANGUAGE_VAULT</p>
+        <div id="google_translate_element"></div>
+        <hr style="border:0; border-top:1px solid #222; margin: 20px 0;">
+        <a href="#" class="sidebar-item">HOME FEED</a>
+        <a href="#" class="sidebar-item">CYBER LAB</a>
+        <a href="#" class="sidebar-item">TERMUX NODE</a>
+        <a href="#" class="sidebar-item">DARKWEB PORTAL</a>
+    </nav>
+
+    <div class="feed-container" id="feed"></div>
+
+    <div class="admin-modal" id="adminModal">
+        <h1 style="font-family:'Syncopate'; color:var(--neon); margin-bottom: 30px;">SYSTEM_CONTROL</h1>
         
-        <div class="crop-card">
-            <img src="https://images.unsplash.com/photo-1595246140625-573b715d11dc?w=400" class="crop-img">
-            <div class="crop-body">
-                <b>Hisa za Korosho - Mtwara</b>
-                <p style="color:var(--green); font-weight:bold;">Faida: 25% Kila Mwezi</p>
-                <button class="btn-gold" onclick="confirmCrop('Korosho', '25%', '50,000', 'Mradi huu unahusisha ununuzi wa korosho ghafi na kuzibangua kwa ajili ya soko la nje. Utapata gawio kila tarehe 30 ya mwezi.', 'https://palmpesa.drmlelwa.co.tz/contribute/A9LZ45HYJE')">Wekeza 50,000</button>
-            </div>
+        <div class="stat-box">
+            <div class="stat-card">USERS<br><span id="statUsers">0</span></div>
+            <div class="stat-card">DAILY VISITS<br><span>452</span></div>
+            <div class="stat-card">ONLINE<br><span style="color:var(--success)">8</span></div>
         </div>
 
-        <div class="crop-card">
-            <img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?w=400" class="crop-img">
-            <div class="crop-body">
-                <b>Hisa za Ndizi - Kagera</b>
-                <p style="color:var(--green); font-weight:bold;">Faida: 15% Kila Mwezi</p>
-                <button class="btn-gold" onclick="confirmCrop('Ndizi', '15%', '2,000', 'Ndizi hizi husafirishwa kwenda sokoni Dar es Salaam. Ni mradi wa uhakika wenye mzunguko wa haraka wa pesa.', 'https://palmpesa.drmlelwa.co.tz/contribute/V5BYMSEIKQ')">Wekeza 2,000</button>
-            </div>
+        <div style="background:#0a0a0a; padding: 20px; border:1px solid #222; margin-bottom: 30px;">
+            <h3 style="margin-bottom: 15px;">MANAGE USERS</h3>
+            <div id="userList"></div>
         </div>
 
-        <div class="crop-card">
-            <img src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400" class="crop-img">
-            <div class="crop-body">
-                <b>Hisa za Mahindi - Songea</b>
-                <p style="color:var(--green); font-weight:bold;">Faida: 20% Kila Mwezi</p>
-                <button class="btn-gold" onclick="confirmCrop('Mahindi', '20%', '3,000', 'Mahindi ya Songea ni chakula kikuu. Mtaji wako unatumika kununua mbolea na mbegu bora. Faida ni kubwa.', 'https://palmpesa.drmlelwa.co.tz/contribute/V5BYMSEIKQV5BYMSEIKQ')">Wekeza 3,000</button>
-            </div>
+        <div style="background:#0a0a0a; padding: 20px; border:1px solid #222;">
+            <h3 style="margin-bottom: 15px;">UPLOAD COURSE</h3>
+            <input type="text" id="cTitle" class="reg-input" placeholder="COURSE NAME" style="width:100%;">
+            <input type="file" id="cFile" class="reg-input" style="width:100%;">
+            <button onclick="addNewPost()" style="width:100%; padding:20px; background:var(--neon); font-weight:800;">PUBLISH</button>
         </div>
+        <button onclick="closeAdmin()" style="margin-top: 20px; color:red; border:none; background:none; cursor:pointer;">CLOSE CONSOLE</button>
     </div>
 
-    <div id="brokerSec" class="page-sec hidden" style="padding:20px;">
-        <h3>Mawakala wa Dhahabu 🛡️</h3>
-        <div class="card" style="margin-bottom:15px;">
-            <b>Broker Ally Said</b><br>Namba: 0750020767<br>
-            <a href="https://wa.me/255750020767?text=Habari%20Broker%20Ally,%20nimetoka%20kulipia%20hisa.%20Hii%20hapa%20risiti" class="btn-gold" style="display:block; text-align:center; text-decoration:none; margin-top:10px; background:#25d366; border:none;">WhatsApp Broker Ally</a>
-        </div>
-        <div class="card">
-            <b>Broker Said</b><br>Namba: 0612929319<br>
-            <a href="https://wa.me/255612929319?text=Habari%20Broker%20Said,%20nimetoka%20kulipia%20hisa.%20Hii%20hapa%20risiti" class="btn-gold" style="display:block; text-align:center; text-decoration:none; margin-top:10px; background:#25d366; border:none;">WhatsApp Broker Said</a>
-        </div>
-    </div>
+    <script>
+        let posts = [
+            { id: 1, title: "WHATSAPP HACK", price: "10,000", img: "https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=1200" },
+            { id: 2, title: "SYSTEM ROOT", price: "25,000", img: "https://images.pexels.com/photos/3585088/pexels-photo-3585088.jpeg?auto=compress&cs=tinysrgb&w=1200" }
+        ];
+        
+        let users = [];
+        let currentUser = "";
 
-    <div id="settingsSec" class="page-sec hidden" style="padding:20px;">
-        <h3>Settings & Language ⚙️</h3>
-        <div class="card">
-            <p>Badili Lugha / Language</p>
-            <select onchange="alert('Lugha imebadilishwa!')">
-                <option>Kiswahili 🇹🇿</option>
-                <option>English 🇺🇸</option>
-            </select>
-            <hr>
-            <button class="btn-gold" style="background:#e74c3c; border:none;" onclick="location.reload()">LOGOUT</button>
-        </div>
-    </div>
-</div>
+        function goToReg() { document.getElementById('entryPage').style.display = 'none'; document.getElementById('regPage').style.display = 'flex'; }
 
-<div id="bMenu" class="bottom-menu hidden">
-    <div class="menu-btn active" onclick="nav('marketSec', this)">🏠<br>Nyumbani</div>
-    <div class="menu-btn" onclick="nav('brokerSec', this)">🛡️<br>Broker</div>
-    <div class="menu-btn" onclick="nav('settingsSec', this)">⚙️<br>Setting</div>
-</div>
+        function finishReg() {
+            let name = document.getElementById('uName').value;
+            if(name) {
+                currentUser = name.toUpperCase();
+                users.push({ name: currentUser, status: 'ACTIVE' });
+                document.getElementById('userGreeting').innerText = "AGENT: " + currentUser;
+                document.getElementById('regPage').style.display = 'none';
+                document.getElementById('feed').style.display = 'block';
+                render();
+            }
+        }
 
-<script>
-let localDB = null;
+        function render() {
+            const container = document.getElementById('feed');
+            const userList = document.getElementById('userList');
+            document.getElementById('statUsers').innerText = users.length;
+            
+            container.innerHTML = posts.map(p => `
+                <div class="post" style="background-image: url('${p.img}')">
+                    <div class="post-overlay">
+                        <h1 style="font-family:'Syncopate'; font-size: 30px; color:var(--neon);">${p.title}</h1>
+                        <p style="font-size: 20px; margin: 15px 0;">TSH ${p.price}</p>
+                        <a href="https://wa.me/255798241396?text=NAHITAJI ${p.title}" style="display:inline-block; padding:15px 40px; background:var(--neon); color:#000; text-decoration:none; font-weight:900;">GET ACCESS</a>
+                    </div>
+                </div>
+            `).join('');
 
-function toggleAuth(type) {
-    document.getElementById('signupPage').classList.toggle('hidden', type === 'login');
-    document.getElementById('loginPage').classList.toggle('hidden', type === 'signup');
-}
+            userList.innerHTML = users.map((u, index) => `
+                <div class="user-row">
+                    <span>${u.name}</span>
+                    <div>
+                        <span class="${u.status == 'ACTIVE' ? 'status-active' : 'status-blocked'}">${u.status}</span>
+                        <button onclick="toggleUser(${index})" style="margin-left:10px; background:#222; color:#fff; border:none; padding:5px;">TOGGLE</button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-function openAlert(msg) {
-    document.getElementById('mTitle').innerText = "⚠️ Taarifa";
-    document.getElementById('mBody').innerText = msg;
-    document.getElementById('mActions').innerHTML = `<button class="btn-gold" onclick="closeModal()">NIMEFAHAMU</button>`;
-    document.getElementById('infoModal').classList.remove('hidden');
-}
+        function toggleUser(index) {
+            users[index].status = (users[index].status === 'ACTIVE') ? 'BLOCKED' : 'ACTIVE';
+            if(users[index].name === currentUser && users[index].status === 'BLOCKED') {
+                alert("ACCOUNT YAKO IMEKUWA BLOCKED!");
+                location.reload();
+            }
+            render();
+        }
 
-function closeModal() { document.getElementById('infoModal').classList.add('hidden'); }
+        function askAI() {
+            let q = document.getElementById('aiInput').value.toLowerCase();
+            let b = document.getElementById('chatBox');
+            if(q.includes("namba") || q.includes("ceo")) {
+                b.innerHTML = "Ma-CEO ni: ANSELIMO JOSHUA (0798 241 396) na MSAIDIZI (0612 929 319).";
+            } else if(q.includes("kozi") || q.includes("kozi zipi")) {
+                b.innerHTML = "Tuna kozi 21: WHATSAPP, FACEBOOK, ANDROID, CAMERA, FREE INTERNET na nyingine nyingi.";
+            } else {
+                b.innerHTML = "Wewe ni hacker sasa! Chagua kozi yoyote uanze safari yako. Wasiliana na CEO kwa msaada.";
+            }
+            document.getElementById('aiInput').value = "";
+        }
 
-function handleSignup() {
-    const fields = ['regFullName', 'regUser', 'regEmail', 'regPhone', 'regNetwork', 'regBankName', 'regBankAcc', 'regPass'];
-    for(let f of fields) { if(!document.getElementById(f).value) return openAlert("Jaza taarifa zote!"); }
-    if(document.getElementById('regFullName').value.split(' ').length < 3) return openAlert("Andika majina matatu!");
-
-    localDB = { user: document.getElementById('regUser').value, pass: document.getElementById('regPass').value, name: document.getElementById('regFullName').value };
-    openAlert("Usajili umekamilika! Tafadhali ingia sasa.");
-    toggleAuth('login');
-}
-
-function handleLogin() {
-    const u = document.getElementById('loginUser').value;
-    const p = document.getElementById('loginPass').value;
-    if(!localDB || localDB.user !== u || localDB.pass !== p) return openAlert("Account yako haipo! Tafadhali jisajili.");
-
-    document.getElementById('authBox').classList.add('hidden');
-    document.getElementById('dashboard').classList.remove('hidden');
-    document.getElementById('bMenu').classList.remove('hidden');
-    document.getElementById('welc').innerText = "Karibu, " + localDB.name.split(' ')[0];
-}
-
-function nav(id, btn) {
-    document.querySelectorAll('.page-sec').forEach(s => s.classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-    document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-}
-
-function confirmCrop(name, profit, price, desc, link) {
-    document.getElementById('mTitle').innerText = "💎 Mchanganuo wa " + name;
-    document.getElementById('mBody').innerHTML = `<b>Faida:</b> ${profit} kwa mwezi<br><b>Mtaji:</b> Tsh ${price}<br><br><b>Maelezo:</b> ${desc}`;
-    document.getElementById('mActions').innerHTML = `
-        <button class="btn-gold" style="background:var(--green); border:none; margin-bottom:10px;" onclick="window.location.href='${link}'">NIMEKUBALI, PELEKA KWENYE MALIPO</button>
-        <button class="btn-gold" style="background:#888; border:none;" onclick="closeModal()">GHAIRI</button>
-    `;
-    document.getElementById('infoModal').classList.remove('hidden');
-}
-</script>
+        function toggleChat() { let c = document.getElementById('aiChat'); c.style.display = (c.style.display === 'none') ? 'block' : 'none'; }
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+        function openAdmin() { let p = prompt("ADMIN PASS:"); if(p === "2026 hacker") document.getElementById('adminModal').style.display = 'block'; }
+        function closeAdmin() { document.getElementById('adminModal').style.display = 'none'; }
+        function addNewPost() {
+            const t = document.getElementById('cTitle').value;
+            const f = document.getElementById('cFile').files[0];
+            if(t && f) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    posts.unshift({ id: Date.now(), title: t.toUpperCase(), price: "15,000", img: e.target.result });
+                    render();
+                    closeAdmin();
+                };
+                reader.readAsDataURL(f);
+            }
+        }
+    </script>
 </body>
-                  </html>
-    
+</html>
