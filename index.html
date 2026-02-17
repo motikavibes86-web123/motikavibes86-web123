@@ -1,1 +1,67 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Survey Website</title>\n    <style>\n        body { font-family: Arial, sans-serif; }\n        .container { width: 50%; margin: auto; }\n        form { margin-bottom: 20px; }\n        input, button { padding: 10px; margin: 5px 0; width: 100%; }\n    </style>\n</head>\n<body>\n    <div class="container">\n        <h1>Survey Website</h1>\n        <h2>Registration</h2>\n        <form id="registrationForm">\n            <input type="text" placeholder="Full Name" required />\n            <input type="email" placeholder="Email" required />\n            <input type="password" placeholder="Password" required />\n            <button type="submit">Register</button>\n        </form>\n        <h2>Login</h2>\n        <form id="loginForm">\n            <input type="email" placeholder="Email" required />\n            <input type="password" placeholder="Password" required />\n            <button type="submit">Login</button>\n        </form>\n        <h2>Survey</h2>\n        <form id="surveyForm">\n            <label for="question1">What is your favorite color?</label>\n            <select id="question1" required>\n                <option value="Red">Red</option>\n                <option value="Green">Green</option>\n                <option value="Blue">Blue</option>\n                <option value="Yellow">Yellow</option>\n            </select>\n            <button type="submit">Submit Survey</button>\n        </form>\n        <h2>Payment Rewards</h2>\n        <p>Complete the survey and get rewards!</p>\n    </div>\n    <script>\n        // Simple form handling (dummy functions for demo)\n        document.getElementById('registrationForm').onsubmit = function(event) {\n            event.preventDefault();\n            alert('Registration successful!');\n        };\n        document.getElementById('loginForm').onsubmit = function(event) {\n            event.preventDefault();\n            alert('Login successful!');\n        };\n        document.getElementById('surveyForm').onsubmit = function(event) {\n            event.preventDefault();\n            alert('Survey submitted! Thank you!');\n        };\n    <\/script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VUNA PESA Survey Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to VUNA PESA Survey Platform</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Login</a></li>
+                <li><a href="#">Register</a></li>
+                <li><a href="#">Forgot Password</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="user-dashboard">
+            <h2>User Dashboard</h2>
+            <p>Manage your account and view your survey history.</p>
+        </section>
+        <section id="withdrawal-system">
+            <h2>Withdraw Funds</h2>
+            <p>Request to withdraw your earnings.</p>
+        </section>
+        <section id="admin-panel">
+            <h2>Admin Panel</h2>
+            <p>Manage users and surveys.</p>
+        </section>
+        <section id="live-chat">
+            <h2>Live Chat</h2>
+            <p>Chat with our support team.</p>
+        </section>
+        <section id="notifications">
+            <h2>Notifications</h2>
+            <p>Stay updated with our latest announcements.</p>
+        </section>
+        <section id="multilingual-support">
+            <h2>Language Selection</h2>
+            <p>Select your preferred language: <strong>Kiswahili</strong> / <strong>English</strong></p>
+        </section>
+        <section id="spin-wheel">
+            <h2>Spin Wheel</h2>
+            <p>Try your luck to win prizes!</p>
+        </section>
+        <section id="survey-management">
+            <h2>Survey Management</h2>
+            <p>Manage and create surveys easily.</p>
+        </section>
+        <section id="user-management">
+            <h2>User Management</h2>
+            <p>Monitor user activities and engagement.</p>
+        </section>
+        <section id="payment-history">
+            <h2>Payment History</h2>
+            <p>View your past transactions.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 VUNA PESA Survey Platform. All rights reserved.</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>
