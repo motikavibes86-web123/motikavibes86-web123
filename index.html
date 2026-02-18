@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-    <meta charset="UTF-8"   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>VUNA PESA • KWELI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,6 +12,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #0c0b14;
@@ -19,7 +21,8 @@
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
             width: 100%;
-            {
+        }
+
         :root {
             --glow-green: #2ef0b0;
             --glow-green-dim: #1b9573;
@@ -44,6 +47,7 @@
             padding: 1rem;
             overflow-y: auto;
         }
+
         .auth-box {
             background: var(--bg-elevated);
             width: 100%;
@@ -54,11 +58,13 @@
             border: 1px solid rgba(46, 240, 176, 0.3);
             animation: fadeScale 0.3s ease;
         }
+
         @keyframes fadeScale {
             0% { opacity: 0; transform: scale(0.96); }
             100% { opacity: 1; transform: scale(1); }
         }
-     .auth-box h2 {
+
+        .auth-box h2 {
             font-weight: 800;
             font-size: 2rem;
             letter-spacing: -0.02em;
@@ -363,7 +369,8 @@
             box-shadow: 0 0 0 5px #242033, 0 0 0 8px rgba(46,240,176,0.2), 0 15px 30px black;
             transition: transform 3s cubic-bezier(0.25, 0.1, 0.15, 1);
             overflow: hidden;
-        }.spin-wheel-inner {
+        }
+.spin-wheel-inner {
             width: 100%;
             height: 100%;
             position: relative;
@@ -805,10 +812,9 @@
         </div>
     </div>
 
-    <script>
-        // Supabase configuration
-        const SUPABASE_URL = https://ykhmjftkzkeaboikymop.supabase.co';
-        const SUPABASE_KEY = 'sbsecret_yMM7OES4OTahdU_IhgpcvQ_fgAfor
+    <script>// Supabase configuration
+        const SUPABASE_URL = 
+        const SUPABASE_KEY =
         
         // Spin wheel prizes (vipande 10)
         const SPIN_PRIZES = [0, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000];
@@ -1627,3 +1633,66 @@
             
             surveys.push(newSurvey);
             localStorage.setItem('vuna_surveys', JSON.stringify(surveys));
+            
+            document.getElementById('newSurveyQuestion').value = '';
+            document.getElementById('newSurveyReward').value = '';
+            document.getElementById('newSurveyOptions').value = '';
+            
+            // Notify all users
+            const now2 = new Date();
+            notifications.unshift({
+                msg: `swali jipya limeongezwa: ${question} (zawadi ${reward} TZS)`,
+                time: now2.toLocaleTimeString('sw-TZ')
+            });
+            localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+            
+            showNotification('✔ swali limeongezwa');
+            loadSurveys();
+        }
+
+        function saveUser() {
+            const index = users.findIndex(u => u.username === currentUser.username);
+            if (index >= 0) {
+                users[index] = currentUser;
+            }
+            localStorage.setItem('vuna_users', JSON.stringify(users));
+        }
+
+        // Initialize
+        window.onload = function() {
+            // Create admin account if not exists
+            if (!users.find(u => u.username === 'salehe')) {
+                const now = new Date();
+                users.push({
+                    username: 'salehe',
+                    password: '545454',
+                    name: 'Salehe Admin',
+                    phone: '0798241396',
+                    balance: 0,
+                    status: 'ACTIVE',
+                    surveysCompleted: 0,
+                    spinsUsed: 0,
+                    withdrawalsCount: 0,
+                    registeredAt: now.toLocaleDateString('sw-TZ') + ' ' + now.toLocaleTimeString('sw-TZ'),
+                    lastLogin: null
+                });
+                localStorage.setItem('vuna_users', JSON.stringify(users));
+            }
+            
+            // Create test user if needed
+            if (!users.find(u => u.username === 'juma') && false) { // Disabled - no fake data
+                // Not adding fake data
+            }
+            
+            // Load language
+            language = localStorage.getItem('vuna_language') || 'sw';
+            
+            // Initialize spin wheel
+            initSpinWheel();
+            
+            // Check if user was logged in
+            // (could add session persistence here if needed)
+        };
+    </script>
+</body>
+</html>
