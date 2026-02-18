@@ -1,1 +1,1635 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>VUNA PESA • KWELI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0c0b14;
+            color: #e9e9f0;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        :root {
+            --glow-green: #2ef0b0;
+            --glow-green-dim: #1b9573;
+            --danger-glow: #ff5c7c;
+            --bg-deep: #0a0817;
+            --bg-elevated: #131123;
+            --bg-card: #1b182b;
+            --border-dim: #2b283e;
+            --text-soft: #c2c1d0;
+            --shadow-heavy: 0 20px 35px -10px rgba(0,0,0,0.9), 0 0 0 1px rgba(46, 240, 176, 0.15) inset;
+            --transition-smooth: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .auth-container {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, #1e1a3a, #03010a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .auth-box {
+            background: var(--bg-elevated);
+            width: 100%;
+            max-width: 380px;
+            padding: 2rem 1.5rem;
+            border-radius: 2.5rem;
+            box-shadow: var(--shadow-heavy), 0 0 0 2px rgba(46, 240, 176, 0.2);
+            border: 1px solid rgba(46, 240, 176, 0.3);
+            animation: fadeScale 0.3s ease;
+        }
+
+        @keyframes fadeScale {
+            0% { opacity: 0; transform: scale(0.96); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .auth-box h2 {
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(130deg, #fff, var(--glow-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #1e1b30;
+            border-radius: 3rem;
+            padding: 0.3rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.8rem 0.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .auth-tab.active {
+            background: var(--glow-green);
+            color: #03010a;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: #1e1b30;
+            border: 1.5px solid #2e2a44;
+            border-radius: 3rem;
+            padding: 1rem 1.5rem;
+            margin: 0.6rem 0;
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            outline: none;
+        }
+
+        .auth-input:focus {
+            border-color: var(--glow-green);
+            box-shadow: 0 0 0 4px rgba(46, 240, 176, 0.15);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(145deg, #1c1a2e, #131123);
+            border: 1px solid var(--glow-green);
+            color: var(--glow-green);
+            font-weight: 700;
+            padding: 1rem 1.5rem;
+            border-radius: 3rem;
+            font-size: 1.1rem;
+            margin-top: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 5px 0 #0f0e1a, 0 0 20px rgba(46, 240, 176, 0.3);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .auth-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #0f0e1a;
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .forgot-link span {
+            color: var(--glow-green);
+            font-size: 0.9rem;
+            text-decoration: underline 1px dotted;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .login-attempts {
+            color: #ff5c7c;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .dashboard {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            background: var(--bg-deep);
+            flex-direction: column;
+        }
+
+        .dash-header {
+            background: rgba(19, 17, 35, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(46, 240, 176, 0.25);
+            padding: 0.75rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            gap: 0.5rem;
+        }
+
+        .dash-logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(140deg, #f0f0ff, var(--glow-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+
+        .dash-user {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: nowrap;
+        }
+
+        .lang-toggle {
+            background: #1f1d31;
+            border: 1px solid #3d375b;
+            color: white;
+            padding: 0.4rem 0.9rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .dash-user-name {
+            font-weight: 700;
+            color: var(--glow-green);
+            font-size: 0.9rem;
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(19, 17, 35, 0.95);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(46, 240, 176, 0.3);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.4rem 0.2rem;
+            z-index: 30;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.7);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.15rem;
+            color: var(--text-soft);
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.3rem 0.2rem;
+            border-radius: 2rem;
+            transition: var(--transition-smooth);
+            flex: 1;
+            max-width: 70px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            color: var(--glow-green);
+            opacity: 0.7;
+        }
+
+        .nav-item.active {
+            background: rgba(46, 240, 176, 0.15);
+            border: 1px solid rgba(46, 240, 176, 0.5);
+            color: white;
+        }
+
+        .nav-item.active i {
+            opacity: 1;
+            text-shadow: 0 0 8px var(--glow-green);
+        }
+
+        .dash-main {
+            flex: 1;
+            padding: 1.5rem 1.2rem 6rem 1.2rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeUp 0.35s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .balance-card {
+            background: var(--bg-card);
+            border-radius: 2.5rem;
+            padding: 2rem 1.5rem;
+            border: 1px solid rgba(46, 240, 176, 0.3);
+            box-shadow: 0 25px 40px -15px black, 0 0 0 1px rgba(46,240,176,0.2) inset;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .balance-amount {
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(140deg, #fff, var(--glow-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(46,240,176,0.5));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 1.8rem;
+            padding: 1.2rem 0.5rem;
+            border: 1px solid var(--border-dim);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--glow-green);
+            line-height: 1.2;
+        }
+        .stat-label { font-size: 0.7rem; color: #aaa; }
+
+        .survey-item {
+            background: var(--bg-card);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            margin: 1.2rem 0;
+            border-left: 6px solid var(--glow-green);
+        }
+        .survey-option {
+            background: #242033;
+            padding: 0.9rem 1.5rem;
+            border-radius: 2rem;
+            margin: 0.7rem 0;
+            cursor: pointer;
+            border: 1px solid #3c3555;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+        }
+        .survey-option:active {
+            background: #2e2852;
+            border-color: var(--glow-green);
+            transform: translateX(6px);
+        }
+
+        .spin-container {
+            background: var(--bg-card);
+            border-radius: 2.5rem;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .spin-wheel {
+            width: 260px;
+            height: 260px;
+            margin: 1.5rem auto;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 0 5px #242033, 0 0 0 8px rgba(46,240,176,0.2), 0 15px 30px black;
+            transition: transform 3s cubic-bezier(0.25, 0.1, 0.15, 1);
+            overflow: hidden;
+        }.spin-wheel-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #ff5c7c 0deg 36deg,
+                #2ef0b0 36deg 72deg,
+                #ffd966 72deg 108deg,
+                #6ea8fe 108deg 144deg,
+                #c77dff 144deg 180deg,
+                #ffb347 180deg 216deg,
+                #48cae4 216deg 252deg,
+                #ff7799 252deg 288deg,
+                #a6e2a6 288deg 324deg,
+                #ff8c42 324deg 360deg
+            );
+        }
+        .spin-wheel-center {
+            width: 50px;
+            height: 50px;
+            background: #0c0b14;
+            border-radius: 50%;
+            border: 4px solid var(--glow-green);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+        .spin-segment-label {
+            position: absolute;
+            color: #000;
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        .spin-pointer {
+            position: relative;
+            display: inline-block;
+        }
+        .spin-pointer::before {
+            content: "▲";
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(1.5);
+            font-size: 3rem;
+            color: var(--glow-green);
+            filter: drop-shadow(0 0 6px var(--glow-green));
+            z-index: 10;
+        }
+        .spin-btn {
+            background: transparent;
+            border: 2px solid var(--glow-green);
+            color: var(--glow-green);
+            padding: 1rem 2.5rem;
+            border-radius: 3rem;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        .spin-btn:active { background: var(--glow-green); color: #03010a; }
+        .spin-btn:disabled {
+            opacity: 0.5;
+            border-color: #666;
+            color: #666;
+        }
+
+        .withdrawal-form {
+            background: var(--bg-card);
+            border-radius: 2rem;
+            padding: 1.8rem;
+            margin-bottom: 1.8rem;
+        }
+        .form-input {
+            background: #201e32;
+            border: 1px solid #373353;
+            border-radius: 2rem;
+            padding: 0.9rem 1.3rem;
+            color: white;
+            width: 100%;
+            margin: 0.6rem 0;
+            font-size: 1rem;
+        }
+        .form-textarea {
+            background: #201e32;
+            border: 1px solid #373353;
+            border-radius: 2rem;
+            padding: 1rem 1.3rem;
+            color: white;
+            width: 100%;
+            margin: 0.6rem 0;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+        .history-item {
+            background: #1a172b;
+            padding: 1rem 1.4rem;
+            border-radius: 1.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.8rem 0;
+            border: 1px solid #322e4a;
+            font-size: 0.9rem;
+        }
+        .status-pending { color: #ffb347; font-weight: 700; }
+        .status-completed { color: var(--glow-green); font-weight: 700; }
+
+        .chat-container {
+            background: var(--bg-card);
+            border-radius: 2rem;
+            height: 65vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.2rem;
+        }
+        .message {
+            max-width: 85%;
+            margin: 0.8rem 0;
+            padding: 0.8rem 1.4rem;
+            border-radius: 1.8rem;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+        .message.admin {
+            background: rgba(46, 240, 176, 0.15);
+            border: 1px solid var(--glow-green);
+            align-self: flex-start;
+        }
+        .message.user {
+            background: #2b2542;
+            border: 1px solid #ff5c7c;
+            margin-left: auto;
+        }
+        .chat-input-area {
+            padding: 1rem;
+            display: flex;
+            gap: 0.6rem;
+            border-top: 1px solid #2b2740;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1b182b;
+            border-radius: 1.5rem;
+            overflow-x: auto;
+            display: block;
+            white-space: nowrap;
+        }
+        .user-table th, .user-table td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid #2d2942;
+            font-size: 0.85rem;
+        }
+        .user-table th {
+            background: rgba(46, 240, 176, 0.1);
+            color: var(--glow-green);
+        }
+        .action-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            border: none;
+            font-weight: 700;
+            background: #312e4a;
+            color: white;
+            margin: 0.2rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-block { background: #ff5c7c; }
+        .btn-activate { background: var(--glow-green); color: black; }
+        .btn-post { background: #48cae4; color: black; }
+
+        .post-card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--glow-green);
+        }
+        .post-title {
+            font-weight: 800;
+            color: var(--glow-green);
+            margin-bottom: 0.5rem;
+        }
+        .post-date {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--glow-green);
+            color: #03010a;
+            font-weight: 700;
+            padding: 1rem 1.5rem;
+            border-radius: 3rem;
+            box-shadow: 0 10px 30px -5px var(--glow-green);
+            z-index: 2000;
+            text-align: center;
+            animation: slideDown 0.3s;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        hr { border: 1px solid #2b2740; margin: 1.5rem 0; }
+        .menu-text { font-size: 0.65rem; }
+        .small-note { color: #a8a6bc; font-size: 0.75rem; }
+        .error-msg { color: #ff5c7c; font-size: 0.8rem; margin-top: 0.3rem; text-align: center; }
+        .success-msg { color: var(--glow-green); font-size: 0.8rem; margin-top: 0.3rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <!-- AUTH PAGE -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-box">
+            <h2>vuna pesa</h2>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Ingia</div>
+                <div class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">Jisajili</div>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm">
+                <input type="text" id="loginUsername" class="auth-input" placeholder="jina la mtumiaji" autocomplete="off">
+                <input type="password" id="loginPassword" class="auth-input" placeholder="nenosiri" autocomplete="off">
+                <div id="loginError" class="error-msg"></div>
+                <div id="loginAttempts" class="login-attempts"></div>
+                <button class="auth-btn" id="loginBtn" onclick="handleLogin()">ingia</button>
+                <div class="forgot-link"><span onclick="showForgotPassword()">umesahau nenosiri?</span></div>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerForm" style="display: none;">
+                <input type="text" id="regFullname" class="auth-input" placeholder="jina kamili" autocomplete="off">
+                <input type="text" id="regUsername" class="auth-input" placeholder="jina la mtumiaji" autocomplete="off">
+                <input type="password" id="regPassword" class="auth-input" placeholder="nenosiri" autocomplete="off">
+                <input type="tel" id="regPhone" class="auth-input" placeholder="namba ya simu" autocomplete="off">
+                <div id="registerError" class="error-msg"></div>
+                <button class="auth-btn" onclick="handleRegister()">sajili</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div id="forgotPage" class="auth-container" style="display:none;">
+        <div class="auth-box">
+            <h2>weka upya</h2>
+            <input type="text" id="forgotUsername" class="auth-input" placeholder="jina la mtumiaji">
+            <input type="text" id="forgotDescription" class="auth-input" placeholder="tatizo lako">
+            <input type="text" id="resetCode" class="auth-input" placeholder="msimbo 505010">
+            <button class="auth-btn" onclick="handlePasswordReset()">tuma</button>
+            <div class="forgot-link"><span onclick="showAuth()">rudi</span></div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="dashboard">
+        <div class="dash-header">
+            <div class="dash-logo">VUNA PESA</div>
+            <div class="dash-user">
+                <select class="lang-toggle" onchange="changeLanguage(this.value)">
+                    <option value="sw">SW</option>
+                    <option value="en">EN</option>
+                </select>
+                <span class="dash-user-name" id="dashUsername">user</span>
+                <button class="auth-btn" style="width:auto; padding:0.3rem 1rem; font-size:0.8rem; margin:0;" onclick="handleLogout()">toka</button>
+            </div>
+        </div>
+
+        <div class="dash-main">
+            <!-- HOME -->
+            <div id="home" class="section active">
+                <div class="balance-card">
+                    <div class="small-note">salio lako</div>
+                    <div class="balance-amount" id="balanceAmount">0 TZS</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value" id="surveyCount">0</div><div class="stat-label">maswali</div></div>
+                    <div class="stat-card"><div class="stat-value" id="spinCount">0</div><div class="stat-label">mizunguko</div></div>
+                    <div class="stat-card"><div class="stat-value" id="withdrawCount">0</div><div class="stat-label">toleo</div></div>
+                </div>
+                
+                <!-- Taarifa za admin (zitaonekana kwa wote) -->
+                <div id="homeAnnouncements" style="margin-top:1.5rem;">
+                    <h3 style="color:var(--glow-green); margin-bottom:1rem;">taarifa muhimu</h3>
+                    <div id="announcementsList"></div>
+                </div>
+            </div>
+
+            <!-- SURVEYS -->
+            <div id="surveys" class="section">
+                <h2 style="color:var(--glow-green); font-size:1.5rem;">maswali</h2>
+                <div id="surveysList"></div>
+            </div>
+            
+            <!-- SPIN WHEEL -->
+            <div id="spin" class="section">
+                <div class="spin-container">
+                    <h2 style="color:var(--glow-green);">gurudumu la bahati</h2>
+                    <div class="spin-pointer">
+                        <div class="spin-wheel" id="spinWheel">
+                            <div class="spin-wheel-inner" id="spinWheelInner"></div>
+                            <div class="spin-wheel-center"></div>
+                        </div>
+                    </div>
+                    <button class="spin-btn" id="spinBtn" onclick="spinWheel()">zungusha (spin 1)</button>
+                    <div id="spinResult" style="margin-top:1rem; font-size:1.8rem; font-weight:800; color:var(--glow-green);"></div>
+                    <div id="spinRemaining" class="small-note" style="margin-top:0.5rem;"></div>
+                </div>
+            </div><!-- WITHDRAW -->
+            <div id="withdraw" class="section">
+                <h2 style="color:var(--glow-green);">kutoa pesa</h2>
+                <div class="withdrawal-form">
+                    <p class="small-note">kiwango cha chini 2,000 TZS · Jumanne & Ijumaa</p>
+                    <input type="number" id="withdrawAmount" class="form-input" placeholder="kiasi">
+                    <input type="tel" id="withdrawPhone" class="form-input" placeholder="namba ya simu">
+                    <select id="withdrawMethod" class="form-input">
+                        <option value="M-Pesa">M-Pesa</option>
+                        <option value="Airtel Money">Airtel Money</option>
+                        <option value="Tigo Pesa">Tigo Pesa</option>
+                    </select>
+                    <button class="auth-btn" onclick="requestWithdrawal()">omba</button>
+                </div>
+                <div id="historyList" class="withdraw-history"></div>
+            </div>
+            
+            <!-- CHAT -->
+            <div id="chat" class="section">
+                <h2 style="color:var(--glow-green);">mazungumzo</h2>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <input id="chatInput" class="form-input" placeholder="andika...">
+                        <button class="auth-btn" style="width:auto; padding:0.5rem 1.2rem;" onclick="sendMessage()">tuma</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- NOTIFICATIONS -->
+            <div id="notifications" class="section">
+                <h2 style="color:var(--glow-green);">arifa</h2>
+                <div id="notificationsList"></div>
+            </div>
+            
+            <!-- ADMIN PANEL (salehe tu) -->
+            <div id="admin" class="section">
+                <h2 style="color:var(--glow-green);">admin panel</h2>
+                
+                <!-- SEHEMU YA KUPOST TAARIFA -->
+                <div style="background:var(--bg-card); border-radius:2rem; padding:1.5rem; margin-bottom:2rem;">
+                    <h3 style="color:var(--glow-green); margin-bottom:1rem;">📢 chapisha taarifa</h3>
+                    <input type="text" id="postTitle" class="form-input" placeholder="kichwa cha taarifa">
+                    <textarea id="postContent" class="form-textarea" placeholder="maelezo ya taarifa..."></textarea>
+                    <select id="postTarget" class="form-input">
+                        <option value="all">kwa watumiaji wote</option>
+                        <option value="active">kwa watumiaji active tu</option>
+                    </select>
+                    <button class="auth-btn" onclick="publishAnnouncement()" style="margin-top:0.5rem;">chapisha taarifa</button>
+                </div>
+
+                <!-- TAARIFA ZILIZOPITA -->
+                <div style="margin-bottom:2rem;">
+                    <h3 style="color:var(--glow-green);">taarifa zilizochapishwa</h3>
+                    <div id="pastAnnouncements"></div>
+                </div>
+
+                <!-- WATUMIAJI WOTE (DATA HALISI) -->
+                <div style="margin-bottom:2rem;">
+                    <h3 style="color:var(--glow-green);">watumiaji wote (halisi)</h3>
+                    <div style="overflow-x:auto;">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>jina</th>
+                                    <th>username</th>
+                                    <th>simu</th>
+                                    <th>salio</th>
+                                    <th>maswali</th>
+                                    <th>spins</th>
+                                    <th>status</th>
+                                    <th>actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUserTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- MAOMBI YA KUTOA (HALISI) -->
+                <div style="margin-bottom:2rem;">
+                    <h3 style="color:var(--glow-green);">maombi ya kutoa (halisi)</h3>
+                    <div id="adminWithdrawals"></div>
+                </div>
+
+                <!-- TAKWIMU ZA GURUDUMU (HALISI) -->
+                <div>
+                    <h3 style="color:var(--glow-green);">takwimu za gurudumu (halisi)</h3>
+                    <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalSpins">0</div>
+                            <div class="stat-label">jumla spins</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalSpinWins">0 TZS</div>
+                            <div class="stat-label">jumla ushindi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAVIGATION -->
+        <div class="mobile-bottom-nav">
+            <div class="nav-item active" onclick="switchSection('home')"><i class="fas fa-house"></i><span class="menu-text">Nyumbani</span></div>
+            <div class="nav-item" onclick="switchSection('surveys')"><i class="fas fa-clipboard-list"></i><span class="menu-text">Maswali</span></div>
+            <div class="nav-item" onclick="switchSection('spin')"><i class="fas fa-circle-notch"></i><span class="menu-text">Gurudumu</span></div>
+            <div class="nav-item" onclick="switchSection('withdraw')"><i class="fas fa-arrow-up"></i><span class="menu-text">Kutoa</span></div>
+            <div class="nav-item" onclick="switchSection('chat')"><i class="fas fa-comment-dots"></i><span class="menu-text">Wasiliana</span></div>
+            <div class="nav-item" onclick="switchSection('notifications')"><i class="fas fa-bell"></i><span class="menu-text">Arifa</span></div>
+            <div class="nav-item" id="adminMenuMobile" style="display:none;" onclick="switchSection('admin')"><i class="fas fa-gear"></i><span class="menu-text">Admin</span></div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = https://ykhmjftkzkeaboikymop.supabase.co';
+        const SUPABASE_KEY = 'sbsecret_yMM7OES4OTahdU_IhgpcvQ_fgAfor
+        
+        // Spin wheel prizes (vipande 10)
+        const SPIN_PRIZES = [0, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000];
+        
+        // DATA HALISI (hakuna bandia)
+        let users = JSON.parse(localStorage.getItem('vuna_users')) || [];
+        let currentUser = null;
+        
+        // Surveys halisi
+        let surveys = JSON.parse(localStorage.getItem('vuna_surveys')) || [
+            { 
+                id: 1, 
+                question: "Je, unatumia simu ya aina gani?", 
+                options: ["Samsung", "iPhone", "Techno", "Infinix", "Nyingine"], 
+                reward: 2500,
+                swahili: "Je, unatumia simu ya aina gani?",
+                createdAt: "2024-01-15"
+            },
+            { 
+                id: 2, 
+                question: "Je, unapenda kunywa kinywaji gani asubuhi?", 
+                options: ["Chai", "Kahawa", "Maji", "Juice"], 
+                reward: 2000,
+                swahili: "Je, unapenda kunywa kinywaji gani asubuhi?",
+                createdAt: "2024-01-16"
+            },
+            { 
+                id: 3, 
+                question: "Je, unatumia mtandao gani kwa internet?", 
+                options: ["Vodacom", "Airtel", "Tigo", "Halotel"], 
+                reward: 3000,
+                swahili: "Je, unatumia mtandao gani kwa internet?",
+                createdAt: "2024-01-17"
+            }
+        ];
+        
+        // Withdrawals halisi
+        let withdrawals = JSON.parse(localStorage.getItem('vuna_withdrawals')) || [];
+        
+        // Notifications halisi
+        let notifications = JSON.parse(localStorage.getItem('vuna_notifications')) || [];
+        
+        // Chat messages halisi
+        let chatMessages = JSON.parse(localStorage.getItem('vuna_chat')) || [];
+        
+        // Announcements halisi (admin posts)
+        let announcements = JSON.parse(localStorage.getItem('vuna_announcements')) || [
+            {
+                id: 1,
+                title: "KARIBU VUNA PESA",
+                content: "Karibu kwenye Vuna Pesa! Maliza maswali na upate pesa. Kila swali unalolipata unapata hadi 5,000 TZS.",
+                target: "all",
+                createdAt: "2024-01-01 10:30",
+                author: "salehe"
+            }
+        ];
+        
+        // Spin statistics halisi
+        let spinStats = JSON.parse(localStorage.getItem('vuna_spinStats')) || {
+            totalSpins: 0,
+            totalWins: 0
+        };
+
+        // Login attempts tracking (kwa usalama)
+        let loginAttempts = {};
+        let language = 'sw';
+
+        // Initialize spin wheel
+        function initSpinWheel() {
+            const wheelInner = document.getElementById('spinWheelInner');
+            if (!wheelInner) return;
+            
+            wheelInner.innerHTML = '';
+            const segmentAngle = 360 / SPIN_PRIZES.length;
+            
+            for (let i = 0; i < SPIN_PRIZES.length; i++) {
+                const label = document.createElement('div');
+                label.className = 'spin-segment-label';
+                label.style.position = 'absolute';
+                label.style.top = '50%';
+                label.style.left = '50%';
+                label.style.transform = `rotate(${i * segmentAngle + segmentAngle/2}deg) translate(100px) rotate(-${i * segmentAngle + segmentAngle/2}deg)`;
+                label.style.transformOrigin = '0 0';
+                label.textContent = SPIN_PRIZES[i] >= 1000 ? (SPIN_PRIZES[i]/1000 + 'k') : SPIN_PRIZES[i];
+                wheelInner.appendChild(label);
+            }
+        }
+
+        // Auth functions
+        function switchAuthTab(tab) {
+            document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+            document.getElementById('registerTab').classList.toggle('active', tab === 'register');
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+        }
+
+        function showAuth() {
+            document.getElementById('forgotPage').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'flex';
+        }
+
+        function showForgotPassword() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('forgotPage').style.display = 'flex';
+        }
+
+        function handleRegister() {
+            const fullname = document.getElementById('regFullname').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const phone = document.getElementById('regPhone').value.trim();
+
+            if (!fullname || !username || !password || !phone) {
+                document.getElementById('registerError').innerText = 'tafadhali jaza sehemu zote';
+                return;
+            }
+
+            if (password.length < 4) {
+                document.getElementById('registerError').innerText = 'nenosiri liwe angalau herufi 4';
+                return;
+            }
+
+            if (users.find(u => u.username === username)) {
+                document.getElementById('registerError').innerText = 'jina la mtumiaji tayari lipo';
+                return;
+            }
+
+            const now = new Date();
+            const newUser = {
+                username: username,
+                password: password,
+                name: fullname,
+                phone: phone,
+                balance: 0,
+                status: 'ACTIVE',
+                surveysCompleted: 0,
+                spinsUsed: 0,
+                withdrawalsCount: 0,
+                registeredAt: now.toLocaleDateString('sw-TZ') + ' ' + now.toLocaleTimeString('sw-TZ'),
+                lastLogin: null
+            };
+
+            users.push(newUser);
+            localStorage.setItem('vuna_users', JSON.stringify(users));
+            
+            // Auto login
+            currentUser = newUser;
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('dashUsername').innerText = newUser.name;
+            
+            // Show admin menu for salehe
+            if (username === 'salehe' && password === '545454') {
+                document.getElementById('adminMenuMobile').style.display = 'flex';
+            }
+            
+            // Add notification
+            notifications.unshift({
+                msg: `karibu ${fullname}!`,
+                time: 'sasa hivi'
+            });
+            localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+            
+            loadDashboard();
+            showNotification('✔ usajili umefanikiwa!');
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+            const attemptsEl = document.getElementById('loginAttempts');
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!username || !password) {
+                errorEl.innerText = 'tafadhali jaza sehemu zote';
+                return;
+            }// Check login attempts
+            const attempts = loginAttempts[username] || 0;
+            if (attempts >= 3) {
+                errorEl.innerText = '❌ umejaribu mara nyingi. subiri dakika 5.';
+                loginBtn.disabled = true;
+                setTimeout(() => {
+                    delete loginAttempts[username];
+                    loginBtn.disabled = false;
+                    errorEl.innerText = '';
+                    attemptsEl.innerText = '';
+                }, 300000); // 5 minutes
+                return;
+            }
+
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                if (user.status === 'BLOCKED') {
+                    errorEl.innerText = '❌ akaunti yako imefungwa. wasiliana na admin.';
+                    return;
+                }
+                
+                // Reset login attempts
+                delete loginAttempts[username];
+                
+                currentUser = user;
+                user.lastLogin = new Date().toLocaleDateString('sw-TZ') + ' ' + new Date().toLocaleTimeString('sw-TZ');
+                localStorage.setItem('vuna_users', JSON.stringify(users));
+                
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'flex';
+                document.getElementById('dashUsername').innerText = user.name || user.username;
+                
+                // Show admin menu ONLY for salehe
+                if (username === 'salehe' && password === '545454') {
+                    document.getElementById('adminMenuMobile').style.display = 'flex';
+                } else {
+                    document.getElementById('adminMenuMobile').style.display = 'none';
+                }
+                
+                loadDashboard();
+                showNotification(`karibu tena ${user.name}!`);
+            } else {
+                // Track failed attempt
+                loginAttempts[username] = (loginAttempts[username] || 0) + 1;
+                const remaining = 3 - loginAttempts[username];
+                
+                errorEl.innerText = '❌ jina la mtumiaji au nenosiri si sahihi';
+                if (remaining > 0) {
+                    attemptsEl.innerText = `umejaribu ${loginAttempts[username]}/3. mabaki ${remaining}`;
+                } else {
+                    attemptsEl.innerText = 'umeshazidi, subiri dakika 5.';
+                }
+            }
+        }
+
+        function handlePasswordReset() {
+            const code = document.getElementById('resetCode').value;
+            const username = document.getElementById('forgotUsername').value;
+            
+            if (code === '505010') {
+                if (username) {
+                    const user = users.find(u => u.username === username);
+                    if (user) {
+                        showNotification(`msimbo wa kurejesha nenosiri: tuma SMS kwa admin`);
+                    } else {
+                        showNotification('jina la mtumiaji halipo');
+                    }
+                }
+                setTimeout(() => showAuth(), 2000);
+            } else {
+                alert('msimbo si sahihi');
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').innerText = '';
+            document.getElementById('loginAttempts').innerText = '';
+        }
+
+        function changeLanguage(lang) {
+            language = lang;
+            localStorage.setItem('vuna_language', lang);
+            location.reload();
+        }
+
+        function loadDashboard() {
+            if (!currentUser) return;
+            
+            // Data halisi kutoka kwa currentUser
+            document.getElementById('balanceAmount').innerText = (currentUser.balance || 0).toLocaleString() + ' TZS';
+            document.getElementById('surveyCount').innerText = currentUser.surveysCompleted || 0;
+            document.getElementById('spinCount').innerText = currentUser.spinsUsed || 0;
+            document.getElementById('withdrawCount').innerText = currentUser.withdrawalsCount || 0;
+            
+            // Spins remaining (max 3 per day)
+            const spinsToday = currentUser.spinsUsed || 0;
+            const remainingSpins = Math.max(0, 3 - spinsToday);
+            document.getElementById('spinRemaining').innerText = `umeshasoma: ${spinsToday} leo. umebaki ${remainingSpins}`;
+            
+            // Disable spin button if no spins left
+            document.getElementById('spinBtn').disabled = spinsToday >= 3;
+            
+            loadSurveys();
+            loadWithdrawalHistory();
+            loadNotifications();
+            loadChat();
+            loadAnnouncements();
+            
+            if (currentUser.username === 'salehe') {
+                loadAdminData();
+            }
+        }
+
+        function switchSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(it => it.classList.remove('active'));
+            
+            const navMap = {
+                'home': 'Nyumbani',
+                'surveys': 'Maswali',
+                'spin': 'Gurudumu',
+                'withdraw': 'Kutoa',
+                'chat': 'Wasiliana',
+                'notifications': 'Arifa',
+                'admin': 'Admin'
+            };
+            
+            const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(el => 
+                el.innerText.includes(navMap[section])
+            );
+            if (activeNav) activeNav.classList.add('active');
+            
+            if (section === 'spin') {
+                initSpinWheel();
+            }
+        }
+
+        function loadSurveys() {
+            const surveysList = document.getElementById('surveysList');
+            surveysList.innerHTML = surveys.map(s => `
+                <div class="survey-item">
+                    <div class="survey-question">${language === 'sw' ? (s.swahili || s.question) : s.question}</div>
+                    <div class="survey-options">
+                        ${s.options.map(o => `<div class="survey-option" onclick="completeSurvey(${s.id}, '${o}')">${o}</div>`).join('')}
+                    </div>
+                    <div style="color:var(--glow-green);font-weight:700;">zawadi ${s.reward.toLocaleString()} TZS</div>
+                    <div class="small-note">ilichapishwa: ${s.createdAt || 'tarehe haijulikani'}</div>
+                </div>
+            `).join('');
+        }
+
+        function completeSurvey(surveyId, option) {
+            const survey = surveys.find(s => s.id === surveyId);
+            if (!survey) return;
+            
+            currentUser.balance = (currentUser.balance || 0) + survey.reward;
+            currentUser.surveysCompleted = (currentUser.surveysCompleted || 0) + 1;
+            
+            saveUser();
+            loadDashboard();
+            showNotification(`✔ umepata ${survey.reward.toLocaleString()} TZS`);
+            
+            // Add notification
+            const now = new Date();
+            notifications.unshift({
+                msg: `umemaliza swali "${survey.question}" na kupata ${survey.reward} TZS`,
+                time: 'sasa hivi'
+            });
+            localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+        }
+
+        function spinWheel() {
+            if (!currentUser) return;
+            
+            const spinsToday = currentUser.spinsUsed || 0;
+            if (spinsToday >= 3) {
+                showNotification('✔ umeshazungusha mara 3 leo, rudi kesho');
+                return;
+            }
+            
+            // Random prize (kwenye vipande 10)
+            const randomIndex = Math.floor(Math.random() * SPIN_PRIZES.length);
+            const prize = SPIN_PRIZES[randomIndex];
+            
+            // Spin animation
+            const wheel = document.getElementById('spinWheel');
+            const spinDegrees = 1440 + (randomIndex * 36) + Math.random() * 36;
+            wheel.style.transform = `rotate(${spinDegrees}deg)`;
+            
+            setTimeout(() => {
+                // Update user balance (halisi)
+                currentUser.balance = (currentUser.balance || 0) + prize;
+                currentUser.spinsUsed = (currentUser.spinsUsed || 0) + 1;
+                
+                // Update statistics (halisi)
+                spinStats.totalSpins++;
+                spinStats.totalWins += prize;
+                localStorage.setItem('vuna_spinStats', JSON.stringify(spinStats));
+                
+                saveUser();
+                
+                document.getElementById('spinResult').innerText = prize > 0 ? `✔ umeshinda ${prize.toLocaleString()} TZS!` : '✔ jaribu tena!';
+                loadDashboard();
+                showNotification(prize > 0 ? `gurudumu: ${prize.toLocaleString()} TZS` : 'gurudumu: hakuna zawadi');
+                
+                // Add notification for big wins
+                if (prize >= 10000) {
+                    const now = new Date();
+                    notifications.unshift({
+                        msg: `🎉 HONGERA! umeshinda ${prize.toLocaleString()} TZS kwenye gurudumu!`,
+                        time: now.toLocaleTimeString('sw-TZ')
+                    });
+                    localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+                }
+            }, 3000);
+        }
+
+        function requestWithdrawal() {
+            const amount = parseInt(document.getElementById('withdrawAmount').value);
+            const phone = document.getElementById('withdrawPhone').value.trim();
+            const method = document.getElementById('withdrawMethod').value;
+
+            if (!amount || amount < 2000) {
+                alert('❌ kiwango cha chini ni 2,000 TZS');
+                return;
+            }
+            if (!phone) {
+                alert('❌ namba ya simu inahitajika');
+                return;
+            }
+            if ((currentUser.balance || 0) < amount) {
+                alert('❌ salio lako halitoshi');
+                return;
+            }
+
+            const now = new Date();
+            const withdrawal = {
+                id: Date.now(),
+                username: currentUser.username,
+                name: currentUser.name,
+                amount: amount,
+                phone: phone,
+                method: method,
+                status: 'PENDING',
+                date: now.toLocaleDateString('sw-TZ'),
+                time: now.toLocaleTimeString('sw-TZ')
+            };
+
+            withdrawals.push(withdrawal);
+            currentUser.balance -= amount;
+            currentUser.withdrawalsCount = (currentUser.withdrawalsCount || 0) + 1;
+            
+            localStorage.setItem('vuna_withdrawals', JSON.stringify(withdrawals));
+            saveUser();
+            
+            alert('✔ ombi la kutoa limetumwa, subiri kuidhinishwa');
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('withdrawPhone').value = '';
+            loadDashboard();
+        }
+
+        function loadWithdrawalHistory() {
+            if (!currentUser) return;
+            
+            const userWithdrawals = withdrawals.filter(w => w.username === currentUser.username);
+            const historyList = document.getElementById('historyList');
+            
+            if (userWithdrawals.length === 0) {
+                historyList.innerHTML = '<p class="small-note">hakuna historia ya kutoa</p>';
+                return;
+            }
+            
+            historyList.innerHTML = userWithdrawals.map(w => `
+                <div class="history-item">
+                    <div>
+                        <strong>${w.amount.toLocaleString()} TZS</strong> · ${w.method}<br>
+                        <small>${w.date} ${w.time || ''}</small>
+                    </div>
+                    <span class="${w.status === 'PENDING' ? 'status-pending' : 'status-completed'}">${w.status}</span>
+                </div>
+            `).join('');
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('chatInput').value.trim();
+            if (!message || !currentUser) return;
+
+            const now = new Date();
+            chatMessages.push({
+                id: Date.now(),
+                username: currentUser.username,
+                name: currentUser.name,
+                msg: message,
+                time: now.toLocaleTimeString('sw-TZ'),
+                date: now.toLocaleDateString('sw-TZ'),
+                type: 'user'
+            });
+            
+            localStorage.setItem('vuna_chat', JSON.stringify(chatMessages));
+            document.getElementById('chatInput').value = '';
+            loadChat();
+            
+            // Auto reply (admin anapost)
+            setTimeout(() => {
+                chatMessages.push({
+                    id: Date.now() + 1,
+                    username: 'Admin',
+                    name: 'Admin',
+                    msg: 'asante kwa ujumbe, tutajibu hivi karibuni',
+                    time: new Date().toLocaleTimeString('sw-TZ'),
+                    date: new Date().toLocaleDateString('sw-TZ'),
+                    type: 'admin'
+                });
+                localStorage.setItem('vuna_chat', JSON.stringify(chatMessages));
+                loadChat();
+            }, 3000);
+        }
+
+        function loadChat() {
+            const chatContainer = document.getElementById('chatMessages');
+            chatContainer.innerHTML = chatMessages.slice(-50).map(m => `
+                <div class="message ${m.type === 'admin' ? 'admin' : 'user'}">
+                    <strong>${m.name}:</strong><br>
+                    ${m.msg}<br>
+                    <small>${m.time} ${m.date}</small>
+                </div>
+            `).join('');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function loadNotifications() {
+            const notifList = document.getElementById('notificationsList');
+            
+            if (notifications.length === 0) {
+                notifList.innerHTML = '<p class="small-note">hakuna arifa</p>';
+                return;
+            }
+            
+            notifList.innerHTML = notifications.slice(0, 20).map(n => `
+                <div style="background:#1b182b; border-left:6px solid #2ef0b0; padding:1.2rem; border-radius:2rem; margin:1rem 0;">
+                    ${n.msg}<br>
+                    <small>${n.time}</small>
+                </div>
+            `).join('');
+        }
+
+        function loadAnnouncements() {
+            const announcementsList = document.getElementById('announcementsList');
+            
+            // Show only active announcements
+            const activeAnnouncements = announcements.filter(a => a.target === 'all' || a.target === 'active');
+            
+            if (activeAnnouncements.length === 0) {
+                announcementsList.innerHTML = '<p class="small-note">hakuna taarifa mpya</p>';
+                return;
+            }
+            
+            announcementsList.innerHTML = activeAnnouncements.map(a => `
+                <div class="post-card">
+                    <div class="post-title">${a.title}</div>
+                    <p>${a.content}</p>
+                    <div class="post-date">ilichapishwa: ${a.createdAt} na ${a.author}</div>
+                </div>
+            `).join('');
+        }
+
+        function showNotification(msg) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.innerText = msg;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        // ADMIN FUNCTIONS (data halisi tu)
+        function loadAdminData() {
+            if (!currentUser || currentUser.username !== 'salehe') return;
+            
+            // Spin statistics halisi
+            document.getElementById('totalSpins').innerText = spinStats.totalSpins;
+            document.getElementById('totalSpinWins').innerText = spinStats.totalWins.toLocaleString() + ' TZS';
+            
+            // Users table (data halisi kutoka kwa users array)
+            const userTable = document.getElementById('adminUserTable');
+            
+            if (users.length === 0) {
+                userTable.innerHTML = '<tr><td colspan="8" style="text-align:center;">hakuna watumiaji</td></tr>';
+            } else {
+                userTable.innerHTML = users.map((u, index) => `
+                    <tr>
+                        <td>${u.name || u.username}</td>
+                        <td>${u.username}</td>
+                        <td>${u.phone || '-'}</td>
+                        <td>${(u.balance || 0).toLocaleString()} TZS</td>
+                        <td>${u.surveysCompleted || 0}</td>
+                        <td>${u.spinsUsed || 0}</td>
+                        <td style="color:${u.status === 'BLOCKED' ? '#ff5c7c' : '#2ef0b0'}">${u.status || 'ACTIVE'}</td>
+                        <td><button class="action-btn ${u.status === 'BLOCKED' ? 'btn-activate' : 'btn-block'}" 
+                                    onclick="toggleUserStatus('${u.username}')">
+                                ${u.status === 'BLOCKED' ? 'wezesha' : 'zima'}
+                            </button>
+                            <button class="action-btn btn-post" onclick="addUserBalance('${u.username}')">
+                                ongeza salio
+                            </button>
+                            <button class="action-btn" onclick="viewUserDetails('${u.username}')">
+                                taarifa
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Pending withdrawals (halisi)
+            const pendingWithdrawals = withdrawals.filter(w => w.status === 'PENDING');
+            const adminWithdrawals = document.getElementById('adminWithdrawals');
+            
+            if (pendingWithdrawals.length === 0) {
+                adminWithdrawals.innerHTML = '<p class="small-note">hakuna maombi ya kutoa</p>';
+            } else {
+                adminWithdrawals.innerHTML = pendingWithdrawals.map(w => `
+                    <div class="history-item">
+                        <div>
+                            <strong>${w.name || w.username}</strong> · ${w.amount.toLocaleString()} TZS<br>
+                            ${w.phone} (${w.method})<br>
+                            <small>${w.date} ${w.time || ''}</small>
+                        </div>
+                        <div>
+                            <button class="action-btn btn-activate" onclick="approveWithdrawal(${w.id})">idhinisha</button>
+                            <button class="action-btn btn-block" onclick="rejectWithdrawal(${w.id})">kataa</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Past announcements
+            const pastAnnouncements = document.getElementById('pastAnnouncements');
+            if (announcements.length === 0) {
+                pastAnnouncements.innerHTML = '<p class="small-note">hakuna taarifa zilizochapishwa</p>';
+            } else {
+                pastAnnouncements.innerHTML = announcements.slice(0, 10).map(a => `
+                    <div class="post-card">
+                        <div class="post-title">${a.title}</div>
+                        <p>${a.content}</p>
+                        <div class="post-date">ilichapishwa: ${a.createdAt} · target: ${a.target}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleUserStatus(username) {
+            const user = users.find(u => u.username === username);
+            if (user) {
+                user.status = user.status === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
+                localStorage.setItem('vuna_users', JSON.stringify(users));
+                loadAdminData();
+                showNotification(`✔ status ya ${username} imebadilishwa kuwa ${user.status}`);
+                
+                // Add notification for user
+                const now = new Date();
+                notifications.unshift({
+                    msg: `akaunti yako ime${user.status === 'BLOCKED' ? 'fungwa' : 'wezeshwa'} na admin`,
+                    time: now.toLocaleTimeString('sw-TZ')
+                });
+                localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+            }
+        }
+
+        function addUserBalance(username) {
+            const amount = prompt('ingiza kiasi cha kuongeza (TZS):');
+            if (!amount) return;
+            
+            const numAmount = parseInt(amount);
+            if (isNaN(numAmount) || numAmount <= 0) return;
+            
+            const user = users.find(u => u.username === username);
+            if (user) {
+                user.balance = (user.balance || 0) + numAmount;
+                localStorage.setItem('vuna_users', JSON.stringify(users));
+                
+                // Add notification for user
+                const now = new Date();
+                notifications.unshift({
+                    msg: `umeongezewa salio la ${numAmount.toLocaleString()} TZS na admin`,
+                    time: now.toLocaleTimeString('sw-TZ')
+                });
+                localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+                
+                loadAdminData();
+                showNotification(`✔ umeongeza ${numAmount.toLocaleString()} TZS kwa ${username}`);
+                
+                // If this is current user, refresh dashboard
+                if (currentUser && currentUser.username === username) {
+                    currentUser.balance = user.balance;
+                    loadDashboard();
+                }
+            }
+        }
+
+        function viewUserDetails(username) {
+            const user = users.find(u => u.username === username);
+            if (!user) return;
+            
+            const userWithdrawals = withdrawals.filter(w => w.username === username);
+            const totalWithdrawn = userWithdrawals
+                .filter(w => w.status === 'COMPLETED')
+                .reduce((sum, w) => sum + w.amount, 0);
+            
+            alert(`
+                TAARIFA ZA ${user.name}:
+                
+                Jina la mtumiaji: ${user.username}
+                Namba ya simu: ${user.phone || '-'}
+                Salio: ${(user.balance || 0).toLocaleString()} TZS
+                Maswali yaliyokamilika: ${user.surveysCompleted || 0}
+                Spins zilizotumika: ${user.spinsUsed || 0}
+                Jumla ya kutoa: ${totalWithdrawn.toLocaleString()} TZS
+                Status: ${user.status || 'ACTIVE'}
+                Alijiandikisha: ${user.registeredAt || 'haijulikani'}
+                Mwisho ku-login: ${user.lastLogin || 'haijulikani'}
+            `);
+        }
+
+        function approveWithdrawal(withdrawalId) {
+            const withdrawal = withdrawals.find(w => w.id === withdrawalId);
+            if (!withdrawal) return;
+            
+            withdrawal.status = 'COMPLETED';
+            localStorage.setItem('vuna_withdrawals', JSON.stringify(withdrawals));
+            
+            // Add notification for user
+            const now = new Date();
+            notifications.unshift({
+                msg: `omba lako la kutoa ${withdrawal.amount.toLocaleString()} TZS limeidhinishwa`,
+                time: now.toLocaleTimeString('sw-TZ')
+            });
+            localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+            
+            loadAdminData();
+            showNotification(`✔ withdrawal ya ${withdrawal.amount.toLocaleString()} TZS imekamilika`);
+        }
+
+        function rejectWithdrawal(withdrawalId) {
+            const withdrawal = withdrawals.find(w => w.id === withdrawalId);
+            if (!withdrawal) return;
+            
+            // Return money to user
+            const user = users.find(u => u.username === withdrawal.username);
+            if (user) {
+                user.balance = (user.balance || 0) + withdrawal.amount;
+            }
+            
+            // Remove withdrawal
+            withdrawals = withdrawals.filter(w => w.id !== withdrawalId);
+            localStorage.setItem('vuna_withdrawals', JSON.stringify(withdrawals));
+            localStorage.setItem('vuna_users', JSON.stringify(users));
+            
+            // Add notification
+            const now = new Date();
+            notifications.unshift({
+                msg: `omba lako la kutoa ${withdrawal.amount.toLocaleString()} TZS limekatishwa, pesa zimerudishwa`,
+                time: now.toLocaleTimeString('sw-TZ')
+            });
+            localStorage.setItem('vuna_notifications', JSON.stringify(notifications));
+            
+            loadAdminData();
+            showNotification(`✔ withdrawal imekataliwa, pesa zimerudishwa`);
+            
+            // Update current user if needed
+            if (currentUser && currentUser.username === withdrawal.username) {
+                currentUser.balance = user.balance;
+                loadDashboard();
+            }
+        }
+
+        function publishAnnouncement() {
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            const target = document.getElementById('postTarget').value;
+            
+            if (!title || !content) {
+                alert('tafadhali jaza kichwa na maelezo');
+                return;
+            }
+            
+            const now = new Date();
+            const announcement = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                target: target,
+                createdAt: now.toLocaleDateString('sw-TZ') + ' ' + now.toLocaleTimeString('sw-TZ'),
+                author: currentUser.username
+            };
+            
+            announcements.unshift(announcement);
+            localStorage.setItem('vuna_announcements', JSON.stringify(announcements));
+            
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            
+            loadAdminData();
+            loadAnnouncements();
+            showNotification('✔ taarifa imechapishwa');
+        }
+
+        function addNewSurvey() {
+            const question = document.getElementById('newSurveyQuestion').value.trim();
+            const reward = parseInt(document.getElementById('newSurveyReward').value);
+            const optionsInput = document.getElementById('newSurveyOptions').value.trim();
+            
+            if (!question || !reward || !optionsInput) {
+                alert('tafadhali jaza sehemu zote');
+                return;
+            }
+            
+            const options = optionsInput.split(',').map(o => o.trim());
+            if (options.length < 2) {
+                alert('tafadhali weka angalau chaguo 2');
+                return;
+            }
+            
+            const now = new Date();
+            const newSurvey = {
+                id: Date.now(),
+                question: question,
+                options: options,
+                reward: reward,
+                swahili: question,
+                createdAt: now.toLocaleDateString('sw-TZ')
+            };
+            
+            surveys.push(newSurvey);
+            localStorage.setItem('vuna_surveys', JSON.stringify(surveys));
