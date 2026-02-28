@@ -1,455 +1,207 @@
-
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="sw" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KWENYE WhatsApp Ban Manager - MR ETHICAL HACKER</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <title>BAD GUYS - Elite Cybersecurity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['"Fira Code"', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            black: '#050505',
+                            dark: '#0a0a0a',
+                            green: '#00ff88',
+                            glow: 'rgba(0, 255, 136, 0.5)'
+                        }
+                    }
+                }
+            }
         }
-        
+    </script>
+
+    <style>
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #000 100%);
-            min-height: 100vh;
-            color: #00ff41;
+            background-color: #050505;
+            color: #ffffff;
             overflow-x: hidden;
         }
-        
-        .matrix-bg {
+
+        /* Animated Grid Background */
+        .cyber-grid {
             position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: 
+                linear-gradient(to right, rgba(0, 255, 136, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            perspective: 1000px;
+            transform-origin: center bottom;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(40px); }
+        }
+
+        /* Glitch Text Effect */
+        .glitch-wrapper {
+            position: relative;
+        }
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+            font-weight: 800;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            opacity: 0.1;
+            background: #050505;
         }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-            position: relative;
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
         }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
         }
-        
-        .logo {
-            font-size: 3.5em;
-            font-weight: bold;
-            background: linear-gradient(45deg, #00ff41, #00bfff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px #00ff41;
-            animation: glow 2s ease-in-out infinite alternate;
-            margin-bottom: 10px;
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 44px, 0); }
+            20% { clip: rect(85px, 9999px, 59px, 0); }
+            40% { clip: rect(14px, 9999px, 98px, 0); }
+            60% { clip: rect(78px, 9999px, 13px, 0); }
+            80% { clip: rect(32px, 9999px, 84px, 0); }
+            100% { clip: rect(98px, 9999px, 34px, 0); }
         }
-        
-        .subtitle {
-            font-size: 1.3em;
-            color: #00bfff;
-            text-shadow: 0 0 10px #00bfff;
-        }
-        
-        .tabs {
-            display: flex;
-            background: rgba(0, 255, 65, 0.1);
-            border: 2px solid #00ff41;
-            border-radius: 15px;
-            margin-bottom: 30px;
+
+        /* Cyber Card Hover */
+        .cyber-card {
+            background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.4s ease;
         }
-        
-        .tab {
-            flex: 1;
-            padding: 15px 25px;
-            background: transparent;
-            border: none;
-            color: #00ff41;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 13px;
-        }
-        
-        .tab.active {
-            background: linear-gradient(45deg, #00ff41, #00bfff);
-            color: #000;
-            box-shadow: 0 0 20px #00ff41;
-        }
-        
-        .tab-content {
-            display: none;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #00ff41;
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
-        }
-        
-        .tab-content.active {
-            display: block;
-            animation: slideIn 0.5s ease;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 20px #00ff41; }
-            to { text-shadow: 0 0 40px #00ff41, 0 0 60px #00bfff; }
-        }
-        
-        .input-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #00bfff;
-            text-shadow: 0 0 10px #00bfff;
-        }
-        
-        input[type="tel"], textarea {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-            color: #00ff41;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #ff00ff;
-            box-shadow: 0 0 20px #ff00ff;
-            transform: scale(1.02);
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 10px;
-        }
-        
-        .ban-btn {
-            background: linear-gradient(45deg, #ff0040, #ff4081);
-            color: white;
-            box-shadow: 0 0 20px #ff0040;
-        }
-        
-        .ban-btn:hover {
+        .cyber-card:hover {
+            border-color: var(--tw-colors-cyber-green);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px #ff0040;
         }
-        
-        .gmail-btn {
-            background: linear-gradient(45deg, #4285f4, #34a853);
-            color: white;
-            box-shadow: 0 0 20px #4285f4;
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: var(--tw-colors-cyber-green);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
-        
-        .gmail-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px #4285f4;
+        .cyber-card:hover::before {
+            transform: scaleX(1);
         }
-        
-        .requests-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .request-card {
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid #00ff41;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .request-card:hover {
-            background: rgba(0, 255, 65, 0.3);
-            box-shadow: 0 0 20px #00ff41;
-            transform: scale(1.05);
-        }
-        
-        .status {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
-            font-weight: bold;
-            text-align: center;
-            font-size: 1.2em;
-        }
-        
-        .status.success { 
-            background: rgba(0, 255, 65, 0.2); 
-            color: #00ff41; 
-            border: 2px solid #00ff41;
-        }
-        
-        .status.error { 
-            background: rgba(255, 0, 64, 0.2); 
-            color: #ff0040; 
-            border: 2px solid #ff0040;
-        }
-        
-        .status.loading { 
-            background: rgba(255, 193, 7, 0.2); 
-            color: #ffc107; 
-            border: 2px solid #ffc107;
-        }
-        
-        .watermark {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            font-size: 2em;
-            font-weight: bold;
-            color: #ff00ff;
-            text-shadow: 0 0 20px #ff00ff;
-            z-index: 1000;
-            animation: blink 1.5s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
-        }
-        
-        .spinner {
-            display: inline-block;
-            width: 25px;
-            height: 25px;
-            border: 3px solid rgba(0,255,65,0.3);
-            border-top: 3px solid #00ff41;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #00ff88; border-radius: 4px; }
     </style>
 </head>
-<body>
-    <canvas class="matrix-bg" id="matrix"></canvas>
-    <div class="watermark">MR ETHICAL HACKER</div>
-    
-    <div class="container">
-        <div class="header">
-            <div class="logo">KWENY HACKER</div>
-            <div class="subtitle">WhatsApp Ban/Unban Terminal</div>
-        </div>
-        
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('ban')">🚫 PIGA BAN</button>
-            <button class="tab" onclick="switchTab('gmail')">📧 KWENY GMAIL</button>
-        </div>
-        
-        <!-- BAN TAB -->
-        <div id="ban-tab" class="tab-content active">
-            <div class="input-group">
-                <label>Target Phone Number:</label>
-                <input type="tel" id="phone" placeholder="+254712345678" pattern="[+]?[0-9]{10,13}">
-            </div>
-            <button class="btn ban-btn" onclick="executeBan()">
-                💥 EXECUTE BAN ATTACK
-            </button>
-            <div id="ban-status" class="status" style="display: none;"></div>
-        </div>
-        
-        <!-- KWENY GMAIL TAB -->
-        <div id="gmail-tab" class="tab-content">
-            <div class="input-group">
-                <label>Target Phone:</label>
-                <input type="tel" id="gmail-phone" placeholder="+254712345678">
-            </div>
-            
-            <div class="requests-grid">
-                <div class="request-card" onclick="addRequest('Ban Request 1')">
-                    <strong>BAN REQ #1</strong><br>Spam Report
-                </div>
-                <div class="request-card" onclick="addRequest('Ban Request 2')">
-                    <strong>BAN REQ #2</strong><br>Abuse Report
-                </div>
-                <div class="request-card" onclick="addRequest('Unban Request 1')">
-                    <strong>UNBAN REQ #1</strong><br>Appeal #1
-                </div>
-                <div class="request-card" onclick="addRequest('Unban Request 2')">
-                    <strong>UNBAN REQ #2</strong><br>Appeal #2
-                </div>
-                <div class="request-card" onclick="addRequest('Ban Request 3')">
-                    <strong>BAN REQ #3</strong><br>Mass Report
-                </div>
-                <div class="request-card" onclick="addRequest('Recovery Request')">
-                    <strong>RECOVERY</strong><br>Account Recovery
-                </div>
-            </div>
-            
-            <div class="input-group">
-                <label>Gmail Request Message:</label>
-                <textarea id="gmail-message" placeholder="Andika request hapa..."></textarea>
-            </div>
-            
-            <button class="btn gmail-btn" onclick="sendGmailRequests()">
-                📤 SEND 5 GMAIL REQUESTS
-            </button>
-            <div id="gmail-status" class="status" style="display: none;"></div>
-        </div>
-    </div>
+<body class="font-sans antialiased selection:bg-cyber-green selection:text-black">
 
-    <script>
-        // Matrix background effect
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-        
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#00ff41';
-            ctx.font = `${fontSize}px monospace`;
-            
-            drops.forEach((y, i) => {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * fontSize, y * fontSize);
+    <div class="cyber-grid"></div>
+
+    <!-- NAVBAR -->
+    <nav class="fixed w-full z-50 top-0 border-b border-white/5 bg-cyber-black/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <span class="font-mono text-xl font-bold text-white">
+                        <span class="text-cyber-green">root@</span>badguys<span class="animate-pulse">_</span>
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="text-gray-300 hover:text-cyber-green px-3 py-2 rounded-md text-sm font-mono transition-colors">./Home</a>
+                        <a href="#team" class="text-cyber-green border-b border-cyber-green px-3 py-2 rounded-md text-sm font-mono transition-colors">./Team</a>
+                        <a href="#services" class="text-gray-300 hover:text-cyber-green px-3 py-2 rounded-md text-sm font-mono transition-colors">./Services</a>
+                        <a href="#contact" class="bg-cyber-green/10 text-cyber-green border border-cyber-green hover:bg-cyber-green hover:text-black px-4 py-2 rounded-md text-sm font-mono transition-all">./Connect</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyber-green/30 bg-cyber-green/5 text-cyber-green font-mono text-xs mb-8">
+                    <span class="w-2 h-2 rounded-full bg-cyber-green animate-pulse"></span>
+                    SYSTEM ONLINE. NETWORK SECURED.
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 glitch-wrapper">
+                    <span class="glitch-text text-white" data-text="BAD GUYS HACKER">BAD GUYS HACKER</span>
+                </h1>
+                <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-400 font-mono">
+                    <span class="text-cyber-green">&gt;</span> Elite Cybersecurity Syndicate.<br>
+                    Sisi tunalinda mifumo kwa kufikiri kama washambuliaji. Tunajenga, tunadukua, na kuimarisha usalama wa kidijitali na kimechatroniki.
+                </p>
+                <div class="mt-10 flex justify-center gap-4">
+                    <a href="#team" class="bg-cyber-green text-black px-8 py-3 rounded font-mono font-bold hover:bg-green-400 hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] transition-all">
+                        MEET THE SQUAD
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM SECTION -->
+    <section id="team" class="py-20 relative z-10 bg-gradient-to-b from-transparent via-cyber-dark to-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-mono font-bold text-white mb-4"><span class="text-cyber-green">#</span> THE_CORE_TEAM</h2>
+                <div class="w-24 h-1 bg-cyber-green mx-auto opacity-50"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
-                if (y * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            });
-        }
-        
-        setInterval(drawMatrix, 50);
-        
-        // Tab switching
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tab + '-tab').classList.add('active');
-        }
-        
-        // Validation
-        function isValidPhone(phone) {
-            return /^[\+]?[1-9][\d]{0,15}$/.test(phone.replace(/\s/g, ''));
-        }
-        
-        // BAN Attack
-        async function executeBan() {
-            const phone = document.getElementById('phone').value.trim();
-            if (!phone || !isValidPhone(phone)) {
-                showStatus('ban-status', '❌ Invalid phone number!', 'error');
-                return;
-            }
-            
-            showStatus('ban-status', '💥 EXECUTING BAN ATTACK...', 'loading');
-            
-            // Simulate multi-vector ban attack
-            await new Promise(r => setTimeout(r, 2000));
-            
-            showStatus('ban-status', `✅ TARGET ${phone} BAN EXECUTED SUCCESSFULLY! 🚫`, 'success');
-            logAttack('BAN', phone);
-        }
-        
-        // Gmail Requests
-        function addRequest(template) {
-            const textarea = document.getElementById('gmail-message');
-            const templates = {
-                'Ban Request 1': `Subject: Spam Report - ${document.getElementById('gmail-phone').value}\n\nThis number is sending spam messages.`,
-                'Ban Request 2': `Subject: Abuse Report - ${document.getElementById('gmail-phone').value}\n\nViolating WhatsApp ToS.`,
-                'Unban Request 1': `Subject: Appeal - ${document.getElementById('gmail-phone').value}\n\nPlease review ban.`,
-                'Unban Request 2': `Subject: Account Recovery - ${document.getElementById('gmail-phone').value}\n\nNeed account access.`,
-                'Ban Request 3': `Subject: Mass Report - ${document.getElementById('gmail-phone').value}\n\nMultiple violations detected.`,
-                'Recovery Request': `Subject: Urgent Recovery - ${document.getElementById('gmail-phone').value}\n\nAccount locked.`
-            };
-            textarea.value = templates[template] || template;
-        }
-        
-        async function sendGmailRequests() {
-            const phone = document.getElementById('gmail-phone').value.trim();
-            const message = document.getElementById('gmail-message').value.trim();
-            
-            if (!phone || !isValidPhone(phone) || !message) {
-                showStatus('gmail-status', '❌ Complete all fields!', 'error');
-                return;
-            }
-            
-            showStatus('gmail-status', '📤 SENDING 5 GMAIL REQUESTS...', 'loading');
-            
-            // Simulate 5 Gmail requests
-            for (let i = 1; i <= 5; i++) {
-                await new Promise(r => setTimeout(r, 800));
-                console.log(`Gmail Request #${i} sent to: ${phone}`);
-            }
-            
-            showStatus('gmail-status', '✅ 5 GMAIL REQUESTS SENT SUCCESSFULLY! 📧', 'success');
-            logAttack('GMAIL', phone);
-        }
-        
-        function showStatus(elementId, message, type) {
-            const status = document.getElementById(elementId);
-            status.innerHTML = message;
-            status.className = `status ${type}`;
-            status.style.display = 'block';
-            
-            if (type === 'success') {
-                setTimeout(() => status.style.display = 'none', 6000);
-            }
-        }
-        
-        function logAttack(type, phone) {
-            console.log(`[${new Date().toISOString()}] ${type} ATTACK: ${phone} | Authorized Pentest`);
-        }
-        
-        // Auto-focus
-        document.getElementById('phone').focus();
-    </script>
-</body>
-  </html>
+                <!-- SALEHE: White Hat / Pentester -->
+                    <div class="mt-1">All systems operational...</div>
+                    <div class="mt-1">Firewall: <span class="text-green-500">ACTIVE</span></div>
+                    <div class="mt-1">Nodes connected: 5</div>
+                    <div class="mt-1 animate-pulse text-cyber-green">_                <div class="cyber-card rounded-xl p-6 relative group overflow-hidden">
+                    <div class="h-48 w-full rounded-lg overflow-hidden mb-6 relative">
+                        <div class="absolute inset-0 bg-cyber-green/20 group-hover:bg-transparent transition-colors z-10 mix-blend-overlay"></div>
+                        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=500&q=80" alt="Salehe White Hacker" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110">
+                    </div>
+                    <div class="absolute top-4 right-4 bg-black/80 px-2 py-1 rounded text-xs font-mono text-cyber-green border border-cyber-green/30 z-20">LEAD</div>
+                    <h3 class="text-2xl font-bold text-white mb-1">Salehe</h3>
+                    <p class="text-cyber-green font-mono text-sm mb-4">&gt; White Hacker & Pentester</p>
+                    <p class="text-gray-400 text-sm">Mtaalam wa kujaribu uimara wa mifumo (Penetration Testing). Anatafuta madhaifu kabla ya wahalifu hawajaipata na kutoa suluhisho thabiti la kiusalama.</p>
+                </div>
+
+                <!-- LUMINNEXA: Mechatronics -->
+                <div class="cyber-card rounded-xl p-6 relative group overflow-hidden">
+                    <div class="h-48 w-full rounded-lg overflow-hidden mb-6 relative">
+                        <div class="absolute inset-0 bg-cyber-green/20 group-hover:bg-transparent transition-colors z-10 mix-blend-overlay"></div>
+                     
