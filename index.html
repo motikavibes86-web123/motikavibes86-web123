@@ -1,207 +1,189 @@
 <!DOCTYPE html>
-<html lang="sw" class="scroll-smooth">
+<html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAD GUYS - Elite Cybersecurity</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TURBO TV GOLD V32</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        mono: ['"Fira Code"', 'monospace'],
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        cyber: {
-                            black: '#050505',
-                            dark: '#0a0a0a',
-                            green: '#00ff88',
-                            glow: 'rgba(0, 255, 136, 0.5)'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body {
-            background-color: #050505;
-            color: #ffffff;
-            overflow-x: hidden;
-        }
+        :root { --gold: #ffcc00; --bg: #000; --card: #111; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Arial', sans-serif; user-select: none; }
+        body { background: var(--bg); color: white; margin: 0; overflow-x: hidden; }
 
-        /* Animated Grid Background */
-        .cyber-grid {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background-image: 
-                linear-gradient(to right, rgba(0, 255, 136, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            perspective: 1000px;
-            transform-origin: center bottom;
-            animation: gridMove 20s linear infinite;
-        }
+        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 5000; }
+        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: #050505; transition: 0.4s; z-index: 10000; border-right: 2px solid var(--gold); padding: 20px; }
+        .sidebar.active { left: 0; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9000; }
 
-        @keyframes gridMove {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(40px); }
-        }
+        /* VIFURUSHI */
+        .plans-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; scrollbar-width: none; }
+        .plan-item { min-width: 125px; background: linear-gradient(135deg, #1a1a1a, #000); border: 1px solid #333; border-radius: 12px; padding: 12px; text-align: center; border-bottom: 3px solid var(--gold); }
+        .plan-item h4 { margin: 5px 0; color: var(--gold); font-size: 14px; }
 
-        /* Glitch Text Effect */
-        .glitch-wrapper {
-            position: relative;
-        }
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-            font-weight: 800;
-        }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #050505;
-        }
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -2px 0 red;
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim 3s infinite linear alternate-reverse;
-        }
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -2px 0 blue;
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim 2.5s infinite linear alternate-reverse;
-        }
-        @keyframes glitch-anim {
-            0% { clip: rect(10px, 9999px, 44px, 0); }
-            20% { clip: rect(85px, 9999px, 59px, 0); }
-            40% { clip: rect(14px, 9999px, 98px, 0); }
-            60% { clip: rect(78px, 9999px, 13px, 0); }
-            80% { clip: rect(32px, 9999px, 84px, 0); }
-            100% { clip: rect(98px, 9999px, 34px, 0); }
-        }
+        /* PLAYER */
+        #vid-box { display: none; background: #000; position: sticky; top: 60px; z-index: 4000; width: 100%; border-bottom: 2px solid var(--gold); }
+        video { width: 100%; aspect-ratio: 16/9; background: #000; }
+        .v-btns { display: flex; justify-content: space-between; padding: 10px; background: #111; }
 
-        /* Cyber Card Hover */
-        .cyber-card {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 136, 0.1);
-            transition: all 0.4s ease;
-        }
-        .cyber-card:hover {
-            border-color: var(--tw-colors-cyber-green);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
-            transform: translateY(-5px);
-        }
-        .cyber-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 2px;
-            background: var(--tw-colors-cyber-green);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
-        .cyber-card:hover::before {
-            transform: scaleX(1);
-        }
+        /* GRID LOGO */
+        .cat-tag { padding: 15px 15px 5px; color: var(--gold); font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; }
+        .ch-card { background: var(--card); border-radius: 12px; border: 1px solid #222; overflow: hidden; text-align: center; }
+        .img-h { background: white; height: 75px; display: flex; align-items: center; justify-content: center; padding: 8px; }
+        .img-h img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .ch-title { font-size: 9px; padding: 8px; font-weight: bold; color: #ccc; min-height: 35px; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #00ff88; border-radius: 4px; }
+        /* MODAL */
+        .gold-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 30000; align-items: center; justify-content: center; padding: 20px; }
+        .gold-box { background: #000; width: 100%; max-width: 380px; border-radius: 25px; border: 2px solid var(--gold); padding: 25px; text-align: center; }
+        .pay-details { background: #111; border-radius: 15px; padding: 15px; margin: 15px 0; text-align: left; font-size: 13px; border-left: 4px solid var(--gold); }
+        #errorMsg { color: #ff3333; font-size: 12px; margin-bottom: 10px; display: none; background: rgba(255,0,0,0.1); padding: 8px; border-radius: 5px; font-weight: bold; }
+        
+        .g-input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #050505; color: white; text-align: center; margin-bottom: 10px; font-size: 20px; outline: none; }
+        .g-btn { background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; }
     </style>
 </head>
-<body class="font-sans antialiased selection:bg-cyber-green selection:text-black">
+<body oncontextmenu="return false;">
 
-    <div class="cyber-grid"></div>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-    <!-- NAVBAR -->
-    <nav class="fixed w-full z-50 top-0 border-b border-white/5 bg-cyber-black/80 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex-shrink-0">
-                    <span class="font-mono text-xl font-bold text-white">
-                        <span class="text-cyber-green">root@</span>badguys<span class="animate-pulse">_</span>
-                    </span>
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#home" class="text-gray-300 hover:text-cyber-green px-3 py-2 rounded-md text-sm font-mono transition-colors">./Home</a>
-                        <a href="#team" class="text-cyber-green border-b border-cyber-green px-3 py-2 rounded-md text-sm font-mono transition-colors">./Team</a>
-                        <a href="#services" class="text-gray-300 hover:text-cyber-green px-3 py-2 rounded-md text-sm font-mono transition-colors">./Services</a>
-                        <a href="#contact" class="bg-cyber-green/10 text-cyber-green border border-cyber-green hover:bg-cyber-green hover:text-black px-4 py-2 rounded-md text-sm font-mono transition-all">./Connect</a>
-                    </div>
-                </div>
-            </div>
+<div class="sidebar" id="sidebar">
+    <div style="text-align: center; padding: 20px 0;"><img src="https://i.imgur.com/tC3ASmB.png" style="width:80%;"></div>
+    <div style="padding:15px; border-bottom: 1px solid #222;" onclick="closeSidebar()">Mwanzo</div>
+    <div style="padding:15px; border-bottom: 1px solid #222;" onclick="showModal('KEY')">Ingiza Key</div>
+    <div style="padding:15px;" onclick="window.location.href='https://wa.me/255750020767'">WhatsApp Admin</div>
+</div>
+
+<header>
+    <div onclick="openSidebar()"><i class="fas fa-bars-staggered" style="color:var(--gold); font-size: 24px;"></i></div>
+    <div style="font-weight: 900; font-size: 20px;">TURBO<span style="color:var(--gold);">TV</span></div>
+    <div onclick="showModal('KEY')"><i class="fas fa-crown" style="color:var(--gold); font-size: 22px;"></i></div>
+</header>
+
+<div class="plans-scroll">
+    <div class="plan-item" onclick="showModal('Siku 1')"><h4>500/=</h4><p>Siku 1</p></div>
+    <div class="plan-item" onclick="showModal('Wiki 1')"><h4>2,500/=</h4><p>Wiki 1</p></div>
+    <div class="plan-item" onclick="showModal('Mwezi 1')"><h4>15,000/=</h4><p>Mwezi 1</p></div>
+</div>
+
+<div id="vid-box">
+    <video id="player" controls controlsList="nodownload" playsinline></video>
+    <div class="v-btns">
+        <button onclick="stopVid()" style="background:red; border:none; color:white; padding:8px 15px; border-radius:8px;">FUNGA</button>
+        <button onclick="rotateVid()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:8px;">FULLSCREEN</button>
+    </div>
+</div>
+
+<div id="content"></div>
+
+<div class="gold-modal" id="goldModal">
+    <div class="gold-box">
+        <h2 id="mTitle" style="color:var(--gold); margin:0;">MALIPO</h2>
+        <div class="pay-details">
+            <b>VODACOM M-PESA</b><br>
+            Namba: <b>0750020767</b><br>
+            Jina: <b>SHABANI OMARY</b>
         </div>
-    </nav>
+        <div id="errorMsg">Key Sio Sahihi!</div>
+        <input type="text" id="kInput" class="g-input" placeholder="Weka Key hapa">
+        <button class="g-btn" onclick="checkKey()">THIBITISHA</button>
+        <p onclick="closeM()" style="color:#555; margin-top:15px; cursor:pointer;">Funga</p>
+    </div>
+</div>
 
-    <!-- HERO SECTION -->
-    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-screen flex items-center">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyber-green/30 bg-cyber-green/5 text-cyber-green font-mono text-xs mb-8">
-                    <span class="w-2 h-2 rounded-full bg-cyber-green animate-pulse"></span>
-                    SYSTEM ONLINE. NETWORK SECURED.
-                </div>
-                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 glitch-wrapper">
-                    <span class="glitch-text text-white" data-text="BAD GUYS HACKER">BAD GUYS HACKER</span>
-                </h1>
-                <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-400 font-mono">
-                    <span class="text-cyber-green">&gt;</span> Elite Cybersecurity Syndicate.<br>
-                    Sisi tunalinda mifumo kwa kufikiri kama washambuliaji. Tunajenga, tunadukua, na kuimarisha usalama wa kidijitali na kimechatroniki.
-                </p>
-                <div class="mt-10 flex justify-center gap-4">
-                    <a href="#team" class="bg-cyber-green text-black px-8 py-3 rounded font-mono font-bold hover:bg-green-400 hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] transition-all">
-                        MEET THE SQUAD
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<script>
+    const CHANNELS = [
+        { cat: "Azam Sports (Mubashara)", list: [
+            { n: "AZAM SPORTS 1 HD", i: "https://i.imgur.com/IfiS9MK.png", u: "http://line.iptv-4k.cc/live/664896/83C987/1480208.m3u8", p: true },
+            { n: "AZAM SPORTS 2 HD", i: "https://i.imgur.com/aJb0GWK.png", u: "http://line.iptv-4k.cc/live/664896/83C987/1480209.m3u8", p: true },
+            { n: "AZAM EXTRA", i: "https://i.imgur.com/FkCNjgO.png", u: "http://line.iptv-4k.cc/live/664896/83C987/1480210.m3u8", p: true }
+        ]},
+        { cat: "Bongo Local TV", list: [
+            { n: "CLOUDS TV", i: "https://i.imgur.com/nQyMN6A.png", u: "https://shm.itv.co.tz/cloudstv/index.m3u8", p: false },
+            { n: "ITV TANZANIA", i: "https://i.imgur.com/yIsA98f.png", u: "http://ec54.ott.bzdv.net/stream,195,341,830,.m3u8", p: false },
+            { n: "EATV", i: "https://i.postimg.cc/MHTSYT1F/eatv5.png", u: "http://bzdv.net.flash.glb.ipercast.net/bzdv.net-live/smil:55.smil/playlist.m3u8", p: false },
+            { n: "WASAF TV", i: "https://i.imgur.com/JNfPjHS.png", u: "https://shm.itv.co.tz/wasafitv/index.m3u8", p: false },
+            { n: "CHANNEL TEN+", i: "https://i.imgur.com/8XIjw6i.png", u: "http://bzdv.net.flash.glb.ipercast.net/bzdv.net-live/smil:53.smil/playlist.m3u8", p: false },
+            { n: "STAR TV", i: "https://i.imgur.com/pLfcg0r.png", u: "", p: false },
+            { n: "TV1", i: "https://i.imgur.com/ntOvcTv.png", u: "", p: false },
+            { n: "TVE", i: "https://i.imgur.com/TuFZuxO.png", u: "", p: false }
+        ]},
+        { cat: "Burudani & Movie", list: [
+            { n: "SINEMA ZETU", i: "https://i.imgur.com/mz2juIq.png", u: "", p: true },
+            { n: "CHEKA PLUS", i: "https://i.imgur.com/xIUS0hq.png", u: "", p: false },
+            { n: "CROWN TV", i: "https://i.imgur.com/G1xO5lR.jpeg", u: "", p: false },
+            { n: "AM TWO", i: "https://i.imgur.com/YhFMlKR.png", u: "", p: false }
+        ]},
+        { cat: "Dini & Mafundisho", list: [
+            { n: "SAUTI YA UPONYAJI", i: "https://i.imgur.com/NnBHezm.png", u: "", p: false },
+            { n: "UPENDO TV", i: "https://i.postimg.cc/XXMFDskt/upendotv.png", u: "", p: false },
+            { n: "TV IMAANI", i: "https://i.imgur.com/WusxF4h.png", u: "", p: false },
+            { n: "TUMAINI TV", i: "https://i.imgur.com/kOJ5Ho0.png", u: "", p: false },
+            { n: "ZOE TV", i: "https://i.imgur.com/8apepFk.jpeg", u: "", p: false },
+            { n: "WRM TV", i: "https://i.imgur.com/2gwc4RW.png", u: "", p: false }
+        ]}
+    ];
 
-    <!-- TEAM SECTION -->
-    <section id="team" class="py-20 relative z-10 bg-gradient-to-b from-transparent via-cyber-dark to-transparent">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-mono font-bold text-white mb-4"><span class="text-cyber-green">#</span> THE_CORE_TEAM</h2>
-                <div class="w-24 h-1 bg-cyber-green mx-auto opacity-50"></div>
-            </div>
+    // MFUMO WA PASSWORD (KEYS) NA MUDA WAKE
+    const VALID_KEYS = {
+        "DAY500X": 1, // Siku 1
+        "DAY500Y": 1,
+        "WEE2500A": 7, // Wiki 1
+        "WEE2500B": 7,
+        "MON15K1": 30, // Mwezi 1
+        "MON15K2": 30,
+        "TURBO2026": 365, // Mwaka 1
+        "ADMIN767": 999, // Master
+        "FREEPASS": 0.5, // Masaa 12
+        "GOLDKEY": 30
+    };
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- SALEHE: White Hat / Pentester -->
-                    <div class="mt-1">All systems operational...</div>
-                    <div class="mt-1">Firewall: <span class="text-green-500">ACTIVE</span></div>
-                    <div class="mt-1">Nodes connected: 5</div>
-                    <div class="mt-1 animate-pulse text-cyber-green">_                <div class="cyber-card rounded-xl p-6 relative group overflow-hidden">
-                    <div class="h-48 w-full rounded-lg overflow-hidden mb-6 relative">
-                        <div class="absolute inset-0 bg-cyber-green/20 group-hover:bg-transparent transition-colors z-10 mix-blend-overlay"></div>
-                        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=500&q=80" alt="Salehe White Hacker" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110">
-                    </div>
-                    <div class="absolute top-4 right-4 bg-black/80 px-2 py-1 rounded text-xs font-mono text-cyber-green border border-cyber-green/30 z-20">LEAD</div>
-                    <h3 class="text-2xl font-bold text-white mb-1">Salehe</h3>
-                    <p class="text-cyber-green font-mono text-sm mb-4">&gt; White Hacker & Pentester</p>
-                    <p class="text-gray-400 text-sm">Mtaalam wa kujaribu uimara wa mifumo (Penetration Testing). Anatafuta madhaifu kabla ya wahalifu hawajaipata na kutoa suluhisho thabiti la kiusalama.</p>
-                </div>
+    let isUnlocked = false;
 
-                <!-- LUMINNEXA: Mechatronics -->
-                <div class="cyber-card rounded-xl p-6 relative group overflow-hidden">
-                    <div class="h-48 w-full rounded-lg overflow-hidden mb-6 relative">
-                        <div class="absolute inset-0 bg-cyber-green/20 group-hover:bg-transparent transition-colors z-10 mix-blend-overlay"></div>
-                     
+    function openSidebar() { document.getElementById('sidebar').classList.add('active'); document.getElementById('overlay').style.display='block'; }
+    function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('overlay').style.display='none'; }
+    function showModal(p) { document.getElementById('goldModal').style.display = 'flex'; }
+    function closeM() { document.getElementById('goldModal').style.display = 'none'; }
+
+    function checkKey() {
+        const val = document.getElementById('kInput').value.toUpperCase();
+        const err = document.getElementById('errorMsg');
+        if(VALID_KEYS[val]) {
+            isUnlocked = true;
+            err.style.display = 'block'; err.style.color = "#00ff88"; err.innerText = "IMEFUNGULIWA! ("+VALID_KEYS[val]+" Days)";
+            setTimeout(() => closeM(), 1500);
+        } else {
+            err.style.display = 'block';
+        }
+    }
+
+    function play(ch) {
+        if(ch.p && !isUnlocked) { showModal(); return; }
+        if(!ch.u) { alert("Inakuja hivi punde..."); return; }
+        document.getElementById('vid-box').style.display = 'block';
+        const v = document.getElementById('player');
+        if (Hls.isSupported()) {
+            const hls = new Hls(); hls.loadSource(ch.u); hls.attachMedia(v);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => v.play());
+        } else { v.src = ch.u; v.play(); }
+    }
+
+    function stopVid() { document.getElementById('player').pause(); document.getElementById('vid-box').style.display = 'none'; }
+    function rotateVid() { document.getElementById('player').requestFullscreen(); }
+
+    const container = document.getElementById('content');
+    CHANNELS.forEach(c => {
+        const t = document.createElement('div'); t.className = 'cat-tag'; t.innerText = c.cat;
+        const g = document.createElement('div'); g.className = 'grid';
+        c.list.forEach(ch => {
+            const d = document.createElement('div'); d.className = 'ch-card';
+            d.innerHTML = `<div class="img-h"><img src="${ch.i}"></div><div class="ch-title">${ch.n}</div>`;
+            d.onclick = () => play(ch);
+            g.appendChild(d);
+        });
+        container.appendChild(t); container.appendChild(g);
+    });
+</script>
+</body>
+                                                                        </html>    
