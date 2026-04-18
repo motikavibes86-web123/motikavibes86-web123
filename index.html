@@ -1,190 +1,780 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TURBO TV GOLD V32</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CYBER TECHNOLOGY | Premium Security Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root { --gold: #ffcc00; --bg: #000; --card: #111; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Arial', sans-serif; user-select: none; }
-        body { background: var(--bg); color: white; margin: 0; overflow-x: hidden; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        header { background: #000; padding: 15px; border-bottom: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 5000; }
-        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: #050505; transition: 0.4s; z-index: 10000; border-right: 2px solid var(--gold); padding: 20px; }
-        .sidebar.active { left: 0; }
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9000; }
+        body {
+            font-family: 'Inter', 'Share Tech Mono', monospace;
+            background: #000000;
+            color: #00ff41;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
 
-        /* VIFURUSHI */
-        .plans-scroll { display: flex; gap: 10px; padding: 15px; overflow-x: auto; scrollbar-width: none; }
-        .plan-item { min-width: 125px; background: linear-gradient(135deg, #1a1a1a, #000); border: 1px solid #333; border-radius: 12px; padding: 12px; text-align: center; border-bottom: 3px solid var(--gold); }
-        .plan-item h4 { margin: 5px 0; color: var(--gold); font-size: 14px; }
+        /* Matrix Canvas Background */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
 
-        /* PLAYER */
-        #vid-box { display: none; background: #000; position: sticky; top: 60px; z-index: 4000; width: 100%; border-bottom: 2px solid var(--gold); }
-        video { width: 100%; aspect-ratio: 16/9; background: #000; }
-        .v-btns { display: flex; justify-content: space-between; padding: 10px; background: #111; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 10px;
+        }
 
-        /* GRID LOGO */
-        .cat-tag { padding: 15px 15px 5px; color: var(--gold); font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; }
-        .ch-card { background: var(--card); border-radius: 12px; border: 1px solid #222; overflow: hidden; text-align: center; }
-        .img-h { background: white; height: 75px; display: flex; align-items: center; justify-content: center; padding: 8px; }
-        .img-h img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .ch-title { font-size: 9px; padding: 8px; font-weight: bold; color: #ccc; min-height: 35px; display: flex; align-items: center; justify-content: center; line-height: 1.1; }
+        /* Navigation */
+        .navbar {
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-        /* MODAL */
-        .gold-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 30000; align-items: center; justify-content: center; padding: 20px; }
-        .gold-box { background: #000; width: 100%; max-width: 380px; border-radius: 25px; border: 2px solid var(--gold); padding: 25px; text-align: center; }
-        .pay-details { background: #111; border-radius: 15px; padding: 15px; margin: 15px 0; text-align: left; font-size: 13px; border-left: 4px solid var(--gold); }
-        #errorMsg { color: #ff3333; font-size: 12px; margin-bottom: 10px; display: none; background: rgba(255,0,0,0.1); padding: 8px; border-radius: 5px; font-weight: bold; }
-        
-        .g-input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #050505; color: white; text-align: center; margin-bottom: 10px; font-size: 20px; outline: none; }
-        .g-btn { background: var(--gold); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; }
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .logo i {
+            color: #00ff41;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #00ff41;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-family: 'Share Tech Mono', monospace;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a i {
+            margin-right: 6px;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #00ff41;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            text-shadow: 0 0 8px #00ff41;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2.5rem 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(0, 25, 0, 0.9), rgba(0, 10, 0, 0.95));
+            border: 1px solid #00ff41;
+            border-radius: 20px;
+            padding: 1.5rem 2.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .hero-card:hover::before {
+            left: 100%;
+        }
+
+        .hero-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+        }
+
+        .hero-card i {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-card h3 {
+            font-size: 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .hero-card p {
+            font-size: 0.7rem;
+            color: #7fff8f;
+            margin-top: 0.5rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem 3rem;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1.5rem 0;
+            border-left: 4px solid #00ff41;
+            padding-left: 18px;
+            font-family: 'Share Tech Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: #00ff41;
+            font-size: 1.5rem;
+        }
+
+        /* Tools Grid - 3 columns on desktop */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.8rem;
+        }
+    /* Tool Card */
+        .tool-card {
+            background: rgba(0, 10, 0, 0.75);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            padding: 1.2rem;
+            border: 1px solid rgba(0, 255, 65, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00ff41;
+            transition: width 0.3s;
+        }
+
+        .tool-card:hover::after {
+            width: 100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-6px);
+            border-color: #00ff41;
+            background: rgba(0, 255, 65, 0.06);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 255, 65, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #00ff41;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover .tool-icon {
+            background: #00ff41;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .tool-info h3 {
+            font-size: 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: #00ff41;
+        }
+
+        .tool-info p {
+            color: #8cffa0;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        .tool-description {
+            font-size: 0.75rem;
+            color: #b0ffc0;
+            margin: 12px 0;
+            line-height: 1.4;
+            padding-left: 52px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 6px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-family: 'Share Tech Mono', monospace;
+            margin-left: 52px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 12px #00ff41;
+            gap: 12px;
+        }
+
+        /* Method Cards */
+        .method-card {
+            background: linear-gradient(135deg, rgba(0, 20, 0, 0.8), rgba(0, 10, 0, 0.9));
+            border: 1px solid rgba(0, 255, 65, 0.25);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .method-card:hover {
+            border-color: #00ff41;
+            transform: translateX(5px);
+            box-shadow: -5px 5px 20px rgba(0, 255, 65, 0.1);
+        }
+
+        .method-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #00ff41;
+            font-family: 'Share Tech Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-title i {
+            font-size: 1.3rem;
+        }
+
+        .method-badge {
+            display: inline-block;
+            background: rgba(0, 255, 65, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            margin: 5px 5px 5px 0;
+        }
+
+        .code-block {
+            background: #0a0a0a;
+            border: 1px solid #00ff41;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: #00ff41;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(0, 255, 65, 0.2);
+            margin-top: 2rem;
+            color: #3aff65;
+            font-size: 0.7rem;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .disclaimer {
+            background: rgba(0, 255, 65, 0.04);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            font-size: 0.65rem;
+            text-align: center;
+            border-left: 3px solid #00ff41;
+            color: #7fff8f;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .back-to-top:hover {
+            background: #00ff41;
+            color: #000;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .section-title {
+                font-size: 1.2rem;
+            }
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-card {
+                padding: 1rem 1.5rem;
+            }
+            .hero-card i {
+                font-size: 2rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .tool-description {
+                padding-left: 0;
+            }
+            .download-btn {
+                margin-left: 0;
+                margin-top: 8px;
+            }
+            .tool-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .tool-info {
+                text-align: center;
+            }
+        }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
+  <canvas id="matrixCanvas"></canvas>
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-shield-haltered"></i> CYBER TECHNOLOGY
+    </div>
+    <div class="nav-links">
+        <a href="#premium"><i class="fas fa-crown"></i> PREMIUM</a>
+        <a href="#hacking"><i class="fas fa-skull-crossbones"></i> HACKING</a>
+        <a href="#utility"><i class="fas fa-toolbox"></i> UTILITY</a>
+        <a href="#termux"><i class="fas fa-terminal"></i> TERMUX</a>
+    </div>
+</nav>
 
-<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
-
-<div class="sidebar" id="sidebar">
-    <div style="text-align: center; padding: 20px 0;"><img src="https://i.imgur.com/tC3ASmB.png" style="width:80%;"></div>
-    <div style="padding:15px; border-bottom: 1px solid #222;" onclick="closeSidebar()">Mwanzo</div>
-    <div style="padding:15px; border-bottom: 1px solid #222;" onclick="showModal('KEY')">Ingiza Key</div>
-    <div style="padding:15px;" onclick="window.location.href='https://wa.me/255750020767'">WhatsApp Admin</div>
-</div>
-
-<header>
-    <div onclick="openSidebar()"><i class="fas fa-bars-staggered" style="color:var(--gold); font-size: 24px;"></i></div>
-    <div style="font-weight: 900; font-size: 20px;">TURBO<span style="color:var(--gold);">TV</span></div>
-    <div onclick="showModal('KEY')"><i class="fas fa-crown" style="color:var(--gold); font-size: 22px;"></i></div>
-</header>
-
-<div class="plans-scroll">
-    <div class="plan-item" onclick="showModal('Siku 1')"><h4>500/=</h4><p>Siku 1</p></div>
-    <div class="plan-item" onclick="showModal('Wiki 1')"><h4>2,500/=</h4><p>Wiki 1</p></div>
-    <div class="plan-item" onclick="showModal('Mwezi 1')"><h4>15,000/=</h4><p>Mwezi 1</p></div>
-</div>
-
-<div id="vid-box">
-    <video id="player" controls controlsList="nodownload" playsinline></video>
-    <div class="v-btns">
-        <button onclick="stopVid()" style="background:red; border:none; color:white; padding:8px 15px; border-radius:8px;">FUNGA</button>
-        <button onclick="rotateVid()" style="background:var(--gold); border:none; padding:8px 15px; border-radius:8px;">FULLSCREEN</button>
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-card" id="whatsappChannelBtn">
+        <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+        <h3>WHATSAPP CHANNEL</h3>
+        <p>Join CYBER TECHNOLOGY channel</p>
+    </div>
+    <div class="hero-card" id="vipAdminBtn">
+        <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+        <h3>ADMIN FOR VIP TOOL</h3>
+        <p>Request VIP access</p>
     </div>
 </div>
 
-<div id="content"></div>
+<div class="container">
+    
+    <!-- Premium Apps Section -->
+    <div class="section-title" id="premium">
+        <i class="fas fa-gem"></i> PREMIUM APPS BY MRISBRAND
+    </div>
+    <div class="tools-grid" id="premiumGrid"></div>
 
-<div class="gold-modal" id="goldModal">
-    <div class="gold-box">
-        <h2 id="mTitle" style="color:var(--gold); margin:0;">MALIPO</h2>
-        <div class="pay-details">
-            <b>VODACOM M-PESA</b><br>
-            Namba: <b>0750020767</b><br>
-            Jina: <b>SHABANI OMARY</b>
+    <!-- Hacking Tools Section -->
+    <div class="section-title" id="hacking">
+        <i class="fas fa-skull-crossbones"></i> HACKING TOOLS SUITE
+    </div>
+    <div class="tools-grid" id="hackingGrid"></div>
+
+    <!-- Utility Tools Section -->
+    <div class="section-title" id="utility">
+        <i class="fas fa-toolbox"></i> UTILITY & MODDING TOOLS
+    </div>
+    <div class="tools-grid" id="utilityGrid"></div>
+
+    <!-- Termux Methods Section -->
+    <div class="section-title" id="termux">
+        <i class="fas fa-terminal"></i> TERMUX HACKING METHODS 2026
+    </div>
+
+    <!-- Method 1 -->
+    <div class="method-card">
+        <div class="method-title">
+            <i class="fab fa-whatsapp"></i> NEW SECRET WHATSAPP META VERIFIED METHOD 2026
         </div>
-        <div id="errorMsg">Key Sio Sahihi!</div>
-        <input type="text" id="kInput" class="g-input" placeholder="Weka Key hapa">
-        <button class="g-btn" onclick="checkKey()">THIBITISHA</button>
-        <p onclick="closeM()" style="color:#555; margin-top:15px; cursor:pointer;">Funga</p>
+        <span class="method-badge"><i class="fas fa-check-circle"></i> 1000% WORKING</span>
+        <span class="method-badge"><i class="fas fa-shield-alt"></i> SAFE</span>
+        <span class="method-badge"><i class="fas fa-globe"></i> ALL COUNTRIES</span>
+        <div class="code-block">
+            <pre>FIRST LINK: https://rebrand.ly/234f34
+SECOND LINK: https://rebrand.ly/2f8947
+
+DON'T SELL | ENJOY AND KEEP SUPPORTING</pre>
+        </div>
     </div>
+
+    <!-- Method 2 -->
+    <div class="method-card">
+        <div class="method-title">
+            <i class="fas fa-wifi"></i> HOW TO HACK ANY WIFI THROUGH TERMUX
+        </div>
+        <span class="method-badge">WPA</span>
+        <span class="method-badge">WPA2</span>
+        <span class="method-badge">PSK</span>
+        <span class="method-badge">ROOT REQUIRED</span>
+        <div class="code-block">
+            <pre>
+apt update && apt upgrade -y
+apt install git
+apt install python2
+git clone https://github.com/derv82/wifite.git
+cd wifite
+python2 wifite.py
+git clone https://github.com/derv82/wifite2
+            </pre>
+        </div>
+    </div>
+
+    <!-- Method 3 -->
+    <div class="method-card">
+        <div class="method-title">
+            <i class="fab fa-instagram"></i> <i class="fab fa-facebook"></i> HACK INSTAGRAM/FACEBOOK VIA TERMUX
+        </div>
+        <span class="method-badge">NO LINK NEEDED</span>
+        <span class="method-badge">USERNAME/EMAIL</span>
+        <div class="code-block">
+            <pre>
+apt update && apt upgrade -y
+git clone https://github.com/IAmBlackHacker/Facebook-BruteForce
+cd Facebook-BruteForce
+chmod +x *
+pip3 install requests bs4
+pip install mechanize
+python3 fb.py or python fb2.py
+            </pre>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        <i class="fas fa-shield-alt"></i> DISCLAIMER: All tools and methods are for EDUCATIONAL PURPOSES only. 
+        Use only on your own systems or with explicit permission. Unauthorized access is illegal.
+    </div>
+</div>
+
+<footer>
+    <i class="far fa-copyright"></i> 2026 CYBER TECHNOLOGY | MRISBRAND SECURITY RESEARCH
+</footer>
+
+<div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
 </div>
 
 <script>
-    const CHANNELS = [
-        { cat: "Azam Sports (Mubashara)", list: [
-            { n: "AZAM SPORTS 1 HD", i: "https://i.imgur.com/IfiS9MK.png", u: "http://line.iptv-4k.cc/live/664896/83C987/1480208.m3u8", p: true },
-            { n: "AZAM SPORTS 2 HD", i: "https://i.imgur.com/aJb0GWK.png", u: "http://line.iptv-4k.cc/live/664896/83C987/1480209.m3u8", p: true },
-            { n: "AZAM EXTRA", i: "https://i.imgur.com/FkCNjgO.png", u: "http://line.iptv-4k.cc/live/664896/83C987/1480210.m3u8", p: true }
-        ]},
-        { cat: "Bongo Local TV", list: [
-            { n: "CLOUDS TV", i: "https://i.imgur.com/nQyMN6A.png", u: "https://shm.itv.co.tz/cloudstv/index.m3u8", p: false },
-            { n: "ITV TANZANIA", i: "https://i.imgur.com/yIsA98f.png", u: "http://ec54.ott.bzdv.net/stream,195,341,830,.m3u8", p: false },
-            { n: "EATV", i: "https://i.postimg.cc/MHTSYT1F/eatv5.png", u: "http://bzdv.net.flash.glb.ipercast.net/bzdv.net-live/smil:55.smil/playlist.m3u8", p: false },
-            { n: "WASAF TV", i: "https://i.imgur.com/JNfPjHS.png", u: "https://shm.itv.co.tz/wasafitv/index.m3u8", p: false },
-            { n: "CHANNEL TEN+", i: "https://i.imgur.com/8XIjw6i.png", u: "http://bzdv.net.flash.glb.ipercast.net/bzdv.net-live/smil:53.smil/playlist.m3u8", p: false },
-            { n: "STAR TV", i: "https://i.imgur.com/pLfcg0r.png", u: "", p: false },
-            { n: "TV1", i: "https://i.imgur.com/ntOvcTv.png", u: "", p: false },
-            { n: "TVE", i: "https://i.imgur.com/TuFZuxO.png", u: "", p: false }
-        ]},
-        { cat: "Burudani & Movie", list: [
-            { n: "SINEMA ZETU", i: "https://i.imgur.com/mz2juIq.png", u: "", p: true },
-            { n: "CHEKA PLUS", i: "https://i.imgur.com/xIUS0hq.png", u: "", p: false },
-            { n: "CROWN TV", i: "https://i.imgur.com/G1xO5lR.jpeg", u: "", p: false },
-            { n: "AM TWO", i: "https://i.imgur.com/YhFMlKR.png", u: "", p: false }
-        ]},
-        { cat: "Dini & Mafundisho", list: [
-            { n: "SAUTI YA UPONYAJI", i: "https://i.imgur.com/NnBHezm.png", u: "", p: false },
-            { n: "UPENDO TV", i: "https://i.postimg.cc/XXMFDskt/upendotv.png", u: "", p: false },
-            { n: "TV IMAANI", i: "https://i.imgur.com/WusxF4h.png", u: "", p: false },
-            { n: "TUMAINI TV", i: "https://i.imgur.com/kOJ5Ho0.png", u: "", p: false },
-            { n: "ZOE TV", i: "https://i.imgur.com/8apepFk.jpeg", u: "", p: false },
-            { n: "WRM TV", i: "https://i.imgur.com/2gwc4RW.png", u: "", p: false }
-        ]}
-    ];
-
-    // MFUMO WA PASSWORD (KEYS) NA MUDA WAKE
-    const VALID_KEYS = {
-        "DAY500X": 1, // Siku 1
-        "DAY500Y": 1,
-        "WEE2500A": 7, // Wiki 1
-        "WEE2500B": 7,
-        "MON15K1": 30, // Mwezi 1
-        "MON15K2": 30,
-        "TURBO2026": 365, // Mwaka 1
-        "ADMIN767": 999, // Master
-        "FREEPASS": 0.5, // Masaa 12
-        "GOLDKEY": 30
-    };
-
-    let isUnlocked = false;
-
-    function openSidebar() { document.getElementById('sidebar').classList.add('active'); document.getElementById('overlay').style.display='block'; }
-    function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('overlay').style.display='none'; }
-    function showModal(p) { document.getElementById('goldModal').style.display = 'flex'; }
-    function closeM() { document.getElementById('goldModal').style.display = 'none'; }
-
-    function checkKey() {
-        const val = document.getElementById('kInput').value.toUpperCase();
-        const err = document.getElementById('errorMsg');
-        if(VALID_KEYS[val]) {
-            isUnlocked = true;
-            err.style.display = 'block'; err.style.color = "#00ff88"; err.innerText = "IMEFUNGULIWA! ("+VALID_KEYS[val]+" Days)";
-            setTimeout(() => closeM(), 1500);
-        } else {
-            err.style.display = 'block';
+    // ===========================================
+    // MATRIX RAIN EFFECT
+    // ===========================================
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const charArray = chars.split('');
+    const fontSize = 14;
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = [];
+    
+    function initDrops() {
+        columns = Math.floor(canvas.width / fontSize);
+        drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
         }
     }
+    initDrops();
+    
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#00ff41';
+        ctx.font = fontSize + 'px "Share Tech Mono", monospace';
+        
+        for (let i = 0; i < drops.length; i++) {
+            const char = charArray[Math.floor(Math.random() * charArray.length)];
+            const x = i * fontSize;
+            const y = drops[i] * fontSize;
+            
+            ctx.fillText(char, x, y);
+            
+            if (y > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+    
+    setInterval(drawMatrix, 50);
+    
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        initDrops();
+    });
 
-    function play(ch) {
-        if(ch.p && !isUnlocked) { showModal(); return; }
-        if(!ch.u) { alert("Inakuja hivi punde..."); return; }
-        document.getElementById('vid-box').style.display = 'block';
-        const v = document.getElementById('player');
-        if (Hls.isSupported()) {
-            const hls = new Hls(); hls.loadSource(ch.u); hls.attachMedia(v);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => v.play());
-        } else { v.src = ch.u; v.play(); }
+    // ===========================================
+    // TOOL ICONS - Dynamic based on tool type
+    // ===========================================
+    const getIconForTool = (name) => {
+        const lowerName = name.toLowerCase();
+        if (lowerName.includes('capcut') || lowerName.includes('inshot') || lowerName.includes('kine') || lowerName.includes('wink')) 
+            return '<i class="fas fa-video"></i>';
+        if (lowerName.includes('chatgpt') || lowerName.includes('ai')) 
+            return '<i class="fas fa-robot"></i>';
+        if (lowerName.includes('youtube') || lowerName.includes('music')) 
+            return '<i class="fab fa-youtube"></i>';
+        if (lowerName.includes('telegram')) 
+            return '<i class="fab fa-telegram"></i>';
+        if (lowerName.includes('netflix')) 
+            return '<i class="fas fa-film"></i>';
+        if (lowerName.includes('tiktok')) 
+            return '<i class="fab fa-tiktok"></i>';
+        if (lowerName.includes('clone') || lowerName.includes('mod')) 
+            return '<i class="fas fa-copy"></i>';
+        if (lowerName.includes('vpn')) 
+            return '<i class="fas fa-lock"></i>';
+        if (lowerName.includes('rat') || lowerName.includes('mobile hack')) 
+            return '<i class="fas fa-bug"></i>';
+        if (lowerName.includes('wibr') || lowerName.includes('wifi')) 
+            return '<i class="fas fa-wifi"></i>';
+        if (lowerName.includes('camera')) 
+            return '<i class="fas fa-camera"></i>';
+        if (lowerName.includes('instagram')) 
+            return '<i class="fab fa-instagram"></i>';
+        if (lowerName.includes('facebook')) 
+            return '<i class="fab fa-facebook"></i>';
+        if (lowerName.includes('whatsapp')) 
+            return '<i class="fab fa-whatsapp"></i>';
+        if (lowerName.includes('snaptube')) 
+            return '<i class="fas fa-download"></i>';
+        if (lowerName.includes('manager')) 
+            return '<i class="fas fa-tasks"></i>';
+        if (lowerName.includes('spy') || lowerName.includes('anti')) 
+            return '<i class="fas fa-shield-alt"></i>';
+        return '<i class="fas fa-download"></i>';
+    };
+    // ===========================================
+    // DATA
+    // ===========================================
+    const premiumApps = [
+        { name: "CapCut Pro By MRISBRAND", desc: "All premium filters and effects unlocked", link: "https://www.mediafire.com/file/niholorc13bdn1f/CapCut+Pro+By+MRISBRAND_17.3.0.apk/file" },
+        { name: "InShot Pro By MRISBRAND", desc: "Professional video editor no watermark", link: "https://www.mediafire.com/file/jiyv52a343qmbtj/InShot+Pro+By+MRISBRAND_2.152.1504.apk/file" },
+        { name: "XRecorder Pro By MRISBRAND", desc: "Screen recorder no ads", link: "https://www.mediafire.com/file/bc4y28irtm3677a/XRecorder+Pro+By+MRISBRAND.apk/file" },
+        { name: "ChatGPT Premium By MRISBRAND", desc: "GPT-4 unlocked, no restrictions", link: "https://www.mediafire.com/file/rhh3ex0vg60tkst/ChatGPT+Premium+By+MRISBRAND_1.2026.083.apk/file" },
+        { name: "Telegram Beta Premium By MRISBRAND", desc: "Premium features unlocked", link: "https://www.mediafire.com/file/bhgo1g7dotupkn6/Telegram+Beta+Premium+By+MRISBRAND_12.4.3.apk/file" },
+        { name: "Remini Premium By MRISBRAND", desc: "AI photo enhancer", link: "https://www.mediafire.com/file/qjb2lwn8ajtgbnx/Remini+Premium+By+MRISBRAND_3.7.1299.202520143.apk/file" },
+        { name: "Clone App Pro By MRISBRAND", desc: "App cloner premium", link: "https://www.mediafire.com/file/ftbyxaars5n9g2d/Clone+Pro+By+MRISBRAND+v4.1.1.apk/file" },
+        { name: "KineMaster Premium By MRISBRAND", desc: "Full pro video editor", link: "https://www.mediafire.com/file/yexprbcfhn4tth8/KineMaster+Premium+By+MRISBRAND_8.1.3.36292.gp.apk/file" },
+        { name: "YouTube Premium By MRISBRAND", desc: "No ads, background playback", link: "https://www.mediafire.com/file/bzp21y7brf0o44z/YouTube+Premium+By+MRISBRAND_26.06.2026.apk/file" },
+        { name: "Wink Premium By MRISBRAND", desc: "Professional video editor", link: "https://www.mediafire.com/file/m4jyh9lk4fbgndu/Wink+Premium+By+MRISBRAND_2.13.0.apk/file" },
+        { name: "Esport Logo Maker By MRISBRAND", desc: "Logo design pro", link: "https://www.mediafire.com/file/ew66a0zbj6up6ef/Esport+Logo+Premium+By+MRISBRAND_1.4.6.apk/file" }
+    ];
+
+    const hackingTools = [
+        { name: "Full Mobile RAT", desc: "Remote access tool for security testing", link: "https://www.mediafire.com/file/tz1q4tl8rbyotel/FULL+MOBILE+HACK+BY+MRISBRAND.zip/file" },
+        { name: "Mobile Hack Suite", desc: "Complete penetration testing toolkit", link: "https://www.mediafire.com/file/9mmxeb4elxvek5q/Mobile_Hack.7z/file" },
+        { name: "WIBR+", desc: "WiFi security testing and auditing", link: "https://www.mediafire.com/file/s9g211xupom31bc/WIBR+.apk/file" },
+        { name: "Camera Security Tool", desc: "Live camera security simulation", link: "https://www.mediafire.com/file/cyq74z81jq46nh2/Live_Camera.apk/file" },
+        { name: "Instagram Security Tool", desc: "Instagram security testing framework", link: "https://www.mediafire.com/file/0870qd38lw6j54w/Insta_Hack_BY_%25F0%2593%2586%25A9%25F0%259D%2590%2580%25F0%259D%2590%258B%25F0%259D%2590%2588%25F0%259D%2590%25B1%25F0%259D%2590%2591%25F0%259D%2590%258E%25F0%259D%2590%2598%25F0%259D%2590%2580%25F0%259D%2590%258B%25F0%2593%2586%25AA__.7z/file" },
+        { name: "Facebook Security Tool", desc: "Facebook security auditing suite", link: "https://www.mediafire.com/file/d1rrrye4q3ksn23/FACEBOOK_HACK.zip/file" },
+        { name: "WhatsApp Security Tool", desc: "WhatsApp security testing framework", link: "https://www.mediafire.com/file/tzsvwkgfqknutcg/Whatsapp_Hack.7z/file" },
+        { name: "Telegram Security Tool", desc: "Telegram security testing", link: "https://www.mediafire.com/file/i9rb75gcz23a824/Telegram_Hack.7z/file" },
+        { name: "WhatsApp Crash Tool", desc: "Stress testing tool for research", link: "https://volumeshaderbm.com" }
+    ];
+
+    const utilityTools = [
+        { name: "SnapTube", desc: "Download videos from anywhere", link: "https://liteapks.com/snaptube.html" },
+        { name: "Thunder VPN", desc: "Fast and secure VPN connection", link: "https://liteapks.com/thunder-vpn.html" },
+        { name: "App Manager", desc: "Advanced system app management", link: "https://liteapks.com/app-manager.html" },
+        { name: "Anti Spy", desc: "Spyware and malware detection", link: "https://liteapks.com/anti-spy-4-scanner-spyware.html" },
+        { name: "Mod Any App", desc: "APK modification toolkit", link: "https://www.mediafire.com/file/b736y30nsfv7ajh/MODE+ANY+APPS+GAMES+METHOD.zip/file" },
+        { name: "Modify Any APK", desc: "Advanced APK editor and modifier", link: "https://www.mediafire.com/file/muxnfrta2y8dyq2/Modify_Any_Apk_LEAKED_By_AbheeBhai_Mods.zip/file" },
+        { name: "Fake Chat Simulator", desc: "Chat simulation for testing", link: "https://www.mediafire.com/file/vmh2efktk4odm3d/base-3.apk/file" },
+        { name: "Gallery Security Tool", desc: "Link security testing tool", link: "https://www.mediafire.com/file/rh6tmls4w1i2csw/GALLERY-HACK-USING-LINK_MRISBRAND.zip/file" },
+        { name: "Live Screen Tool", desc: "Screen capture and simulation", link: "https://www.mediafire.com/file/ifxvks1slvqfgj8/LIVE_SCREEN_HACK.zip/file" }
+    ];
+function renderTools(containerId, toolsArray) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        let html = '';
+        for (let tool of toolsArray) {
+            const iconHtml = getIconForTool(tool.name);
+            html += `
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">${iconHtml}</div>
+                        <div class="tool-info">
+                            <h3>${escapeHtml(tool.name)}</h3>
+                            <p>${escapeHtml(tool.desc.substring(0, 50))}${tool.desc.length > 50 ? '...' : ''}</p>
+                        </div>
+                    </div>
+                    <div class="tool-description">${escapeHtml(tool.desc)}</div>
+                    <a href="${escapeHtml(tool.link)}" class="download-btn" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-arrow-down"></i> DOWNLOAD
+                    </a>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
     }
 
-    function stopVid() { document.getElementById('player').pause(); document.getElementById('vid-box').style.display = 'none'; }
-    function rotateVid() { document.getElementById('player').requestFullscreen(); }
-
-    const container = document.getElementById('content');
-    CHANNELS.forEach(c => {
-        const t = document.createElement('div'); t.className = 'cat-tag'; t.innerText = c.cat;
-        const g = document.createElement('div'); g.className = 'grid';
-        c.list.forEach(ch => {
-            const d = document.createElement('div'); d.className = 'ch-card';
-            d.innerHTML = `<div class="img-h"><img src="${ch.i}"></div><div class="ch-title">${ch.n}</div>`;
-            d.onclick = () => play(ch);
-            g.appendChild(d);
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
         });
-        container.appendChild(t); container.appendChild(g);
+    }
+renderTools('premiumGrid', premiumApps);
+    renderTools('hackingGrid', hackingTools);
+    renderTools('utilityGrid', utilityTools);
+
+    // WhatsApp Channel Button
+    document.getElementById('whatsappChannelBtn')?.addEventListener('click', () => {
+        window.open('https://whatsapp.com/channel/0029Vb7X4NmDDmFXJEK8MU1l', '_blank');
     });
+
+    // VIP Admin WhatsApp Button
+    document.getElementById('vipAdminBtn')?.addEventListener('click', () => {
+        const phoneNumber = '255799629385';
+        const message = encodeURIComponent('Hello Mr Cyber I need to access vip hacking tool');
+        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    });
+
+    // Back to Top Button
+    const backToTop = document.getElementById('backToTop');
+    backToTop?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', () => {
+        if (backToTop) {
+            if (window.scrollY > 300) {
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        }
+    });
+    backToTop.style.display = 'none';
 </script>
 </body>
-    </html>
-                     
+            </html>
